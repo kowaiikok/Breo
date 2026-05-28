@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breo Product Detail</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --ink: #171411;
+        --muted: #74685c;
+        --paper: #f7f0e4;
+        --panel: #fffaf1;
+        --line: rgba(82, 58, 38, 0.18);
+        --wood: #5f3e27;
+        --green: #28654b;
+        --gold: #c9a66b;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(180deg, #f8f1e6, #efe0cc),
+          repeating-linear-gradient(90deg, rgba(117, 77, 48, 0.08) 0 34px, rgba(255,255,255,0.05) 34px 68px);
+        color: var(--ink);
+        font-family: "Manrope", system-ui, sans-serif;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        padding: 18px clamp(18px, 4vw, 56px);
+        background: rgba(29, 20, 14, 0.9);
+        color: white;
+      }
+
+      a { color: inherit; font-weight: 800; text-decoration: none; }
+
+      .brand { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: 800; }
+      .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #d5b77d, #6d4428); color: #1b120d; }
+
+      main { display: grid; gap: 28px; padding: clamp(24px, 5vw, 64px); }
+
+      .detail-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+        gap: clamp(22px, 5vw, 64px);
+        align-items: center;
+      }
+
+      .product-stage,
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 250, 241, 0.94);
+        box-shadow: 0 28px 80px rgba(78, 52, 32, 0.12);
+      }
+
+      .product-stage {
+        display: grid;
+        place-items: center;
+        min-height: 520px;
+        padding: clamp(20px, 4vw, 44px);
+        background:
+          linear-gradient(145deg, #fff9ef, #e8d4b7),
+          repeating-linear-gradient(90deg, rgba(117, 77, 48, 0.12) 0 18px, rgba(255,255,255,0.1) 18px 36px);
+      }
+
+      .product-stage img { width: 100%; max-height: 460px; object-fit: contain; filter: drop-shadow(0 30px 34px rgba(55, 35, 22, 0.24)); }
+
+      .eyebrow { margin: 0 0 12px; color: var(--gold); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+      h1 { margin: 0 0 16px; font-size: clamp(2.6rem, 6vw, 5.6rem); line-height: 0.92; }
+      h2 { margin: 0 0 16px; font-size: clamp(1.6rem, 3vw, 2.5rem); line-height: 1; }
+      p { color: var(--muted); line-height: 1.65; }
+
+      .price { color: var(--green); font-size: 1.7rem; font-weight: 800; }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 12px 18px;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 800;
+      }
+
+      .button.primary { background: linear-gradient(135deg, #20392e, #6b4429); color: white; }
+      .button.secondary { border-color: var(--line); background: white; color: var(--ink); }
+
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+
+      .info-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+      .panel { padding: 22px; }
+      .panel ul, .panel ol { margin: 0; padding-left: 20px; color: var(--muted); line-height: 1.7; }
+      .spec-row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid var(--line); }
+      .spec-row:first-child { border-top: 0; }
+      .spec-row span { color: var(--muted); }
+
+      @media (max-width: 900px) {
+        .detail-hero,
+        .info-grid { grid-template-columns: 1fr; }
+        .product-stage { min-height: 360px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="main.html"><span class="brand-mark">b</span><span>Breo</span></a>
+      <nav><a href="main.html#products">Back to products</a></nav>
+    </header>
+
+    <main id="productPage"></main>
+
+    <script>
+      const products = [
+        {
+          id: "mg-pro",
+          code: "BREO-MG-PRO",
+          name: "Breo Massage Gun Pro",
+          description: "Deep muscle recovery with quiet percussion settings.",
+          price: 699,
+          image: "assets/massage-gun.png",
+          benefits: ["Deep percussion for large muscle groups", "Quiet motor for home recovery", "Best after workouts or long standing days"],
+          steps: ["Start on the lowest speed.", "Move slowly across the muscle for 30 to 60 seconds.", "Avoid bones, joints, and sensitive areas."],
+          warranty: "12-month Breo Malaysia member warranty",
+          specs: { "Care mode": "Percussion massage", "Best for": "Workout recovery", "Price": "RM 699" },
+        },
+        {
+          id: "neck-relax",
+          code: "BREO-NECK-HEAT",
+          name: "Breo Neck Massager",
+          description: "Portable heat and pulse care for desk workers and drivers.",
+          price: 429,
+          image: "assets/neck-massager.png",
+          benefits: ["Targeted neck and shoulder comfort", "Gentle warmth for desk tension", "Portable for office and car breaks"],
+          steps: ["Place it comfortably around the neck.", "Choose a gentle mode first.", "Use heat only if it feels comfortable for 10 to 15 minutes."],
+          warranty: "12-month Breo Malaysia member warranty",
+          specs: { "Care mode": "Heat and pulse comfort", "Best for": "Desk and driving tension", "Price": "RM 429" },
+        },
+        {
+          id: "eye-comfort",
+          code: "BREO-EYE-FOLD",
+          name: "Breo Eye Massager",
+          description: "Foldable eye relaxation with gentle warmth and pressure.",
+          price: 389,
+          image: "assets/eye-massager.png",
+          benefits: ["Soft pressure around tired eyes", "Foldable design for bedtime or travel", "Gentle warmth for screen-heavy routines"],
+          steps: ["Remove glasses or contact lenses.", "Position the mask comfortably.", "Start with soft mode and stop if pressure feels uncomfortable."],
+          warranty: "12-month Breo Malaysia member warranty",
+          specs: { "Care mode": "Eye warmth and pressure", "Best for": "Screen fatigue", "Price": "RM 389" },
+        },
+        {
+          id: "mini-care",
+          code: "BREO-MINI-CARE",
+          name: "Breo Mini Handheld",
+          description: "Compact daily relief for travel, gifting, and quick care.",
+          price: 299,
+          image: "assets/mini-handheld.png",
+          benefits: ["Compact all-round comfort", "Easy for gifting and travel", "Quick use on shoulders, arms, and legs"],
+          steps: ["Use light pressure.", "Move slowly across tight areas.", "Keep sessions short for daily relief."],
+          warranty: "12-month Breo Malaysia member warranty",
+          specs: { "Care mode": "Portable handheld massage", "Best for": "Travel and gifting", "Price": "RM 299" },
+        },
+      ];
+
+      function formatMoney(value) {
+        return new Intl.NumberFormat("en-MY", { style: "currency", currency: "MYR", maximumFractionDigits: 0 }).format(value);
+      }
+
+      const product = products.find((item) => item.id === new URLSearchParams(location.search).get("id")) || products[0];
+      document.title = `${product.name} | Breo Malaysia`;
+      document.querySelector("#productPage").innerHTML = `
+        <section class="detail-hero">
+          <div class="product-stage"><img src="${product.image}" alt="${product.name}" /></div>
+          <div>
+            <p class="eyebrow">${product.code}</p>
+            <h1>${product.name}</h1>
+            <p>${product.description}</p>
+            <div class="price">${formatMoney(product.price)}</div>
+            <div class="actions">
+              <button class="button primary" id="addToOrder" type="button">Add to order</button>
+              <a class="button secondary" href="main.html#products">Compare products</a>
+            </div>
+          </div>
+        </section>
+        <section class="info-grid">
+          <article class="panel">
+            <h2>Benefits</h2>
+            <ul>${product.benefits.map((item) => `<li>${item}</li>`).join("")}</ul>
+          </article>
+          <article class="panel">
+            <h2>Usage steps</h2>
+            <ol>${product.steps.map((item) => `<li>${item}</li>`).join("")}</ol>
+          </article>
+          <article class="panel">
+            <h2>Warranty & specs</h2>
+            <p><strong>Warranty:</strong> ${product.warranty}</p>
+            ${Object.entries(product.specs).map(([key, value]) => `<div class="spec-row"><strong>${key}</strong><span>${value}</span></div>`).join("")}
+          </article>
+        </section>
+      `;
+
+      document.querySelector("#addToOrder").addEventListener("click", () => {
+        localStorage.setItem("breoPendingProductId", product.id);
+        window.location.href = "main.html#order";
+      });
+    </script>
+  </body>
+</html>

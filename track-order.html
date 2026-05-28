@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breo Track Order</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --ink: #17201d;
+        --muted: #61706b;
+        --paper: #f5faf6;
+        --panel: #ffffff;
+        --line: #dce4df;
+        --green: #1f7a4d;
+        --mint: #e6f5eb;
+        --coral: #e9654f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Manrope", system-ui, sans-serif;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px clamp(18px, 4vw, 56px);
+        background: rgba(255, 255, 255, 0.92);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(16px);
+      }
+
+      a {
+        color: inherit;
+        font-weight: 800;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.35rem;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--ink);
+        color: white;
+      }
+
+      main {
+        display: grid;
+        gap: 18px;
+        padding: clamp(28px, 5vw, 56px);
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2.2rem, 6vw, 5rem);
+        line-height: 1;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .tracker-card {
+        display: grid;
+        gap: 18px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: clamp(18px, 4vw, 28px);
+        background: var(--panel);
+        box-shadow: 0 14px 42px rgba(21, 35, 30, 0.08);
+      }
+
+      .status-pill {
+        width: fit-content;
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: var(--mint);
+        color: var(--green);
+        font-weight: 800;
+      }
+
+      .status-pill.declined {
+        background: #fff1ea;
+        color: var(--coral);
+      }
+
+      .meta {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .meta div,
+      .products,
+      .route-map,
+      .associate-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: #fbfcfa;
+      }
+
+      .meta strong,
+      .products strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .product-row {
+        display: grid;
+        grid-template-columns: 140px minmax(0, 1fr) 70px;
+        gap: 12px;
+        padding: 10px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .product-row:first-of-type {
+        border-top: 0;
+      }
+
+      .route-map {
+        display: grid;
+        gap: 12px;
+        background: #f4faf7;
+      }
+
+      .associate-card {
+        display: grid;
+        gap: 8px;
+        border-color: rgba(31, 122, 77, 0.24);
+        background: #f2fbf5;
+      }
+
+      .associate-card span {
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .route-visual {
+        position: relative;
+        min-height: 220px;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(135deg, rgba(230, 245, 235, 0.95), rgba(255, 255, 255, 0.8)),
+          repeating-linear-gradient(45deg, transparent 0 18px, rgba(31, 122, 77, 0.08) 18px 20px);
+      }
+
+      .route-visual::before {
+        content: "";
+        position: absolute;
+        left: 22%;
+        right: 22%;
+        top: 52%;
+        border-top: 3px dashed rgba(31, 122, 77, 0.58);
+        transform: rotate(-8deg);
+      }
+
+      .map-pin {
+        position: absolute;
+        display: grid;
+        gap: 5px;
+        width: min(230px, 42%);
+      }
+
+      .map-pin::before {
+        content: "";
+        width: 18px;
+        height: 18px;
+        border: 4px solid white;
+        border-radius: 50% 50% 50% 0;
+        background: var(--green);
+        box-shadow: 0 8px 18px rgba(23, 32, 29, 0.18);
+        transform: rotate(-45deg);
+      }
+
+      .map-pin strong,
+      .map-pin span {
+        display: block;
+        padding: 6px 8px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .map-pin span {
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.35;
+      }
+
+      .map-pin.branch {
+        left: 8%;
+        top: 22%;
+      }
+
+      .map-pin.customer {
+        right: 8%;
+        bottom: 16%;
+      }
+
+      .empty {
+        border: 1px dashed var(--line);
+        border-radius: 10px;
+        padding: 28px;
+        background: white;
+      }
+
+      @media (max-width: 860px) {
+        .meta,
+        .product-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="main.html">
+        <span class="brand-mark">b</span>
+        <span>Breo</span>
+      </a>
+      <a href="main.html">Back to customer dashboard</a>
+    </header>
+
+    <main>
+      <section>
+        <h1>Track Order</h1>
+        <p>See the latest admin decision, delivery ETA, branch route, and fulfilment status for your Breo order.</p>
+      </section>
+      <section id="tracker"></section>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+      import { collection, getFirestore, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCjybi81PE45GUROrLoJ_1jiw9AGAh1NO0",
+        authDomain: "breo-5e8f7.firebaseapp.com",
+        projectId: "breo-5e8f7",
+        storageBucket: "breo-5e8f7.firebasestorage.app",
+        messagingSenderId: "875116064178",
+        appId: "1:875116064178:web:5bafddb2b4fe4f3e2f08ab",
+        measurementId: "G-DRL2NMCLKV",
+      };
+
+      const branchLocations = {
+        "Bukit Jalil": "Pavilion Bukit Jalil, Persiaran Jalil 8, Bukit Jalil, 57000 Kuala Lumpur",
+        "1 Utama": "1 Utama Shopping Centre, Bandar Utama, 47800 Petaling Jaya, Selangor",
+      };
+
+      const tracker = document.querySelector("#tracker");
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      function localOrders() {
+        return JSON.parse(localStorage.getItem("breoLocalOrders") || "[]");
+      }
+
+      function normalizeEmail(email) {
+        return (email || "").trim().toLowerCase();
+      }
+
+      function trackedOrder(candidates) {
+        const member = JSON.parse(localStorage.getItem("breoMember") || "null");
+        const lastOrderId = localStorage.getItem("breoLastOrderId");
+        const memberEmail = normalizeEmail(member?.email);
+        return candidates.find((order) => order.orderId === lastOrderId) || candidates.find((order) => normalizeEmail(order.customerEmail) === memberEmail);
+      }
+
+      function mergeOrders(cloudOrders, browserOrders) {
+        const merged = new Map();
+        cloudOrders.forEach((order) => merged.set(order.orderId || order.id, order));
+        browserOrders.forEach((localOrder) => {
+          const key = localOrder.orderId || localOrder.id;
+          const cloudOrder = merged.get(key);
+          if (!cloudOrder) {
+            merged.set(key, localOrder);
+            return;
+          }
+          const localReviewed = localOrder.status === "Accepted" || localOrder.status === "Declined" || localOrder.status === "Sent to Branch";
+          const cloudPending = !cloudOrder.status || cloudOrder.status === "Pending Admin Review" || cloudOrder.adminDecision === "Pending";
+          merged.set(key, localReviewed && cloudPending ? { ...cloudOrder, ...localOrder } : { ...localOrder, ...cloudOrder });
+        });
+        return [...merged.values()];
+      }
+
+      function money(value) {
+        return new Intl.NumberFormat("en-MY", { style: "currency", currency: "MYR", maximumFractionDigits: 0 }).format(value || 0);
+      }
+
+      function eta(order) {
+        if (order.estimatedDeliveryDate) return order.estimatedDeliveryDate;
+        const date = new Date(order.reviewedAtLocal || order.createdAtLocal || new Date().toISOString());
+        date.setDate(date.getDate() + 5);
+        return date.toLocaleDateString("en-MY", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+      }
+
+      function statusText(order) {
+        if (order.status === "Declined") return order.adminNote || order.customerMessage || "This order was declined by admin.";
+        if (order.status === "Accepted") return order.customerMessage || `Your order has been accepted. Expected delivery arrival: ${eta(order)}.`;
+        if (order.status === "Sent to Branch") return order.customerMessage || `Your order was sent to ${order.branch}.`;
+        return "Your order is pending admin review.";
+      }
+
+      function mapsUrl(order) {
+        const params = new URLSearchParams({
+          api: "1",
+          origin: branchLocations[order.branch] || order.branch || "",
+          destination: order.deliveryAddress || "",
+          travelmode: "driving",
+        });
+        return `https://www.google.com/maps/dir/?${params.toString()}`;
+      }
+
+      function routeHtml(order) {
+        if (order.status !== "Accepted" && order.status !== "Sent to Branch" && order.branchStatus !== "Shipped") return "";
+        const branchAddress = branchLocations[order.branch] || order.branch || "Selected branch";
+        return `
+          <div class="route-map">
+            <div class="route-visual">
+              <div class="map-pin branch"><strong>${order.branch}</strong><span>${branchAddress}</span></div>
+              <div class="map-pin customer"><strong>Your address</strong><span>${order.deliveryAddress}</span></div>
+            </div>
+            <strong>Expected delivery arrival: ${eta(order)}</strong>
+            <a href="${mapsUrl(order)}" target="_blank" rel="noopener">Open route in Google Maps</a>
+          </div>
+        `;
+      }
+
+      function associateHtml(order) {
+        if (!order.salesAssociateCode) return "";
+        const member = order.assignedSalesMemberDisplay || order.assignedFulfilmentMember || order.assignedSalesMember || "Assigned sales associate";
+        return `
+          <div class="associate-card">
+            <strong>Sales associate assigned</strong>
+            <span>Associate code <strong>${order.salesAssociateCode}</strong> is assigned to <strong>${member}</strong>. Your product order and sales support are arranged under this associate.</span>
+          </div>
+        `;
+      }
+
+      function render(order) {
+        if (!order) {
+          tracker.innerHTML = `<div class="empty">No tracked order found yet. Place an order from the customer dashboard first.</div>`;
+          return;
+        }
+
+        const products = (order.products || [])
+          .map((product) => `<div class="product-row"><strong>${product.productCode}</strong><span>${product.name}</span><span>Qty ${product.quantity}</span></div>`)
+          .join("");
+
+        tracker.innerHTML = `
+          <article class="tracker-card">
+            <span class="status-pill ${order.status === "Declined" ? "declined" : ""}">${order.status || "Pending Admin Review"}</span>
+            <h2>${order.orderId || order.id}</h2>
+            <p>${statusText(order)}</p>
+            <div class="meta">
+              <div><strong>Customer</strong>${order.customerName}<br />${order.customerEmail}<br />${order.customerPhone || ""}</div>
+              <div><strong>Branch</strong>${order.branch}<br />${order.branchStatus || "Waiting for admin"}</div>
+              <div><strong>Payment</strong>${order.paymentMethod}<br />${order.paymentReference || ""}<br />${money(order.total)}</div>
+              <div><strong>Delivery</strong>${order.deliveryAddress}<br />${order.deliveryNote || "No note"}</div>
+            </div>
+            ${associateHtml(order)}
+            <div class="products"><strong>Products</strong>${products}</div>
+            ${routeHtml(order)}
+          </article>
+        `;
+      }
+
+      render(trackedOrder(localOrders()));
+
+      onSnapshot(
+        query(collection(db, "orders"), orderBy("createdAt", "desc")),
+        (snapshot) => render(trackedOrder(mergeOrders(snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })), localOrders()))),
+        () => render(trackedOrder(localOrders()))
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breo Terms & Conditions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --ink: #17201d;
+        --muted: #61706b;
+        --paper: #f5faf6;
+        --panel: #ffffff;
+        --line: #dce4df;
+        --green: #1f7a4d;
+        --mint: #e6f5eb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Manrope", system-ui, sans-serif;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px clamp(18px, 4vw, 56px);
+        background: rgba(255, 255, 255, 0.92);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(16px);
+      }
+
+      a {
+        color: inherit;
+        font-weight: 800;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.35rem;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--ink);
+        color: white;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      main {
+        display: grid;
+        gap: 24px;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: clamp(32px, 6vw, 76px) 18px;
+      }
+
+      .hero {
+        display: grid;
+        gap: 12px;
+        padding-bottom: 12px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.4rem, 6vw, 5.6rem);
+        line-height: 0.95;
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: clamp(1.5rem, 3vw, 2.4rem);
+      }
+
+      p,
+      li {
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .terms-card {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: clamp(18px, 4vw, 30px);
+        background: var(--panel);
+        box-shadow: 0 16px 42px rgba(21, 35, 30, 0.07);
+      }
+
+      .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .quick-links a {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 9px 12px;
+        background: white;
+        text-decoration: none;
+      }
+
+      .notice {
+        border-left: 4px solid var(--green);
+        padding: 14px 16px;
+        background: var(--mint);
+      }
+
+      footer {
+        padding: 24px clamp(18px, 4vw, 56px);
+        background: var(--ink);
+        color: white;
+      }
+
+      footer span {
+        color: rgba(255, 255, 255, 0.72);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="main.html">
+        <span class="brand-mark">b</span>
+        <span>Breo</span>
+      </a>
+      <nav aria-label="Terms navigation">
+        <a href="main.html">Customer site</a>
+        <a href="track-order.html">Track order</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="notice">These terms are drafted for this Breo Malaysia sales website concept and should be reviewed by the business before real public launch.</p>
+        <h1>Terms & Conditions</h1>
+        <p>Last updated: 18 May 2026. These terms explain how member orders, products, payments, vouchers, delivery, branch fulfilment, and customer support work on this website.</p>
+        <div class="quick-links">
+          <a href="#products">Product Conditions</a>
+          <a href="#delivery">Delivery Terms</a>
+          <a href="#payments">Payment Terms</a>
+          <a href="#members">Members & Vouchers</a>
+          <a href="#privacy">Privacy</a>
+        </div>
+      </section>
+
+      <section class="terms-card" id="products">
+        <h2>Product Conditions</h2>
+        <ul>
+          <li>Product names, images, prices, and product codes shown on this website are for customer ordering and branch fulfilment reference.</li>
+          <li>Massage guns, eye massagers, neck massagers, and portable massage products should be used according to the product guide and safety instructions.</li>
+          <li>Customers should stop using a product if it causes discomfort, pain, irritation, dizziness, or any unusual reaction.</li>
+          <li>This website does not provide medical advice. Customers with medical conditions should consult a qualified professional before using massage or recovery devices.</li>
+        </ul>
+      </section>
+
+      <section class="terms-card" id="delivery">
+        <h2>Delivery & Branch Fulfilment</h2>
+        <ul>
+          <li>Orders may be fulfilled from Bukit Jalil or 1U / 1 Utama depending on the selected branch, stock, pickup arrangement, and delivery address.</li>
+          <li>Estimated delivery dates shown in the customer dashboard are estimates only. Actual timing may change based on stock, courier availability, public holidays, weather, address accuracy, and branch processing.</li>
+          <li>Customers must provide a complete delivery address and reachable phone number. The branch may contact the customer if the address is incomplete or unclear.</li>
+          <li>Branch staff may update the order status to packing, ready for courier, shipped, or completed after admin acceptance.</li>
+        </ul>
+      </section>
+
+      <section class="terms-card" id="payments">
+        <h2>Payment Terms</h2>
+        <ul>
+          <li>The checkout flow supports credit or debit card, e-wallet, and Atome-style instalment options as a website payment concept.</li>
+          <li>Orders are sent to admin review after the customer completes the payment step and provides a payment reference.</li>
+          <li>Admin may decline an order if payment, product details, customer contact details, or delivery information is missing, suspicious, duplicated, or invalid.</li>
+          <li>Refund, cancellation, and exchange rules should follow the official Breo business policy once the website is used commercially.</li>
+        </ul>
+      </section>
+
+      <section class="terms-card" id="members">
+        <h2>Members, Verification & Vouchers</h2>
+        <ul>
+          <li>Customers must create a member account and verify their email before placing an order.</li>
+          <li>New member and birthday vouchers may be shown by popup or in the vouchers section. Voucher availability may depend on eligibility, birthday date, campaign timing, and branch approval.</li>
+          <li>Sales associate codes may assign the order to a retail associate such as Louis, Kowaii, Win, Rongyi, or SY for follow-up.</li>
+          <li>Vouchers cannot be exchanged for cash and may be changed, paused, or removed by the business.</li>
+        </ul>
+      </section>
+
+      <section class="terms-card" id="privacy">
+        <h2>Privacy & Order Processing</h2>
+        <ul>
+          <li>The website may collect member name, email address, phone number, gender, birthday, delivery address, selected products, payment reference, sales associate code, and order status.</li>
+          <li>Order details may be visible to admin and branch staff so they can accept, decline, pack, ship, and support the order.</li>
+          <li>The AI helper on this website is a guided order assistant for summarising products, delivery, branch selection, and support next steps. Final order decisions are made by admin or branch staff.</li>
+          <li>Customers should not enter sensitive card numbers or banking passwords into the demo payment reference field.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <strong>Breo Malaysia sales concept</strong><br />
+      <span>Terms for product ordering, delivery, branch fulfilment, member vouchers, and customer support.</span>
+    </footer>
+  </body>
+</html>

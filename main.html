@@ -1,0 +1,4703 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breo Malaysia | Portable Massage Technology</title>
+    <script>
+      try {
+        const member = JSON.parse(localStorage.getItem("breoMember") || "null");
+        if (!member?.verified) window.location.replace("index.html");
+      } catch (error) {
+        localStorage.removeItem("breoMember");
+        window.location.replace("index.html");
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --ink: #161815;
+        --muted: #656e66;
+        --paper: #f6f2ea;
+        --panel: #ffffff;
+        --line: #ded8cc;
+        --mint: #eaf3ec;
+        --green: #28654b;
+        --green-dark: #123c2d;
+        --coral: #b98358;
+        --charcoal: #101411;
+        --champagne: #efe4d2;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-weight: 500;
+      }
+
+      body:not(.member-ready) .order-section {
+        min-height: auto;
+      }
+
+      body.member-ready .login-panel {
+        display: none;
+      }
+
+      body.member-ready .order-layout {
+        grid-template-columns: minmax(0, 1fr) 380px;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 16px clamp(18px, 4vw, 56px);
+        background: rgba(246, 242, 234, 0.9);
+        border-bottom: 1px solid rgba(222, 216, 204, 0.9);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand,
+      .site-nav,
+      .hero-actions,
+      .panel-top,
+      .helper-header,
+      .summary-bar {
+        display: flex;
+        align-items: center;
+      }
+
+      .brand {
+        gap: 10px;
+        font-weight: 800;
+        font-size: 1.35rem;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--charcoal), #314339);
+        color: white;
+      }
+
+      .site-nav {
+        gap: clamp(12px, 3vw, 30px);
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 0.92rem;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        gap: 10px;
+      }
+
+      .language-select {
+        min-height: 38px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: white;
+        color: var(--muted);
+        font: inherit;
+        font-size: 0.85rem;
+        font-weight: 800;
+      }
+
+      .member-pill,
+      .status-dot {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: white;
+        color: var(--muted);
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+
+      .hero {
+        position: relative;
+        min-height: min(860px, calc(100svh - 68px));
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.72fr);
+        gap: clamp(28px, 5vw, 72px);
+        align-items: center;
+        padding: clamp(28px, 6vw, 76px);
+        overflow: hidden;
+        background: var(--charcoal);
+        color: white;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(16, 20, 17, 0.9), rgba(16, 20, 17, 0.64), rgba(16, 20, 17, 0.08)),
+          linear-gradient(180deg, rgba(16, 20, 17, 0.06), rgba(16, 20, 17, 0.62));
+      }
+
+      .hero-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.72;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 720px;
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--green);
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.74rem;
+        letter-spacing: 0.08em;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        max-width: 760px;
+        font-weight: 800;
+        font-size: clamp(3.2rem, 7vw, 7.2rem);
+        line-height: 0.9;
+      }
+
+      h2 {
+        font-weight: 800;
+        font-size: clamp(2rem, 4vw, 4rem);
+        line-height: 1;
+      }
+
+      h3,
+      h4 {
+        font-weight: 800;
+        line-height: 1.12;
+      }
+
+      .hero-content p {
+        max-width: 590px;
+        color: rgba(255, 255, 255, 0.74);
+        font-size: 1.1rem;
+        line-height: 1.7;
+      }
+
+      .hero .eyebrow {
+        color: var(--champagne);
+      }
+
+      .hero-product-stage {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 18px;
+        align-self: stretch;
+        align-content: center;
+        min-height: 540px;
+        padding: clamp(20px, 3vw, 34px);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 34px 90px rgba(0, 0, 0, 0.24);
+        backdrop-filter: blur(16px);
+      }
+
+      .hero-product-stage img {
+        width: 100%;
+        max-height: 360px;
+        object-fit: contain;
+        filter: drop-shadow(0 28px 32px rgba(0, 0, 0, 0.36));
+      }
+
+      .hero-product-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .hero-product-row img {
+        height: 92px;
+        padding: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .hero-detail {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.92rem;
+      }
+
+      .hero-detail strong {
+        display: block;
+        color: white;
+        font-size: 1.4rem;
+      }
+
+      .hero-actions {
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 12px 18px;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 0.92rem;
+      }
+
+      .button.primary {
+        background: var(--green);
+        color: white;
+      }
+
+      .button.secondary {
+        border-color: var(--line);
+        background: white;
+        color: var(--ink);
+      }
+
+      .hero .button.secondary {
+        border-color: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      .button.ghost {
+        background: var(--mint);
+        color: var(--green-dark);
+      }
+
+      .member-menu {
+        position: relative;
+      }
+
+      .member-pill {
+        cursor: pointer;
+        max-width: min(34vw, 330px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .member-dropdown {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 10px);
+        z-index: 20;
+        display: none;
+        width: 230px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px;
+        background: white;
+        box-shadow: 0 18px 42px rgba(23, 32, 29, 0.14);
+      }
+
+      .member-dropdown.open {
+        display: grid;
+        gap: 8px;
+      }
+
+      .member-dropdown strong,
+      .member-dropdown span {
+        display: block;
+      }
+
+      .member-dropdown span {
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.35;
+      }
+
+      .button.full {
+        width: 100%;
+      }
+
+      .auth-tabs,
+      .social-login {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .auth-tabs {
+        margin-bottom: 16px;
+      }
+
+      .auth-tabs button.active {
+        border-color: var(--green);
+        background: var(--mint);
+        color: var(--green-dark);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .member-card {
+        display: none;
+        gap: 12px;
+        margin-bottom: 18px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--mint);
+      }
+
+      .member-card strong {
+        font-size: 1.25rem;
+      }
+
+      .member-card span {
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .order-section.member-active .member-card {
+        display: grid;
+      }
+
+      .order-section.member-active .auth-tabs,
+      .order-section.member-active #loginForm,
+      .order-section.member-active #registerForm,
+      .order-section.member-active .divider,
+      .order-section.member-active .social-login,
+      .order-section.member-active .social-note {
+        display: none;
+      }
+
+      .member-note {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
+
+      .verification-note {
+        display: grid;
+        gap: 10px;
+        margin: 16px 0;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfa;
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .verification-note strong {
+        color: var(--ink);
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 16px 0;
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        height: 1px;
+        flex: 1;
+        background: var(--line);
+      }
+
+      .trust-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        background: var(--charcoal);
+        color: white;
+      }
+
+      .trust-strip div {
+        display: grid;
+        gap: 4px;
+        padding: 28px clamp(18px, 5vw, 56px);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        border-right: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .trust-strip strong {
+        color: var(--champagne);
+        font-size: 1.7rem;
+      }
+
+      .trust-strip span {
+        color: rgba(255, 255, 255, 0.68);
+      }
+
+      .voucher-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .voucher-card {
+        display: grid;
+        gap: 12px;
+        min-height: 220px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        background: white;
+        box-shadow: 0 12px 34px rgba(21, 35, 30, 0.06);
+      }
+
+      .voucher-card.featured {
+        background: linear-gradient(135deg, #17201d, #24523f);
+        color: white;
+      }
+
+      .voucher-card.featured p,
+      .voucher-card.featured span {
+        color: rgba(255, 255, 255, 0.74);
+      }
+
+      .voucher-card span {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .voucher-card h3 {
+        margin: 0;
+        font-size: 1.6rem;
+      }
+
+      .voucher-code {
+        width: fit-content;
+        border: 1px dashed currentColor;
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-weight: 800;
+      }
+
+      .promo-modal .modal {
+        width: min(760px, calc(100vw - 32px));
+        padding: 0;
+        overflow: hidden;
+        border-radius: 12px;
+      }
+
+      .promo-modal-card {
+        position: relative;
+        display: grid;
+        background: white;
+      }
+
+      .promo-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        min-height: 0;
+        border: 0;
+        border-radius: 50%;
+        padding: 0;
+        background: #0d1512;
+        color: white;
+        font-size: 1.2rem;
+      }
+
+      .promo-modal-hero {
+        position: relative;
+        display: grid;
+        min-height: 380px;
+        align-items: start;
+        justify-items: center;
+        overflow: hidden;
+        padding: 36px 24px 0;
+        text-align: center;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(241, 232, 211, 0.82)),
+          radial-gradient(circle at 20% 20%, rgba(31, 122, 77, 0.14), transparent 30%);
+      }
+
+      .promo-modal-hero h3 {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        max-width: 590px;
+        color: #4e4438;
+        font-size: clamp(1.7rem, 4vw, 2.6rem);
+        line-height: 1.05;
+      }
+
+      .promo-modal-products {
+        position: absolute;
+        inset: auto 0 0;
+        display: flex;
+        align-items: end;
+        justify-content: center;
+        gap: clamp(6px, 2vw, 18px);
+        padding: 0 28px 20px;
+      }
+
+      .promo-modal-products img {
+        width: min(32%, 180px);
+        max-height: 210px;
+        object-fit: contain;
+        filter: drop-shadow(0 18px 18px rgba(23, 32, 29, 0.18));
+      }
+
+      .promo-modal-products img:nth-child(2) {
+        width: min(42%, 240px);
+      }
+
+      .promo-modal-body {
+        display: grid;
+        gap: 12px;
+        padding: 24px 24px 28px;
+        text-align: center;
+      }
+
+      .promo-modal-body .primary {
+        border-color: #ef7069;
+        background: #ef7069;
+        color: white;
+        min-width: min(320px, 100%);
+      }
+
+      .promo-modal-body p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .promo-modal-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .section,
+      .order-section {
+        padding: clamp(64px, 9vw, 116px) clamp(18px, 4vw, 56px);
+      }
+
+      .section-heading {
+        max-width: 760px;
+        margin-bottom: 34px;
+      }
+
+      .section-heading h2 {
+        max-width: 920px;
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      #products {
+        background: linear-gradient(180deg, #fbfaf7, #f2eadc);
+      }
+
+      .recommendation-shell {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .premium-grid,
+      .use-case-grid,
+      .review-grid,
+      .stock-grid,
+      .rewards-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .premium-card,
+      .use-case-card,
+      .review-card,
+      .stock-card,
+      .reward-card,
+      .recommendation-visual,
+      .quiz-panel,
+      .comparison-wrap,
+      .timeline-panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        background: #fbfcfa;
+        box-shadow: 0 24px 70px rgba(26, 23, 18, 0.08);
+      }
+
+      .premium-card {
+        display: grid;
+        grid-template-rows: 180px auto;
+        gap: 14px;
+        overflow: hidden;
+      }
+
+      .premium-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: contain;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #eef6f1, #fff8ed);
+      }
+
+      .premium-card ul,
+      .use-case-card ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .quiz-panel {
+        display: grid;
+        gap: 16px;
+        background:
+          linear-gradient(135deg, rgba(23, 32, 29, 0.96), rgba(31, 122, 77, 0.9)),
+          linear-gradient(135deg, #17201d, #1f7a4d);
+        color: white;
+      }
+
+      .recommendation-visual {
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        gap: 18px;
+        min-height: 100%;
+        overflow: hidden;
+        text-align: center;
+        background: linear-gradient(135deg, #162019, #385441);
+        color: white;
+      }
+
+      .recommendation-visual img {
+        width: 100%;
+        max-width: 360px;
+        max-height: 340px;
+        object-fit: contain;
+        filter: drop-shadow(0 24px 28px rgba(0, 0, 0, 0.26));
+      }
+
+      .recommendation-visual-copy {
+        display: grid;
+        justify-items: center;
+        gap: 8px;
+        max-width: 460px;
+      }
+
+      .recommendation-image-frame {
+        display: grid;
+        place-items: center;
+        width: min(100%, 460px);
+        min-height: 330px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .recommendation-product-note {
+        max-width: 520px;
+        margin: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+        padding-top: 16px;
+        font-weight: 700;
+      }
+
+      .recommendation-visual h3 {
+        margin-bottom: 8px;
+      }
+
+      .recommendation-visual p,
+      .quiz-step p,
+      .quiz-result p,
+      .quiz-result span {
+        line-height: 1.5;
+      }
+
+      .recommendation-visual p {
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      .quiz-panel p,
+      .quiz-panel label {
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .quiz-step {
+        display: grid;
+        gap: 10px;
+      }
+
+      .quiz-step h3 {
+        margin-bottom: 0;
+        font-size: 1rem;
+      }
+
+      .quiz-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .quiz-options button {
+        min-height: 78px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 800;
+        text-align: left;
+        padding: 12px;
+      }
+
+      .quiz-options button.active {
+        border-color: white;
+        background: white;
+        color: var(--green-dark);
+      }
+
+      .quiz-result {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 10px;
+        align-items: center;
+        border-radius: 8px;
+        padding: 14px;
+        background: white;
+        color: var(--ink);
+      }
+
+      .quiz-result img {
+        width: 92px;
+        height: 92px;
+        border-radius: 8px;
+        object-fit: contain;
+        background: var(--mint);
+      }
+
+      .quiz-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .comparison-wrap {
+        overflow-x: auto;
+      }
+
+      .comparison-table {
+        width: 100%;
+        min-width: 760px;
+        border-collapse: collapse;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        border-bottom: 1px solid var(--line);
+        padding: 14px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .comparison-table th {
+        color: var(--green-dark);
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .review-card {
+        display: grid;
+        gap: 12px;
+      }
+
+      .review-card p {
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .review-card footer {
+        display: grid;
+        gap: 2px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      .review-card footer strong {
+        color: var(--ink);
+      }
+
+      .review-card footer span {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .stock-status-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .stock-status-card {
+        display: grid;
+        gap: 10px;
+        border: 1px solid rgba(111, 77, 50, 0.18);
+        border-radius: 8px;
+        padding: 18px;
+        background: rgba(255, 252, 246, 0.92);
+        box-shadow: 0 18px 55px rgba(26, 23, 18, 0.07);
+      }
+
+      .stock-status-card strong {
+        font-size: 1.25rem;
+      }
+
+      .stock-status-card .stock-label {
+        width: fit-content;
+        border-radius: 999px;
+        padding: 7px 10px;
+        background: var(--mint);
+        color: var(--green-dark);
+        font-weight: 800;
+      }
+
+      .stock-status-card.low .stock-label {
+        background: #fff7e5;
+        color: #8a5a1f;
+      }
+
+      .stars {
+        color: var(--coral);
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+
+      .timeline {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .timeline-step {
+        display: grid;
+        gap: 8px;
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: white;
+      }
+
+      .timeline-step span {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--green);
+        color: white;
+        font-weight: 800;
+      }
+
+      .stock-card strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .stock-pill {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 7px 10px;
+        background: var(--mint);
+        color: var(--green-dark);
+        font-size: 0.82rem;
+        font-weight: 800;
+      }
+
+      .product-card,
+      .login-panel,
+      .checkout-panel,
+      .helper-panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 18px 55px rgba(26, 23, 18, 0.07);
+      }
+
+      .product-card {
+        overflow: hidden;
+        min-height: 390px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .product-photo {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        padding: 22px;
+        object-fit: contain;
+        background: linear-gradient(145deg, #f9f5ee, #e8eee6);
+      }
+
+      .product-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 18px;
+      }
+
+      .product-actions {
+        display: grid;
+        gap: 10px;
+      }
+
+      .product-icon {
+        display: grid;
+        place-items: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 8px;
+        background: #f1eadf;
+        color: var(--green-dark);
+        font-weight: 800;
+      }
+
+      .product-card p,
+      .panel-top p,
+      .helper-header p,
+      .associate-box p,
+      .login-panel label,
+      .branch-options small {
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .price {
+        color: var(--green-dark);
+        font-size: 1.35rem;
+        font-weight: 800;
+      }
+
+      .order-section {
+        background: linear-gradient(180deg, #efe7d8, #e9f1e9);
+      }
+
+      .order-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .checkout-panel {
+        display: none;
+        grid-column: 1;
+      }
+
+      .order-section.member-active .checkout-panel {
+        display: block;
+      }
+
+      .helper-panel {
+        position: sticky;
+        top: 86px;
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        max-height: calc(100vh - 110px);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .helper-panel .helper-log {
+        flex: 1;
+        min-height: 0;
+        max-height: none;
+      }
+
+      .login-panel,
+      .checkout-panel,
+      .helper-panel {
+        padding: 22px;
+      }
+
+      form,
+      .associate-box,
+      .cart-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        font-weight: 700;
+      }
+
+      input[type="text"],
+      input[type="tel"],
+      input[type="number"],
+      input[type="email"],
+      input[type="password"],
+      select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+        background: #fbfcfa;
+        color: var(--ink);
+      }
+
+      .associate-box {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+      }
+
+      .code-toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .panel-top,
+      .summary-bar,
+      .payment-top {
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .cart-list {
+        margin: 22px 0;
+      }
+
+      .cart-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 100px;
+        gap: 14px;
+        align-items: center;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfa;
+      }
+
+      .cart-product {
+        display: grid;
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+      }
+
+      .cart-product img {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+
+      .cart-row strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .cart-row span {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .branch-choice {
+        margin: 22px 0;
+      }
+
+      .branch-options,
+      .payment-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .branch-options label,
+      .payment-options label {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: start;
+        gap: 10px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: white;
+      }
+
+      .branch-options span {
+        display: grid;
+        gap: 4px;
+      }
+
+      .branch-options strong {
+        line-height: 1.2;
+      }
+
+      .branch-options small {
+        display: block;
+        color: var(--muted);
+        font-size: 0.84rem;
+        line-height: 1.35;
+      }
+
+      .payment-panel {
+        display: grid;
+        gap: 16px;
+        margin: 22px 0;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfa;
+      }
+
+      .payment-panel.locked {
+        opacity: 0.62;
+      }
+
+      .order-status-card {
+        display: none;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        background: white;
+        box-shadow: 0 12px 30px rgba(23, 32, 29, 0.06);
+      }
+
+      .order-status-card.show {
+        display: grid;
+        gap: 10px;
+      }
+
+      .order-status-card.accepted {
+        border-color: rgba(31, 122, 77, 0.35);
+        background: #f2fbf5;
+      }
+
+      .order-status-card.declined {
+        border-color: rgba(233, 101, 79, 0.35);
+        background: #fff7f3;
+      }
+
+      .order-status-card.sent,
+      .order-status-card.shipped,
+      .order-status-card.completed {
+        border-color: rgba(31, 122, 77, 0.35);
+        background: #f4faf7;
+      }
+
+      .order-status-card h4,
+      .order-status-card p {
+        margin: 0;
+      }
+
+      .order-status-card small {
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .route-map {
+        display: grid;
+        gap: 12px;
+        margin-top: 8px;
+        padding: 14px;
+        border: 1px solid rgba(31, 122, 77, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .route-visual {
+        position: relative;
+        min-height: 170px;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(135deg, rgba(230, 245, 235, 0.95), rgba(255, 255, 255, 0.75)),
+          repeating-linear-gradient(45deg, transparent 0 18px, rgba(31, 122, 77, 0.08) 18px 20px);
+      }
+
+      .route-visual::before {
+        content: "";
+        position: absolute;
+        left: 21%;
+        right: 21%;
+        top: 52%;
+        border-top: 3px dashed rgba(31, 122, 77, 0.58);
+        transform: rotate(-8deg);
+      }
+
+      .map-pin {
+        position: absolute;
+        display: grid;
+        gap: 4px;
+        width: min(190px, 42%);
+        color: var(--ink);
+      }
+
+      .map-pin::before {
+        content: "";
+        width: 18px;
+        height: 18px;
+        border: 4px solid white;
+        border-radius: 50% 50% 50% 0;
+        background: var(--green);
+        box-shadow: 0 8px 18px rgba(23, 32, 29, 0.18);
+        transform: rotate(-45deg);
+      }
+
+      .map-pin strong,
+      .map-pin span {
+        display: block;
+        padding: 6px 8px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.88);
+      }
+
+      .map-pin span {
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.35;
+      }
+
+      .map-pin.branch {
+        left: 8%;
+        top: 22%;
+      }
+
+      .map-pin.customer {
+        right: 8%;
+        bottom: 16%;
+      }
+
+      .route-meta {
+        display: grid;
+        gap: 6px;
+      }
+
+      .route-map a {
+        width: fit-content;
+        color: var(--green-dark);
+        font-weight: 800;
+        text-decoration: underline;
+      }
+
+      .payment-top {
+        display: flex;
+        align-items: start;
+      }
+
+      .payment-top p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .payment-top span {
+        border-radius: 999px;
+        padding: 7px 10px;
+        background: var(--mint);
+        color: var(--green-dark);
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .delivery-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 12px;
+      }
+
+      .address-field {
+        position: relative;
+      }
+
+      .location-suggestions {
+        display: none;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .location-suggestions.show {
+        display: grid;
+      }
+
+      .location-option {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: white;
+        color: var(--ink);
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .location-option strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .location-option span {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .summary-bar {
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+      }
+
+      .summary-bar span {
+        display: block;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .summary-bar strong {
+        font-size: 2rem;
+      }
+
+      .helper-panel {
+        border: none;
+        background: #f7faf8;
+        overflow: hidden;
+      }
+
+      .helper-panel > .helper-header {
+        margin: -22px -22px 0;
+        padding: 20px 22px 18px;
+        background: linear-gradient(135deg, #11583b 0%, #1f7a4d 60%, #2a9e64 100%);
+        color: white;
+      }
+
+      .helper-panel > .helper-header h3 {
+        color: white;
+        margin: 0 0 2px;
+        font-size: 1rem;
+      }
+
+      .helper-panel > .helper-header p {
+        margin: 0;
+        color: rgba(255,255,255,0.72);
+        font-size: 0.82rem;
+      }
+
+      .helper-avatar {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        border: 2px solid rgba(255,255,255,0.35);
+        color: white;
+        font-weight: 800;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+
+      .helper-avatar::after {
+        content: "";
+        position: absolute;
+        bottom: 1px;
+        right: 1px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #4ade80;
+        border: 2px solid #11583b;
+      }
+
+      .helper-log {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 510px;
+        overflow: auto;
+        padding: 18px 4px 4px;
+        scroll-behavior: smooth;
+      }
+
+      .helper-log::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .helper-log::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .helper-log::-webkit-scrollbar-thumb {
+        background: var(--line);
+        border-radius: 4px;
+      }
+
+      .assistant-message,
+      .user-message {
+        margin: 0;
+        padding: 11px 14px;
+        border-radius: 16px;
+        line-height: 1.55;
+        font-size: 0.9rem;
+        max-width: 88%;
+        word-break: break-word;
+      }
+
+      .assistant-message {
+        background: white;
+        color: #1a3328;
+        border: 1px solid rgba(31,122,77,0.14);
+        border-bottom-left-radius: 4px;
+        align-self: flex-start;
+        box-shadow: 0 1px 4px rgba(23,32,29,0.06);
+      }
+
+      .user-message {
+        background: var(--green);
+        color: white;
+        border-bottom-right-radius: 4px;
+        align-self: flex-end;
+      }
+
+      .helper-chat-form {
+        display: flex;
+        flex-direction: column;
+        flex: 0 0 auto;
+        gap: 10px;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+        background: #f7faf8;
+      }
+
+      .helper-chat-form .chat-input-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .helper-chat-form input {
+        flex: 1;
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 16px;
+        background: white;
+        color: var(--ink);
+        pointer-events: auto;
+        font-size: 0.9rem;
+      }
+
+      .helper-chat-form input:focus {
+        outline: none;
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(31,122,77,0.1);
+      }
+
+      .helper-send-btn {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: 50%;
+        background: var(--green);
+        color: white;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.15s;
+      }
+
+      .helper-send-btn:hover {
+        background: var(--green-dark);
+      }
+
+      .helper-quick-actions,
+      .associate-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .helper-chip,
+      .associate-choice {
+        min-height: 32px;
+        border: 1px solid rgba(31,122,77,0.25);
+        border-radius: 999px;
+        padding: 6px 14px;
+        background: white;
+        color: var(--green-dark);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+        transition: background 0.12s, border-color 0.12s;
+      }
+
+      .helper-chip:hover {
+        background: var(--mint);
+        border-color: var(--green);
+      }
+
+      .associate-name {
+        font-weight: 800;
+        font-size: 0.88rem;
+      }
+
+      .associate-phone {
+        font-size: 0.75rem;
+        color: var(--muted);
+        font-weight: 500;
+        text-decoration: underline;
+      }
+
+      .associate-choice.active {
+        border-color: var(--green);
+        background: var(--green);
+        color: white;
+      }
+
+      .video-guides {
+        display: grid;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .video-guide {
+        display: grid;
+        gap: 4px;
+        border: 1px solid rgba(31, 122, 77, 0.18);
+        border-radius: 8px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.74);
+      }
+
+      .video-guide a {
+        color: var(--green-dark);
+        font-weight: 800;
+        text-decoration: underline;
+      }
+
+      .associate-form {
+        display: grid;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .site-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 26px clamp(18px, 4vw, 56px);
+        background: var(--ink);
+        color: white;
+      }
+
+      .site-footer div {
+        display: grid;
+        gap: 4px;
+      }
+
+      .site-footer span {
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 12px;
+      }
+
+      .footer-links a {
+        color: white;
+        font-weight: 800;
+        text-decoration: underline;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: none;
+        place-items: center;
+        padding: 18px;
+        background: rgba(23, 32, 29, 0.58);
+      }
+
+      .modal-backdrop.open {
+        display: grid;
+      }
+
+      .modal {
+        width: min(560px, 100%);
+        max-height: 90vh;
+        overflow: auto;
+        border-radius: 12px;
+        background: white;
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.25);
+      }
+
+      .modal-header,
+      .modal-body,
+      .modal-actions {
+        padding: 20px;
+      }
+
+      .modal-header {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .modal-header h3 {
+        margin: 0 0 6px;
+      }
+
+      .modal-header p,
+      .modal-body p {
+        margin-bottom: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .review-box {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfa;
+        line-height: 1.5;
+      }
+
+      .payment-fields {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        border-top: 1px solid var(--line);
+      }
+
+      body {
+        background:
+          linear-gradient(180deg, #f8f1e6 0%, #efe0cc 42%, #f4f0e8 100%);
+      }
+
+      .site-header {
+        background: rgba(29, 20, 14, 0.88);
+        border-bottom-color: rgba(222, 190, 142, 0.22);
+        color: white;
+      }
+
+      .site-nav,
+      .member-pill {
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      .site-header .member-pill {
+        min-width: 132px;
+        max-width: min(42vw, 360px);
+        border-color: rgba(213, 183, 125, 0.38);
+        background: rgba(255, 250, 241, 0.14);
+        color: #fff7e8;
+        text-align: left;
+      }
+
+      .site-header .member-pill:empty::after {
+        content: "Member";
+      }
+
+      .brand-mark {
+        background: linear-gradient(135deg, #d5b77d, #6d4428);
+        color: #1b120d;
+      }
+
+      .hero {
+        background:
+          linear-gradient(110deg, rgba(26, 17, 11, 0.94), rgba(88, 56, 34, 0.74)),
+          repeating-linear-gradient(90deg, #4b2f1e 0 26px, #5b3a25 26px 52px, #3d2619 52px 78px);
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent 24%, rgba(255, 255, 255, 0.04) 54%, transparent),
+          radial-gradient(circle at 76% 16%, rgba(235, 203, 151, 0.25), transparent 26%);
+        mix-blend-mode: screen;
+        pointer-events: none;
+      }
+
+      .hero::after {
+        background:
+          linear-gradient(90deg, rgba(20, 13, 9, 0.9), rgba(20, 13, 9, 0.56), rgba(20, 13, 9, 0.18)),
+          linear-gradient(180deg, rgba(20, 13, 9, 0.02), rgba(20, 13, 9, 0.62));
+      }
+
+      .hero-image {
+        opacity: 0.36;
+        mix-blend-mode: soft-light;
+      }
+
+      .hero-product-stage {
+        border-color: rgba(235, 203, 151, 0.26);
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.04)),
+          linear-gradient(180deg, rgba(93, 59, 37, 0.44), rgba(22, 14, 10, 0.34));
+        box-shadow: 0 42px 110px rgba(0, 0, 0, 0.34);
+      }
+
+      .hero-product-row img,
+      .hero-product-stage img {
+        filter: drop-shadow(0 30px 36px rgba(0, 0, 0, 0.42));
+      }
+
+      .hero .eyebrow,
+      .trust-strip strong,
+      .eyebrow {
+        color: #c9a66b;
+      }
+
+      .button.primary {
+        background: linear-gradient(135deg, #20392e, #6b4429);
+        box-shadow: 0 14px 34px rgba(45, 30, 20, 0.18);
+      }
+
+      .trust-strip {
+        background:
+          linear-gradient(135deg, #1d140f, #4f3321),
+          repeating-linear-gradient(90deg, #4b2f1e 0 24px, #5a3924 24px 48px);
+      }
+
+      #products {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(239, 224, 204, 0.88)),
+          repeating-linear-gradient(90deg, rgba(117, 77, 48, 0.08) 0 34px, rgba(255, 255, 255, 0.05) 34px 68px);
+      }
+
+      .product-card,
+      .voucher-card,
+      .login-panel,
+      .checkout-panel,
+      .helper-panel,
+      .recommendation-visual,
+      .quiz-panel {
+        border-color: rgba(111, 77, 50, 0.18);
+        background: rgba(255, 252, 246, 0.92);
+        box-shadow: 0 28px 80px rgba(78, 52, 32, 0.12);
+      }
+
+      .product-photo {
+        background:
+          linear-gradient(145deg, #fff9ef, #e8d4b7),
+          repeating-linear-gradient(90deg, rgba(117, 77, 48, 0.12) 0 18px, rgba(255, 255, 255, 0.1) 18px 36px);
+      }
+
+      .product-icon {
+        background: #ead7b9;
+        color: #4f3321;
+      }
+
+      .recommendation-section {
+        background: linear-gradient(180deg, #221711, #3f291b);
+        color: white;
+      }
+
+      .recommendation-section .section-heading p,
+      .recommendation-section .section-heading h2 {
+        color: white;
+      }
+
+      .recommendation-visual {
+        background:
+          linear-gradient(145deg, rgba(31, 57, 46, 0.96), rgba(89, 57, 34, 0.94)),
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 24px, transparent 24px 48px);
+      }
+
+      .quiz-panel {
+        background: rgba(255, 250, 241, 0.94);
+        color: var(--ink);
+      }
+
+      .quiz-panel p,
+      .quiz-panel label {
+        color: var(--muted);
+      }
+
+      .quiz-options button {
+        border-color: rgba(111, 77, 50, 0.18);
+        background: rgba(255, 255, 255, 0.84);
+        color: var(--ink);
+      }
+
+      .quiz-options button.active {
+        border-color: #6b4429;
+        background: #ead7b9;
+      }
+
+      #vouchers {
+        background: #f8f1e6;
+      }
+
+      .voucher-card.featured {
+        background:
+          linear-gradient(135deg, #1d140f, #5e3c25),
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 18px, transparent 18px 36px);
+      }
+
+      .order-section {
+        background:
+          linear-gradient(180deg, #ead9bf, #edf1e7),
+          repeating-linear-gradient(90deg, rgba(90, 57, 36, 0.08) 0 30px, rgba(255, 255, 255, 0.08) 30px 60px);
+      }
+
+      .floating-helper {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 45;
+        width: min(390px, calc(100vw - 36px));
+        border: 1px solid rgba(111, 77, 50, 0.24);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(255, 250, 241, 0.97);
+        box-shadow: 0 26px 80px rgba(40, 25, 16, 0.28);
+        backdrop-filter: blur(18px);
+      }
+
+      .floating-helper.minimized .floating-helper-body {
+        display: none;
+      }
+
+      .floating-helper-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        background: linear-gradient(135deg, #1d140f, #5e3c25);
+        color: white;
+      }
+
+      .floating-helper-header strong {
+        display: block;
+      }
+
+      .floating-helper-header span {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.82rem;
+      }
+
+      .floating-helper-toggle {
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .floating-helper-body {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .floating-helper-log {
+        display: grid;
+        gap: 8px;
+        max-height: 200px;
+        overflow: auto;
+      }
+
+      .floating-helper-bubble {
+        margin: 0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        background: #f0dfc3;
+        color: var(--ink);
+        font-size: 0.9rem;
+        line-height: 1.45;
+      }
+
+      .floating-helper-bubble.user {
+        justify-self: end;
+        background: var(--green-dark);
+        color: white;
+      }
+
+      .floating-helper-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .floating-helper-chip {
+        border: 1px solid rgba(111, 77, 50, 0.22);
+        border-radius: 999px;
+        padding: 8px 10px;
+        background: white;
+        color: #4f3321;
+        cursor: pointer;
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+
+      .floating-helper-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+      }
+
+      .floating-helper-form input {
+        min-height: 42px;
+      }
+
+      @media (max-width: 1120px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-product-stage {
+          min-height: 420px;
+        }
+
+        .product-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .order-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .checkout-panel,
+        .helper-panel {
+          grid-column: 1;
+        }
+
+        .helper-panel {
+          position: static;
+          grid-row: auto;
+          max-height: none;
+          display: block;
+        }
+
+        .helper-panel .helper-log {
+          flex: none;
+          max-height: 520px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .site-header,
+        .site-footer {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .header-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .site-header .member-menu,
+        .site-header .member-pill {
+          width: 100%;
+        }
+
+        .hero {
+          min-height: auto;
+          align-items: end;
+          padding-top: 56px;
+        }
+
+        .hero::after {
+          background: linear-gradient(180deg, rgba(16, 20, 17, 0.42), rgba(16, 20, 17, 0.92));
+        }
+
+        .hero-product-stage {
+          min-height: 0;
+          padding: 16px;
+        }
+
+        .hero-product-stage > img {
+          max-height: 240px;
+        }
+
+        .hero-product-row img {
+          height: 74px;
+        }
+
+        .hero-detail {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .floating-helper {
+          right: 12px;
+          bottom: 12px;
+          width: calc(100vw - 24px);
+        }
+
+        .trust-strip,
+        .voucher-grid,
+        .recommendation-shell,
+        .premium-grid,
+        .use-case-grid,
+        .review-grid,
+        .stock-status-grid,
+        .stock-grid,
+        .rewards-grid,
+        .quiz-options,
+        .timeline,
+        .product-grid,
+        .order-layout,
+        .branch-options,
+        .payment-options,
+        .delivery-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .panel-top,
+        .summary-bar {
+          align-items: stretch;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Breo home">
+        <span class="brand-mark">b</span>
+        <span>Breo</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#products">Products</a>
+        <a href="#recommendation">Quiz</a>
+        <a href="#vouchers">Vouchers</a>
+        <a href="rewards.html">Rewards</a>
+        <a href="#order">Order</a>
+        <a href="#branches">Branches</a>
+        <a href="track-order.html">Track order</a>
+        <a href="terms.html">Terms</a>
+      </nav>
+      <div class="header-actions">
+        <select class="language-select" id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+        </select>
+        <div class="member-menu">
+          <button class="member-pill" id="memberStatus" type="button">Guest</button>
+          <div class="member-dropdown" id="memberDropdown">
+            <div>
+              <strong id="memberMenuName">Guest</strong>
+              <span id="memberMenuDetails">Login to manage your Breo member account.</span>
+            </div>
+            <button class="button secondary full" id="memberSettingsButton" type="button">Settings</button>
+            <button class="button ghost full" id="memberMenuLogout" type="button">Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <img class="hero-image" src="assets/breo-hero.png" alt="Breo massage gun and portable massage products" />
+        <div class="hero-content">
+          <p class="eyebrow">Breo Malaysia wellness atelier</p>
+          <h1 id="hero-title">Quiet recovery devices for modern routines.</h1>
+          <p>
+            Explore heat, pressure, percussion, and travel-ready care in a calmer shopping flow built for Malaysian members, branch fulfilment, and guided product matching.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#products">Explore the collection</a>
+            <a class="button secondary" href="#recommendation">Find your match</a>
+          </div>
+        </div>
+        <aside class="hero-product-stage" aria-label="Breo featured collection">
+          <img src="assets/massage-gun.png" alt="Breo Massage Gun Pro" />
+          <div class="hero-product-row" aria-label="Breo product range">
+            <img src="assets/neck-massager.png" alt="Breo Neck Massager" />
+            <img src="assets/eye-massager.png" alt="Breo Eye Massager" />
+            <img src="assets/mini-handheld.png" alt="Breo Mini Handheld" />
+          </div>
+          <div class="hero-detail">
+            <span><strong>4</strong> curated care devices</span>
+            <span>From RM 299</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="trust-strip" aria-label="Breo service highlights">
+        <div><strong>2</strong><span>Fulfilment branches</span></div>
+        <div><strong>AI</strong><span>Guided order helper</span></div>
+        <div><strong>MYR</strong><span>Local checkout estimate</span></div>
+      </section>
+
+      <section class="section" id="products">
+        <div class="section-heading">
+          <p class="eyebrow">Featured collection</p>
+          <h2>Massage care presented like a boutique range, not a crowded catalogue.</h2>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+      </section>
+
+      <section class="section" id="stock-status">
+        <div class="section-heading">
+          <p class="eyebrow">Branch stock status</p>
+          <h2>Operational branch stock visibility before checkout.</h2>
+        </div>
+        <div class="stock-status-grid">
+          <article class="stock-status-card">
+            <span class="stock-label">In stock</span>
+            <strong>Bukit Jalil: In stock</strong>
+            <p>Ready for KL south fulfilment, pickup coordination, and branch packing.</p>
+          </article>
+          <article class="stock-status-card low">
+            <span class="stock-label">Low stock</span>
+            <strong>1U: Low stock</strong>
+            <p>Available for PJ and Damansara routes, but branch confirmation is recommended before payment.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section recommendation-section" id="recommendation">
+        <div class="section-heading">
+          <p class="eyebrow">Product recommendation quiz</p>
+          <h2>Find the Breo device that fits your day.</h2>
+        </div>
+        <div class="recommendation-shell">
+          <aside class="recommendation-visual" aria-label="Recommended Breo product preview">
+            <div class="recommendation-visual-copy">
+              <p class="eyebrow">Current match</p>
+              <h3 id="quizPreviewName">Answer the quiz to reveal your match.</h3>
+            </div>
+            <div class="recommendation-image-frame">
+              <img id="quizPreviewImage" src="assets/neck-massager.png" alt="Recommended Breo product" loading="lazy" />
+            </div>
+            <p class="recommendation-product-note" id="quizPreviewText">Choose your main concern, routine, and budget. The result can be added straight into the member order builder.</p>
+          </aside>
+          <div class="quiz-panel" id="recommendationQuiz" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="section" id="reviews">
+        <div class="section-heading">
+          <p class="eyebrow">Customer reviews</p>
+          <h2>Member feedback from everyday recovery routines.</h2>
+        </div>
+        <div class="review-grid">
+          <article class="review-card">
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p>The neck massager became part of my workday. The heat feels calm, and the member checkout made it easy to pick the right branch.</p>
+            <footer>
+              <strong>Amelia Tan</strong>
+              <span>Desk worker, Kuala Lumpur</span>
+            </footer>
+          </article>
+          <article class="review-card">
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p>I used the quiz for a gift and it recommended the Mini Handheld. It looked premium, was simple to explain, and felt practical for travel.</p>
+            <footer>
+              <strong>Jason Lim</strong>
+              <span>Gift buyer, Petaling Jaya</span>
+            </footer>
+          </article>
+          <article class="review-card">
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p>The massage gun feels powerful without looking too clinical. The helper guided me through quantity, payment, and delivery step by step.</p>
+            <footer>
+              <strong>Nadia Rahman</strong>
+              <span>Fitness routine, Bukit Jalil</span>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="vouchers">
+        <div class="section-heading">
+          <p class="eyebrow">Member vouchers</p>
+          <h2>Rewards saved for your next Breo checkout.</h2>
+        </div>
+        <div class="voucher-grid">
+          <article class="voucher-card featured">
+            <span id="voucherPrimaryLabel">New customer</span>
+            <h3 id="voucherPrimaryTitle">10% off first member order</h3>
+            <p id="voucherPrimaryText">Use this welcome reward when you checkout as a verified Breo member.</p>
+            <div class="voucher-code" id="voucherPrimaryCode">WELCOME10</div>
+            <button class="button secondary" id="copyVoucherButton" type="button">Copy voucher</button>
+            <button class="button secondary" id="showVoucherPopup" type="button">Show voucher popup</button>
+            <a class="button secondary" href="rewards.html">Open rewards page</a>
+          </article>
+          <article class="voucher-card">
+            <span>Bundle care</span>
+            <h3>Free branch care check</h3>
+            <p>Ask the AI helper to include a product care note when the branch prepares your order.</p>
+            <div class="voucher-code">CARE-CHECK</div>
+          </article>
+          <article class="voucher-card">
+            <span>Pickup friendly</span>
+            <h3>Priority pickup coordination</h3>
+            <p>For Bukit Jalil or 1U pickup, the branch dashboard keeps your status visible to staff.</p>
+            <div class="voucher-code">BRANCH-PICKUP</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="order-section" id="order">
+        <div class="section-heading">
+          <p class="eyebrow">Member concierge checkout</p>
+          <h2>When you are ready, login and let the order helper prepare the branch ticket.</h2>
+        </div>
+
+        <div class="order-layout">
+          <aside class="login-panel" aria-labelledby="login-title">
+            <h3 id="login-title">Member Access</h3>
+            <div class="member-card" id="memberCard">
+              <span>Logged in member</span>
+              <strong id="memberCardName">Guest</strong>
+              <span id="memberCardDetails">Verify your email to continue.</span>
+            </div>
+            <div class="auth-tabs" role="tablist" aria-label="Member access type">
+              <button class="button secondary active" id="showLogin" type="button">Login</button>
+              <button class="button secondary" id="showRegister" type="button">Create member</button>
+            </div>
+
+            <form id="loginForm">
+              <p class="member-note">Enter your email and password. Firebase will only unlock ordering after the email inbox verification link is completed.</p>
+              <label>Email address <input id="loginEmail" type="email" placeholder="member@email.com" autocomplete="email" required /></label>
+              <label>Password <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required /></label>
+              <label>Phone number <input id="loginPhone" type="tel" placeholder="+60... optional" autocomplete="tel" /></label>
+              <button class="button primary full" type="submit">Verify email & login</button>
+              <div class="verification-note hidden" id="postRegisterNotice">
+                <strong>Please check your email inbox.</strong>
+                <span>Your Breo member account was created. Click the Firebase verification link in your inbox, then return here and login with the same email address and password.</span>
+              </div>
+            </form>
+
+            <form class="hidden" id="registerForm">
+              <p class="member-note">New customer? Create a Breo member profile before ordering.</p>
+              <label>First name <input id="firstName" type="text" placeholder="First name" autocomplete="given-name" required /></label>
+              <label>Last name <input id="lastName" type="text" placeholder="Last name" autocomplete="family-name" required /></label>
+              <label>Email address <input id="registerEmail" type="email" placeholder="customer@email.com" autocomplete="email" required /></label>
+              <label>Password <input id="registerPassword" type="password" placeholder="At least 6 characters" autocomplete="new-password" minlength="6" required /></label>
+              <label>Phone number <input id="registerPhone" type="tel" placeholder="+60..." autocomplete="tel" required /></label>
+              <label>Birthday <input id="birthday" type="date" autocomplete="bday" required /></label>
+              <label>
+                Gender
+                <select id="gender" required>
+                  <option value="">Select gender</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Non-binary">Non-binary</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </label>
+              <button class="button primary full" type="submit">Create member & send verification email</button>
+            </form>
+
+            <div class="verification-note" id="verificationNote">
+              <strong>Email verification is not connected yet.</strong>
+              <span>Paste your Firebase web config into <code>firebaseConfig</code> in this file to send real verification emails.</span>
+              <button class="button secondary full hidden" id="resendVerification" type="button">Resend verification email</button>
+              <button class="button secondary full hidden" id="refreshVerification" type="button">I verified my email</button>
+            </div>
+
+            <div class="divider">or connect</div>
+            <div class="social-login">
+              <button class="button secondary" id="googleLogin" type="button">Google</button>
+              <button class="button secondary" id="appleLogin" type="button">Apple</button>
+            </div>
+            <p class="member-note social-note">Google and Apple are demo sign-ins here. A real website would connect them to Firebase, OAuth, or your membership backend.</p>
+
+            <button class="button ghost full" id="logoutButton" type="button">Logout</button>
+
+            <div class="associate-box">
+              <div>
+                <h4>Sales associate code</h4>
+                <p>Members can enter a code, or skip if they do not have one.</p>
+              </div>
+              <label class="code-toggle"><input id="hasCode" type="checkbox" /> I have a code</label>
+              <input id="associateCode" type="text" placeholder="Example: 0000 for Kowaii" disabled />
+              <button class="button secondary full" id="skipCode" type="button">Skip code</button>
+            </div>
+          </aside>
+
+          <section class="checkout-panel" aria-labelledby="checkout-title">
+            <div class="panel-top">
+              <div>
+                <h3 id="checkout-title">Order Builder</h3>
+                <p>Select product quantities before asking the helper to process the order.</p>
+              </div>
+              <span class="status-dot" id="flowStatus">Waiting for login</span>
+            </div>
+
+            <div class="cart-list" id="cartList"></div>
+
+            <div class="branch-choice" id="branches">
+              <h4>Ship from branch</h4>
+              <div class="branch-options">
+                <label>
+                  <input type="radio" name="branch" value="Bukit Jalil" checked />
+                  <span><strong>Bukit Jalil</strong><small>Best for KL south and pickup coordination.</small></span>
+                </label>
+                <label>
+                  <input type="radio" name="branch" value="1 Utama" />
+                  <span><strong>1U / 1 Utama</strong><small>Best for PJ, Damansara, and north Klang Valley.</small></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="payment-panel locked" id="paymentPanel" aria-labelledby="payment-title">
+              <div class="payment-top">
+                <div>
+                  <h4 id="payment-title">Payment & delivery</h4>
+                  <p>Unlocks after the AI helper prepares the order ticket.</p>
+                </div>
+                <span id="paymentStatus">Locked</span>
+              </div>
+              <div class="payment-options" role="radiogroup" aria-label="Payment method">
+                <label><input type="radio" name="payment" value="Credit / Debit Card" checked /> <span>Credit / Debit Card</span></label>
+                <label><input type="radio" name="payment" value="E-Wallet" /> <span>E-Wallet</span></label>
+                <label><input type="radio" name="payment" value="Atome Installments" /> <span>Atome Installments</span></label>
+              </div>
+              <div class="delivery-grid">
+                <label class="address-field">
+                  Delivery address
+                  <input id="deliveryAddress" type="text" placeholder="Type area or address, example: Puchong" disabled />
+                  <div class="location-suggestions" id="locationSuggestions"></div>
+                </label>
+                <label>Delivery note <input id="deliveryNote" type="text" placeholder="Condo, pickup time, receiver name..." disabled /></label>
+              </div>
+              <button class="button secondary full" id="confirmPayment" type="button" disabled>Connect payment & send to branch</button>
+            </div>
+
+            <div class="order-status-card" id="customerOrderStatus" aria-live="polite"></div>
+
+            <div class="summary-bar">
+              <div>
+                <span>Estimated total</span>
+                <strong id="orderTotal">RM 0</strong>
+              </div>
+              <button class="button primary" id="processOrder" type="button">Ask AI helper</button>
+            </div>
+          </section>
+
+          <section class="helper-panel" aria-labelledby="helper-title">
+            <div class="helper-header">
+              <div class="helper-avatar">AI</div>
+              <div>
+                <h3 id="helper-title">Breo Order Helper</h3>
+                <p>Online &amp; ready to help</p>
+              </div>
+            </div>
+            <div class="helper-log" id="helperLog" aria-live="polite">
+              <p class="assistant-message">Hi, I can prepare a Breo order after the member logs in, chooses products, and confirms whether there is a sales associate code.</p>
+            </div>
+            <form class="helper-chat-form" id="helperChatForm">
+              <div class="helper-quick-actions" aria-label="Helper suggestions">
+                <button class="helper-chip" type="button" data-helper-prompt="How do I use the massage gun?">&#127299; Massage gun</button>
+                <button class="helper-chip" type="button" data-helper-prompt="How do I use the neck massager?">&#129707; Neck massager</button>
+                <button class="helper-chip" type="button" data-helper-prompt="Can I contact a real person?">&#128172; Talk to sales</button>
+              </div>
+              <div class="chat-input-row">
+                <input id="helperInput" type="text" placeholder="Ask anything about your order…" autocomplete="off" />
+                <button class="helper-send-btn" type="submit" aria-label="Send message">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>Breo Malaysia sales concept</strong>
+        <span>Massage guns, neck massagers, eye care, and portable recovery products.</span>
+      </div>
+      <nav class="footer-links" aria-label="Legal links">
+        <a href="terms.html">Terms & Conditions</a>
+        <a href="terms.html#delivery">Delivery Terms</a>
+        <a href="terms.html#products">Product Conditions</a>
+      </nav>
+    </footer>
+
+    <aside class="floating-helper" id="globalHelper" aria-label="Breo AI shopping helper">
+      <div class="floating-helper-header">
+        <div>
+          <strong>AI Breo Helper</strong>
+          <span>Ask while you choose or type</span>
+        </div>
+        <button class="floating-helper-toggle" id="globalHelperToggle" type="button" aria-label="Minimize helper">-</button>
+      </div>
+      <div class="floating-helper-body">
+        <div class="floating-helper-log" id="globalHelperLog" aria-live="polite">
+          <p class="floating-helper-bubble">I stay with you across the page. Ask me before choosing a product, quiz answer, branch, quantity, payment, or delivery detail.</p>
+        </div>
+        <div class="floating-helper-chips">
+          <button class="floating-helper-chip" type="button" data-global-help="products">Products</button>
+          <button class="floating-helper-chip" type="button" data-global-help="quiz">Quiz</button>
+          <button class="floating-helper-chip" type="button" data-global-help="checkout">Checkout</button>
+          <button class="floating-helper-chip" type="button" data-global-help="delivery">Delivery</button>
+        </div>
+        <form class="floating-helper-form" id="globalHelperForm">
+          <input id="globalHelperInput" type="text" placeholder="Ask the helper..." autocomplete="off" />
+          <button class="button primary" type="submit">Send</button>
+        </form>
+      </div>
+    </aside>
+
+    <div class="modal-backdrop promo-modal" id="promoModal" role="dialog" aria-modal="true" aria-labelledby="promoModalTitle">
+      <div class="modal">
+        <div class="promo-modal-card">
+          <button class="promo-close" id="closePromoModal" type="button" aria-label="Close promo">×</button>
+          <div class="promo-modal-hero">
+            <h3 id="promoModalTitle">Hello, New Customer! Enjoy 10% off with code WELCOME10.</h3>
+            <div class="promo-modal-products" aria-hidden="true">
+              <img src="assets/neck-massager.png" alt="" />
+              <img src="assets/massage-gun.png" alt="" />
+              <img src="assets/eye-massager.png" alt="" />
+            </div>
+          </div>
+          <div class="promo-modal-body">
+            <p id="promoModalText">Your voucher is saved in the member vouchers page if you close this popup.</p>
+            <div class="promo-modal-actions">
+              <button class="button primary" id="copyPromoCode" type="button">Copy Code: WELCOME10</button>
+              <a class="button secondary" href="#vouchers" id="viewVouchersLink">View vouchers</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="orderConfirmModal" role="dialog" aria-modal="true" aria-labelledby="orderConfirmTitle">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="orderConfirmTitle">Are you sure this is your order?</h3>
+          <p>Please review the products, branch, payment method, and delivery address before continuing.</p>
+        </div>
+        <div class="modal-body">
+          <div class="review-box" id="orderReview"></div>
+        </div>
+        <div class="modal-actions">
+          <button class="button secondary" id="editOrderButton" type="button">Edit order</button>
+          <button class="button primary" id="continuePaymentButton" type="button">Yes, continue to payment</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="paymentModalTitle">Connect payment</h3>
+          <p>This demo simulates a payment popup for card, e-wallet, or Atome.</p>
+        </div>
+        <div class="modal-body">
+          <div class="review-box" id="paymentReview"></div>
+          <div class="payment-fields">
+            <label>
+              Card / wallet reference
+              <input id="paymentReference" type="text" placeholder="Last 4 digits, wallet name, or Atome reference" />
+            </label>
+            <label>
+              Customer email for receipt
+              <input id="paymentEmail" type="text" placeholder="customer@email.com" />
+            </label>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="button secondary" id="backToReviewButton" type="button">Back</button>
+          <button class="button primary" id="completePaymentButton" type="button">Complete payment</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const products = [
+        { id: "mg-pro", code: "BREO-MG-PRO", name: "Breo Massage Gun Pro", description: "Deep muscle recovery with quiet percussion settings.", price: 699, icon: "MG", image: "assets/massage-gun.png" },
+        { id: "neck-relax", code: "BREO-NECK-HEAT", name: "Breo Neck Massager", description: "Portable heat and pulse care for desk workers and drivers.", price: 429, icon: "N", image: "assets/neck-massager.png" },
+        { id: "eye-comfort", code: "BREO-EYE-FOLD", name: "Breo Eye Massager", description: "Foldable eye relaxation with gentle warmth and pressure.", price: 389, icon: "E", image: "assets/eye-massager.png" },
+        { id: "mini-care", code: "BREO-MINI-CARE", name: "Breo Mini Handheld", description: "Compact daily relief for travel, gifting, and quick care.", price: 299, icon: "M", image: "assets/mini-handheld.png" },
+      ];
+
+      const quizQuestions = [
+        {
+          id: "need",
+          title: "What needs relief first?",
+          prompt: "Pick the area that bothers you most often.",
+          options: [
+            { label: "Deep muscle soreness", scores: { "mg-pro": 8, "mini-care": 1 } },
+            { label: "Neck and shoulder tension", scores: { "neck-relax": 8, "mini-care": 1 } },
+            { label: "Tired eyes and screen fatigue", scores: { "eye-comfort": 8 } },
+            { label: "Quick all-round comfort", scores: { "mini-care": 8, "neck-relax": 1 } },
+          ],
+        },
+        {
+          id: "routine",
+          title: "Where will you use it most?",
+          prompt: "Your routine helps us choose the right size and care mode.",
+          options: [
+            { label: "After workouts", scores: { "mg-pro": 3, "mini-care": 1 } },
+            { label: "Desk or driving breaks", scores: { "neck-relax": 3, "eye-comfort": 1 } },
+            { label: "Before sleep", scores: { "eye-comfort": 3, "neck-relax": 1 } },
+            { label: "Travel and gifting", scores: { "mini-care": 3, "eye-comfort": 1 } },
+          ],
+        },
+        {
+          id: "budget",
+          title: "What budget feels right?",
+          prompt: "We keep the recommendation practical for checkout.",
+          options: [
+            { label: "Best performance", scores: { "mg-pro": 3, "neck-relax": 1 } },
+            { label: "Balanced daily care", scores: { "neck-relax": 2, "eye-comfort": 2 } },
+            { label: "Compact value", scores: { "mini-care": 4 } },
+            { label: "Gift-ready comfort", scores: { "eye-comfort": 2, "mini-care": 2 } },
+          ],
+        },
+      ];
+
+      const quizReasons = {
+        "mg-pro": "Best for customers who want stronger percussion and deeper recovery after workouts or long standing days.",
+        "neck-relax": "Best for desk workers, drivers, and customers who want targeted neck comfort with gentle heat.",
+        "eye-comfort": "Best for screen-heavy routines, bedtime relaxation, and customers who want soft pressure around the eyes.",
+        "mini-care": "Best for quick daily relief, travel, gifting, and customers who want the most compact Breo option.",
+      };
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCjybi81PE45GUROrLoJ_1jiw9AGAh1NO0",
+        authDomain: "breo-5e8f7.firebaseapp.com",
+        projectId: "breo-5e8f7",
+        storageBucket: "breo-5e8f7.firebasestorage.app",
+        messagingSenderId: "875116064178",
+        appId: "1:875116064178:web:5bafddb2b4fe4f3e2f08ab",
+        measurementId: "G-DRL2NMCLKV",
+      };
+
+      let firebaseAuth = null;
+      let firebaseFns = null;
+      let firestoreDb = null;
+      let firestoreFns = null;
+      let customerOrderUnsubscribe = null;
+      let localStatusTimer = null;
+      let latestCloudCustomerOrder = null;
+      let lastCustomerStatusNotice = "";
+      let promoOpenTimer = null;
+
+      const demoMembers = [
+        {
+          firstName: "Alicia",
+          lastName: "Tan",
+          email: "alicia@breomember.com",
+          phone: "+60128889999",
+          birthday: "1998-01-01",
+          gender: "Female",
+          provider: "Email",
+          joinedAt: "2026-05-17T00:00:00.000Z",
+        },
+        {
+          firstName: "Demo",
+          lastName: "Member",
+          email: "member@breo.com",
+          phone: "+60123456789",
+          birthday: "1999-01-01",
+          gender: "Prefer not to say",
+          provider: "Email",
+          joinedAt: "2026-05-17T00:00:00.000Z",
+        },
+      ];
+
+      const deliveryLocations = [
+        {
+          area: "Puchong",
+          address: "IOI Mall Puchong, Bandar Puchong Jaya, 47170 Puchong, Selangor",
+          branch: "Bukit Jalil",
+        },
+        {
+          area: "Puchong",
+          address: "SetiaWalk Puchong, Persiaran Wawasan, Pusat Bandar Puchong, 47160 Puchong, Selangor",
+          branch: "Bukit Jalil",
+        },
+        {
+          area: "Puchong",
+          address: "Taman Kinrara, 47180 Puchong, Selangor",
+          branch: "Bukit Jalil",
+        },
+        {
+          area: "Bukit Jalil",
+          address: "Pavilion Bukit Jalil, Persiaran Jalil 8, Bukit Jalil, 57000 Kuala Lumpur",
+          branch: "Bukit Jalil",
+        },
+        {
+          area: "Sri Petaling",
+          address: "Sri Petaling, 57000 Kuala Lumpur",
+          branch: "Bukit Jalil",
+        },
+        {
+          area: "1 Utama",
+          address: "1 Utama Shopping Centre, Bandar Utama, 47800 Petaling Jaya, Selangor",
+          branch: "1 Utama",
+        },
+        {
+          area: "Damansara",
+          address: "Damansara Utama, 47400 Petaling Jaya, Selangor",
+          branch: "1 Utama",
+        },
+        {
+          area: "Subang Jaya",
+          address: "SS15 Subang Jaya, 47500 Subang Jaya, Selangor",
+          branch: "1 Utama",
+        },
+      ];
+
+      const branchLocations = {
+        "Bukit Jalil": "Pavilion Bukit Jalil, Persiaran Jalil 8, Bukit Jalil, 57000 Kuala Lumpur",
+        "1 Utama": "1 Utama Shopping Centre, Bandar Utama, 47800 Petaling Jaya, Selangor",
+      };
+
+      const salesAssociates = [
+        { name: "Louis", phone: "+60 12 3456 7891" },
+        { name: "Kowaii", phone: "+60 12 3456 7892" },
+        { name: "Win", phone: "+60 12 3456 7893" },
+        { name: "Rongyi", phone: "+60 12 3456 7894" },
+        { name: "SY", phone: "+60 12 3456 7895" },
+      ];
+
+      const salesAssociateCodes = {
+        "0000": "Kowaii",
+        "1111": "Louis",
+        "2222": "Win",
+        "3333": "Rongyi",
+        "4444": "SY",
+      };
+
+      const salesAssociateDisplayNames = {
+        "0000": "Kowaii Kok Xin Ning",
+        "1111": "Louis",
+        "2222": "Win",
+        "3333": "Rongyi",
+        "4444": "SY",
+      };
+
+      const productGuides = [
+        {
+          keywords: ["massage gun", "gun", "percussion", "muscle"],
+          title: "Breo Massage Gun Pro",
+          steps: "Start on the lowest speed, keep the head moving across the muscle, and avoid bones or joints. Use short 30 to 60 second sessions per area.",
+          videoUrl: "https://www.youtube.com/results?search_query=how+to+use+massage+gun+safely",
+        },
+        {
+          keywords: ["neck", "neck massager", "heat"],
+          title: "Breo Neck Massager",
+          steps: "Place it around the neck, choose a gentle mode first, then add heat only if comfortable. Keep each session around 10 to 15 minutes.",
+          videoUrl: "https://www.youtube.com/results?search_query=how+to+use+neck+massager+with+heat",
+        },
+        {
+          keywords: ["eye", "eye massager", "fold"],
+          title: "Breo Eye Massager",
+          steps: "Remove glasses or contact lenses, position the eye mask comfortably, then use the soft mode first. Stop if pressure feels uncomfortable.",
+          videoUrl: "https://www.youtube.com/results?search_query=how+to+use+eye+massager",
+        },
+        {
+          keywords: ["mini", "handheld", "portable"],
+          title: "Breo Mini Handheld",
+          steps: "Use it for quick daily relief on shoulders, arms, and legs. Keep light pressure and move slowly across tight areas.",
+          videoUrl: "https://www.youtube.com/results?search_query=how+to+use+portable+handheld+massager",
+        },
+      ];
+
+      const state = {
+        member: JSON.parse(localStorage.getItem("breoMember") || "null"),
+        members: JSON.parse(localStorage.getItem("breoMembers") || "null") || demoMembers,
+        language: localStorage.getItem("breoLanguage") || "en",
+        associateCode: "",
+        skippedCode: false,
+        orderProcessed: false,
+        quantities: Object.fromEntries(products.map((product) => [product.id, 0])),
+        quizAnswers: {},
+      };
+
+      if (state.member?.salesAssociateCode) {
+        state.associateCode = state.member.salesAssociateCode;
+        state.assignedSalesMember = state.member.assignedSalesMember || salesAssociateCodes[state.member.salesAssociateCode] || "";
+        state.assignedSalesMemberDisplay = state.member.assignedSalesMemberDisplay || salesAssociateDisplayNames[state.member.salesAssociateCode] || state.assignedSalesMember;
+      }
+
+      if (state.member && !state.member.verified) {
+        state.member = null;
+        localStorage.removeItem("breoMember");
+      }
+
+      localStorage.setItem("breoMembers", JSON.stringify(state.members));
+
+      const productGrid = document.querySelector("#productGrid");
+      const recommendationQuiz = document.querySelector("#recommendationQuiz");
+      const quizPreviewName = document.querySelector("#quizPreviewName");
+      const quizPreviewText = document.querySelector("#quizPreviewText");
+      const quizPreviewImage = document.querySelector("#quizPreviewImage");
+      const cartList = document.querySelector("#cartList");
+      const orderTotal = document.querySelector("#orderTotal");
+      const languageSelect = document.querySelector("#languageSelect");
+      const memberStatus = document.querySelector("#memberStatus");
+      const memberDropdown = document.querySelector("#memberDropdown");
+      const memberMenuName = document.querySelector("#memberMenuName");
+      const memberMenuDetails = document.querySelector("#memberMenuDetails");
+      const memberSettingsButton = document.querySelector("#memberSettingsButton");
+      const memberMenuLogout = document.querySelector("#memberMenuLogout");
+      const orderSection = document.querySelector("#order");
+      const memberCardName = document.querySelector("#memberCardName");
+      const memberCardDetails = document.querySelector("#memberCardDetails");
+      const promoModal = document.querySelector("#promoModal");
+      const promoModalTitle = document.querySelector("#promoModalTitle");
+      const promoModalText = document.querySelector("#promoModalText");
+      const closePromoModal = document.querySelector("#closePromoModal");
+      const copyPromoCode = document.querySelector("#copyPromoCode");
+      const viewVouchersLink = document.querySelector("#viewVouchersLink");
+      const voucherPrimaryLabel = document.querySelector("#voucherPrimaryLabel");
+      const voucherPrimaryTitle = document.querySelector("#voucherPrimaryTitle");
+      const voucherPrimaryText = document.querySelector("#voucherPrimaryText");
+      const voucherPrimaryCode = document.querySelector("#voucherPrimaryCode");
+      const copyVoucherButton = document.querySelector("#copyVoucherButton");
+      const showVoucherPopup = document.querySelector("#showVoucherPopup");
+      const flowStatus = document.querySelector("#flowStatus");
+      const loginForm = document.querySelector("#loginForm");
+      const registerForm = document.querySelector("#registerForm");
+      const postRegisterNotice = document.querySelector("#postRegisterNotice");
+      const showLogin = document.querySelector("#showLogin");
+      const showRegister = document.querySelector("#showRegister");
+      const logoutButton = document.querySelector("#logoutButton");
+      const googleLogin = document.querySelector("#googleLogin");
+      const appleLogin = document.querySelector("#appleLogin");
+      const hasCode = document.querySelector("#hasCode");
+      const associateCode = document.querySelector("#associateCode");
+      const skipCode = document.querySelector("#skipCode");
+      const processOrder = document.querySelector("#processOrder");
+      const helperLog = document.querySelector("#helperLog");
+      const helperChatForm = document.querySelector("#helperChatForm");
+      const helperInput = document.querySelector("#helperInput");
+      const paymentPanel = document.querySelector("#paymentPanel");
+      const paymentStatus = document.querySelector("#paymentStatus");
+      const deliveryAddress = document.querySelector("#deliveryAddress");
+      const deliveryNote = document.querySelector("#deliveryNote");
+      const locationSuggestions = document.querySelector("#locationSuggestions");
+      const confirmPayment = document.querySelector("#confirmPayment");
+      const orderConfirmModal = document.querySelector("#orderConfirmModal");
+      const paymentModal = document.querySelector("#paymentModal");
+      const orderReview = document.querySelector("#orderReview");
+      const paymentReview = document.querySelector("#paymentReview");
+      const editOrderButton = document.querySelector("#editOrderButton");
+      const continuePaymentButton = document.querySelector("#continuePaymentButton");
+      const backToReviewButton = document.querySelector("#backToReviewButton");
+      const completePaymentButton = document.querySelector("#completePaymentButton");
+      const paymentReference = document.querySelector("#paymentReference");
+      const paymentEmail = document.querySelector("#paymentEmail");
+      const verificationNote = document.querySelector("#verificationNote");
+      const resendVerification = document.querySelector("#resendVerification");
+      const refreshVerification = document.querySelector("#refreshVerification");
+      const customerOrderStatus = document.querySelector("#customerOrderStatus");
+      const globalHelper = document.querySelector("#globalHelper");
+      const globalHelperToggle = document.querySelector("#globalHelperToggle");
+      const globalHelperLog = document.querySelector("#globalHelperLog");
+      const globalHelperForm = document.querySelector("#globalHelperForm");
+      const globalHelperInput = document.querySelector("#globalHelperInput");
+      let globalHelperManuallyMinimized = localStorage.getItem("breoGlobalHelperMinimized") === "true";
+
+      function formatMoney(value) {
+        return new Intl.NumberFormat("en-MY", { style: "currency", currency: "MYR", maximumFractionDigits: 0 }).format(value);
+      }
+
+      const zhTranslations = {
+        "Products": "产品",
+        "Quiz": "测验",
+        "Vouchers": "优惠券",
+        "Rewards": "奖励",
+        "Order": "下单",
+        "Branches": "分店",
+        "Track order": "追踪订单",
+        "Terms": "条款",
+        "Guest": "访客",
+        "Login to manage your Breo member account.": "登录以管理您的 Breo 会员账户。",
+        "Settings": "设置",
+        "Logout": "登出",
+        "Breo Malaysia wellness atelier": "Breo 马来西亚健康精品空间",
+        "Quiet recovery devices for modern routines.": "适合现代日常的静享恢复设备。",
+        "Explore heat, pressure, percussion, and travel-ready care in a calmer shopping flow built for Malaysian members, branch fulfilment, and guided product matching.": "在更从容的购物流程中探索热敷、按压、筋膜放松和便携护理，并支持马来西亚会员、分店发货和产品匹配。",
+        "Explore the collection": "探索系列",
+        "Find your match": "寻找适合产品",
+        "curated care devices": "款精选护理设备",
+        "From RM 299": "RM 299 起",
+        "China wellness technology, shipped from Malaysia branches": "源自中国的健康科技，由马来西亚分店发货",
+        "Breo portable massage care for busy bodies.": "Breo 便携按摩护理，适合忙碌的身体。",
+        "Promote massage guns, neck care, eye relaxation, and compact recovery devices with a guided member order flow built for sales associate codes and branch fulfilment.": "通过会员下单流程推广筋膜枪、颈部护理、眼部放松和便携恢复产品，并支持销售员代码与分店发货。",
+        "Start member order": "开始会员下单",
+        "View products": "查看产品",
+        "Fulfilment branches": "发货分店",
+        "Guided order helper": "AI 下单助手",
+        "Local checkout estimate": "本地结账估算",
+        "Featured collection": "精选系列",
+        "Massage care presented like a boutique range, not a crowded catalogue.": "以精品系列方式呈现按摩护理，而不是拥挤的目录。",
+        "Branch stock status": "分店库存状态",
+        "Operational branch stock visibility before checkout.": "结账前查看分店库存状态。",
+        "In stock": "有库存",
+        "Low stock": "库存偏低",
+        "Bukit Jalil: In stock": "Bukit Jalil：有库存",
+        "1U: Low stock": "1U：库存偏低",
+        "Ready for KL south fulfilment, pickup coordination, and branch packing.": "适合吉隆坡南部发货、自取协调和分店打包。",
+        "Available for PJ and Damansara routes, but branch confirmation is recommended before payment.": "适合 PJ 和 Damansara 路线，但建议付款前先让分店确认库存。",
+        "Open rewards page": "打开奖励页面",
+        "Featured range": "精选系列",
+        "Portable massage products for everyday relief": "日常舒缓的便携按摩产品",
+        "Member vouchers": "会员优惠券",
+        "Rewards saved for your next Breo checkout.": "为您下一次 Breo 结账保存的奖励。",
+        "New customer": "新顾客",
+        "10% off first member order": "首次会员订单 10% 折扣",
+        "Use this welcome reward when you checkout as a verified Breo member.": "成为已验证 Breo 会员后，可在结账时使用此欢迎优惠。",
+        "Copy voucher": "复制优惠券",
+        "Show voucher popup": "显示优惠弹窗",
+        "Bundle care": "组合护理",
+        "Free branch care check": "免费分店护理检查",
+        "Ask the AI helper to include a product care note when the branch prepares your order.": "让 AI 助手在分店备货时加入产品护理说明。",
+        "Pickup friendly": "适合自取",
+        "Priority pickup coordination": "优先自取协调",
+        "For Bukit Jalil or 1U pickup, the branch dashboard keeps your status visible to staff.": "如选择 Bukit Jalil 或 1U 自取，分店后台会让员工看到您的订单状态。",
+        "Member concierge checkout": "会员礼宾式结账",
+        "When you are ready, login and let the order helper prepare the branch ticket.": "准备好后登录，让下单助手为分店准备订单。",
+        "Member checkout": "会员结账",
+        "Login, choose products, then let the AI helper prepare the order.": "登录、选择产品，然后让 AI 助手准备订单。",
+        "Member Access": "会员登录",
+        "Logged in member": "已登录会员",
+        "Verify your email to continue.": "请验证电邮后继续。",
+        "Login": "登录",
+        "Create member": "创建会员",
+        "Enter your email and password. Firebase will only unlock ordering after the email inbox verification link is completed.": "请输入电邮和密码。完成邮箱验证后才可下单。",
+        "Email address": "电邮地址",
+        "Password": "密码",
+        "Phone number": "电话号码",
+        "Verify email & login": "验证电邮并登录",
+        "Please check your email inbox.": "请检查您的邮箱。",
+        "Your Breo member account was created. Click the Firebase verification link in your inbox, then return here and login with the same email address and password.": "您的 Breo 会员账户已创建。请点击邮箱中的 Firebase 验证链接，然后回到这里使用同一电邮和密码登录。",
+        "New customer? Create a Breo member profile before ordering.": "新顾客？请先创建 Breo 会员资料再下单。",
+        "First name": "名字",
+        "Last name": "姓氏",
+        "At least 6 characters": "至少 6 个字符",
+        "Birthday": "生日",
+        "Birthday gift voucher": "生日礼物优惠券",
+        "Gender": "性别",
+        "Select gender": "选择性别",
+        "Female": "女性",
+        "Male": "男性",
+        "Non-binary": "非二元",
+        "Prefer not to say": "不想透露",
+        "Create member & send verification email": "创建会员并发送验证电邮",
+        "Firebase email verification enabled.": "Firebase 电邮验证已启用。",
+        "New members will receive a verification link in their inbox before ordering.": "新会员下单前会收到邮箱验证链接。",
+        "or connect": "或连接",
+        "Google and Apple are demo sign-ins here. A real website would connect them to Firebase, OAuth, or your membership backend.": "这里的 Google 和 Apple 是演示登录。真实网站会连接 Firebase、OAuth 或会员后台。",
+        "Sales associate code": "销售员代码",
+        "Members can enter a code, or skip if they do not have one.": "会员可输入代码；没有代码也可以跳过。",
+        "Associate linked from member profile": "已从会员资料连接销售员",
+        "This member profile is assigned to": "此会员资料已分配给",
+        "Product orders and sales support will be arranged under this associate.": "产品订单和销售支持会安排在此销售员名下。",
+        "I have a code": "我有代码",
+        "Skip code": "跳过代码",
+        "Order Builder": "订单创建",
+        "Select quantities before asking the helper to process the order.": "请先选择数量，再让助手处理订单。",
+        "Waiting for login": "等待登录",
+        "Ready for order": "可以下单",
+        "Your cart": "您的购物车",
+        "Ship from branch": "发货分店",
+        "Bukit Jalil": "Bukit Jalil",
+        "Best for KL south and pickup coordination.": "适合吉隆坡南部及自取协调。",
+        "1U / 1 Utama": "1U / 1 Utama",
+        "Best for PJ, Damansara, and nearby areas.": "适合 PJ、Damansara 及附近地区。",
+        "Delivery address": "收货地址",
+        "Delivery note": "配送备注",
+        "Payment method": "付款方式",
+        "Credit / Debit Card": "信用卡 / 借记卡",
+        "E-Wallet": "电子钱包",
+        "Atome Installments": "Atome 分期",
+        "Order total": "订单总额",
+        "Ask AI helper to process order": "请 AI 助手处理订单",
+        "Confirm payment & send to admin": "确认付款并发送给管理员",
+        "Breo Order Helper": "Breo 下单助手",
+        "Ready to process member orders.": "准备处理会员订单。",
+        "Hi, I can prepare a Breo order after the member logs in, chooses products, and confirms whether there is a sales associate code.": "您好，会员登录、选择产品并确认是否有销售员代码后，我可以准备 Breo 订单。",
+        "Message the Breo helper...": "输入信息给 Breo 助手...",
+        "Are you sure this is your order?": "您确定这是您的订单吗？",
+        "Please review the products, branch, payment method, and delivery address before continuing.": "继续前请检查产品、分店、付款方式和收货地址。",
+        "Edit order": "修改订单",
+        "Yes, continue to payment": "是的，继续付款",
+        "Connect payment": "连接付款",
+        "This demo simulates a payment popup for card, e-wallet, or Atome.": "此演示模拟信用卡、电子钱包或 Atome 的付款弹窗。",
+        "Card / wallet reference": "卡号 / 钱包参考",
+        "Customer email for receipt": "收据电邮",
+        "Back": "返回",
+        "Complete payment": "完成付款",
+        "Copy Code: WELCOME10": "复制代码：WELCOME10",
+        "View vouchers": "查看优惠券",
+        "Breo Malaysia sales concept": "Breo 马来西亚销售概念",
+        "Massage guns, neck massagers, eye care, and portable recovery products.": "筋膜枪、颈部按摩器、眼部护理及便携恢复产品。",
+        "Terms & Conditions": "条款与条件",
+        "Delivery Terms": "配送条款",
+        "Product Conditions": "产品条件",
+        "Breo Massage Gun Pro": "Breo 专业筋膜枪",
+        "View details for": "查看详情：",
+        "View product details": "查看产品详情",
+        "Deep muscle recovery with quiet percussion settings.": "深层肌肉放松，安静震动模式。",
+        "Start on the lowest speed, keep the head moving across the muscle, and avoid bones or joints. Use short 30 to 60 second sessions per area.": "从最低速度开始，让按摩头在肌肉上移动，避免骨头和关节。每个部位建议使用 30 至 60 秒。",
+        "Breo Neck Massager": "Breo 颈部按摩器",
+        "Portable heat and pulse care for desk workers and drivers.": "便携热敷与脉冲护理，适合上班族和司机。",
+        "Place it around the neck, choose a gentle mode first, then add heat only if comfortable. Keep each session around 10 to 15 minutes.": "将产品戴在颈部，先选择温和模式，感觉舒适后再开启热敷。每次使用约 10 至 15 分钟。",
+        "Breo Eye Massager": "Breo 眼部按摩器",
+        "Foldable eye relaxation with gentle warmth and pressure.": "可折叠眼部舒缓，温和热敷与按压。",
+        "Remove glasses or contact lenses, position the eye mask comfortably, then use the soft mode first. Stop if pressure feels uncomfortable.": "请先取下眼镜或隐形眼镜，舒适佩戴眼罩后先使用柔和模式。如感觉压力不适请停止使用。",
+        "Breo Mini Handheld": "Breo 迷你手持按摩器",
+        "Compact daily relief for travel, gifting, and quick care.": "小巧便携，适合旅行、送礼和快速护理。",
+        "Use it for quick daily relief on shoulders, arms, and legs. Keep light pressure and move slowly across tight areas.": "适合肩膀、手臂和腿部的日常快速舒缓。保持轻柔压力，并在紧绷部位慢慢移动。",
+        "Qty": "数量",
+        "each": "每件",
+        "Locked": "已锁定",
+        "Ready": "可使用",
+        "Product recommendation quiz": "产品推荐测验",
+        "Current match": "当前推荐",
+        "Find the Breo device that fits your day.": "寻找适合您日常的 Breo 产品。",
+        "What needs relief first?": "哪里最需要舒缓？",
+        "Pick the area that bothers you most often.": "请选择最常让您不舒服的部位。",
+        "Deep muscle soreness": "深层肌肉酸痛",
+        "Neck and shoulder tension": "颈部和肩膀紧绷",
+        "Tired eyes and screen fatigue": "眼睛疲劳和屏幕疲劳",
+        "Quick all-round comfort": "快速全身舒缓",
+        "Where will you use it most?": "您最常在哪里使用？",
+        "Your routine helps us choose the right size and care mode.": "您的日常习惯会帮助我们选择合适尺寸和护理模式。",
+        "After workouts": "运动后",
+        "Desk or driving breaks": "办公或驾驶休息时",
+        "Before sleep": "睡前",
+        "Travel and gifting": "旅行或送礼",
+        "What budget feels right?": "什么预算最合适？",
+        "We keep the recommendation practical for checkout.": "我们会让推荐更适合实际结账。",
+        "Best performance": "最佳性能",
+        "Balanced daily care": "均衡日常护理",
+        "Compact value": "小巧高性价比",
+        "Gift-ready comfort": "适合送礼的舒适护理",
+        "Best for customers who want stronger percussion and deeper recovery after workouts or long standing days.": "适合想要更强震动、运动后或久站后需要深层恢复的顾客。",
+        "Best for desk workers, drivers, and customers who want targeted neck comfort with gentle heat.": "适合上班族、司机，以及想要针对颈部舒缓和温和热敷的顾客。",
+        "Best for screen-heavy routines, bedtime relaxation, and customers who want soft pressure around the eyes.": "适合长时间看屏幕、睡前放松，以及想要眼周轻柔按压的顾客。",
+        "Best for quick daily relief, travel, gifting, and customers who want the most compact Breo option.": "适合日常快速舒缓、旅行、送礼，以及想要最小巧 Breo 产品的顾客。",
+        "answers selected": "个答案已选择",
+        "AI Breo Helper": "Breo AI 助手",
+        "Ask while you choose or type": "选择或输入时都可以询问",
+        "I stay with you across the page. Ask me before choosing a product, quiz answer, branch, quantity, payment, or delivery detail.": "我会陪您完成整个页面。选择产品、测验答案、分店、数量、付款或配送资料前都可以问我。",
+        "Checkout": "结账",
+        "Delivery": "配送",
+        "Ask the helper...": "询问助手...",
+        "Send": "发送",
+        "Payment & delivery": "付款与配送",
+        "Unlocks after the AI helper prepares the order ticket.": "AI 助手准备订单后才会解锁。",
+        "Connect payment & send to branch": "连接付款并发送到分店",
+        "Estimated total": "预计总额",
+        "Ask AI helper": "询问 AI 助手",
+        "Online & ready to help": "在线，随时协助",
+        "Massage gun": "筋膜枪",
+        "Neck massager": "颈部按摩器",
+        "Talk to sales": "联系销售员",
+        "Compare products": "比较产品",
+        "Add match to order": "加入推荐产品",
+        "Start with one answer.": "请先选择一个答案。",
+        "Your match will update instantly as you choose each option.": "选择每个选项后，推荐会即时更新。",
+        "Answer the quiz to reveal your match.": "回答测验后查看推荐。",
+        "Recommended Breo product": "推荐的 Breo 产品",
+        "Choose your main concern, routine, and budget. The result can be added straight into the member order builder.": "选择主要需求、使用场景和预算。推荐结果可直接加入会员订单。",
+        "This preview will show the matched product in the center, with a care note below once you answer the quiz.": "此预览会在中间显示匹配产品，回答测验后下方会出现护理说明。",
+        "Customer reviews": "顾客评价",
+        "Member feedback from everyday recovery routines.": "会员日常恢复护理反馈。",
+        "The neck massager became part of my workday. The heat feels calm, and the member checkout made it easy to pick the right branch.": "颈部按摩器已经成为我工作日的一部分。热敷很舒服，会员结账也让我很容易选择合适分店。",
+        "Desk worker, Kuala Lumpur": "上班族，吉隆坡",
+        "I used the quiz for a gift and it recommended the Mini Handheld. It looked premium, was simple to explain, and felt practical for travel.": "我用测验来挑礼物，它推荐了迷你手持按摩器。外观看起来高级，也很容易说明用途，适合旅行使用。",
+        "Gift buyer, Petaling Jaya": "送礼顾客，Petaling Jaya",
+        "The massage gun feels powerful without looking too clinical. The helper guided me through quantity, payment, and delivery step by step.": "筋膜枪力道很足，但外观不会太医疗感。助手一步一步引导我选择数量、付款和配送。",
+        "Fitness routine, Bukit Jalil": "健身日常，Bukit Jalil",
+        "Ask anything about your order…": "询问任何订单问题…",
+        "member@email.com": "member@email.com",
+        "customer@email.com": "customer@email.com",
+        "+60... optional": "+60... 可选",
+        "Example: 0000 for Kowaii": "例如：0000 代表 Kowaii",
+        "Type area or address, example: Puchong": "输入地区或地址，例如：Puchong",
+        "Condo, pickup time, receiver name...": "公寓、取件时间、收件人姓名...",
+        "Last 4 digits, wallet name, or Atome reference": "卡号后 4 位、钱包名称或 Atome 参考编号",
+      };
+
+      const originalTextNodes = new WeakMap();
+
+      function t(text) {
+        if (state.language !== "zh") return text;
+        return zhTranslations[text] || text;
+      }
+
+      function localizedMemberLabel(memberName) {
+        return state.language === "zh" ? `会员：${memberName}` : `Member: ${memberName}`;
+      }
+
+      function localizedCopiedLabel(code) {
+        return state.language === "zh" ? `已复制：${code}` : `Copied: ${code}`;
+      }
+
+      function localizedFocusPrefix(label) {
+        return state.language === "zh" ? `您正在：${label}。` : `You are on: ${label}.`;
+      }
+
+      function localizedGlobalQuestion(question) {
+        if (state.language !== "zh") return question;
+        const labels = {
+          products: "产品",
+          quiz: "测验",
+          checkout: "结账",
+          delivery: "配送",
+        };
+        return labels[question] || question;
+      }
+
+      function localizedAnswerCount(count) {
+        return state.language === "zh" ? `${count} / ${quizQuestions.length} 个答案已选择` : `${count} of ${quizQuestions.length} answers selected`;
+      }
+
+      function updateHelperLanguageLabels() {
+        const helperTitle = document.querySelector("#helper-title");
+        if (helperTitle) helperTitle.textContent = t("Breo Order Helper");
+        const helperStatus = document.querySelector(".helper-header p");
+        if (helperStatus) helperStatus.textContent = state.language === "zh" ? "在线，随时协助" : "Online & ready to help";
+        const promptLabels = {
+          "How do I use the massage gun?": state.language === "zh" ? "筋膜枪" : "Massage gun",
+          "How do I use the neck massager?": state.language === "zh" ? "颈部按摩器" : "Neck massager",
+          "Can I contact a real person?": state.language === "zh" ? "联系销售员" : "Talk to sales",
+        };
+        document.querySelectorAll("[data-helper-prompt]").forEach((button) => {
+          const icon = button.textContent.trim().split(/\s+/)[0] || "";
+          button.textContent = `${icon} ${promptLabels[button.dataset.helperPrompt] || button.dataset.helperPrompt}`;
+        });
+        if (helperInput) helperInput.placeholder = state.language === "zh" ? "询问任何订单问题…" : "Ask anything about your order…";
+      }
+
+      function translateSubtree(root = document.body) {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+          acceptNode(node) {
+            if (!node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+            if (node.parentElement?.closest("script, style")) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          },
+        });
+
+        while (walker.nextNode()) {
+          const node = walker.currentNode;
+          const original = originalTextNodes.get(node) || node.textContent.trim();
+          originalTextNodes.set(node, original);
+          const translated = t(original);
+          const leading = node.textContent.match(/^\s*/)?.[0] || "";
+          const trailing = node.textContent.match(/\s*$/)?.[0] || "";
+          node.textContent = `${leading}${translated}${trailing}`;
+        }
+
+        root.querySelectorAll("input[placeholder], textarea[placeholder]").forEach((field) => {
+          if (!field.dataset.originalPlaceholder) field.dataset.originalPlaceholder = field.placeholder;
+          field.placeholder = t(field.dataset.originalPlaceholder);
+        });
+      }
+
+      function applyLanguage() {
+        languageSelect.value = state.language;
+        document.documentElement.lang = state.language === "zh" ? "zh-Hans" : "en";
+        renderProducts();
+        renderQuiz();
+        renderCart();
+        translateSubtree();
+        updateMemberState();
+        updateSummary();
+        updateMemberPromo();
+        updateHelperLanguageLabels();
+      }
+
+      function selectedBranch() {
+        return document.querySelector("input[name='branch']:checked").value;
+      }
+
+      function selectedPayment() {
+        return document.querySelector("input[name='payment']:checked").value;
+      }
+
+      function cartItems() {
+        return products
+          .map((product) => ({ ...product, quantity: state.quantities[product.id], subtotal: state.quantities[product.id] * product.price }))
+          .filter((item) => item.quantity > 0);
+      }
+
+      function orderProducts() {
+        return cartItems().map((item) => ({
+          productCode: item.code,
+          productId: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          unitPrice: item.price,
+          subtotal: item.subtotal,
+        }));
+      }
+
+      function cartTotal() {
+        return cartItems().reduce((sum, item) => sum + item.subtotal, 0);
+      }
+
+      function normalizeEmail(email) {
+        return email.trim().toLowerCase();
+      }
+
+      function memberDisplayName(member) {
+        return `${member.firstName} ${member.lastName}`.trim();
+      }
+
+      function findMemberByEmail(email) {
+        const normalized = normalizeEmail(email);
+        return state.members.find((member) => normalizeEmail(member.email) === normalized);
+      }
+
+      function saveMembers() {
+        localStorage.setItem("breoMembers", JSON.stringify(state.members));
+      }
+
+      function hasFirebaseConfig() {
+        return !Object.values(firebaseConfig).some((value) => value.startsWith("PASTE_"));
+      }
+
+      async function initFirebase() {
+        if (!hasFirebaseConfig()) {
+          verificationNote.querySelector("strong").textContent = "Firebase setup needed.";
+          verificationNote.querySelector("span").innerHTML = "Paste your Firebase web config into <code>firebaseConfig</code>, then refresh. Real inbox verification emails will work after that.";
+          return null;
+        }
+
+        if (firebaseAuth) return firebaseAuth;
+
+        const appModule = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
+        const authModule = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
+        const firestoreModule = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
+        const app = appModule.initializeApp(firebaseConfig);
+
+        firebaseFns = {
+          createUserWithEmailAndPassword: authModule.createUserWithEmailAndPassword,
+          signInWithEmailAndPassword: authModule.signInWithEmailAndPassword,
+          sendEmailVerification: authModule.sendEmailVerification,
+          updateProfile: authModule.updateProfile,
+          signOut: authModule.signOut,
+          reload: authModule.reload,
+        };
+        firebaseAuth = authModule.getAuth(app);
+        firestoreDb = firestoreModule.getFirestore(app);
+        firestoreFns = {
+          addDoc: firestoreModule.addDoc,
+          collection: firestoreModule.collection,
+          doc: firestoreModule.doc,
+          onSnapshot: firestoreModule.onSnapshot,
+          serverTimestamp: firestoreModule.serverTimestamp,
+          setDoc: firestoreModule.setDoc,
+        };
+        verificationNote.querySelector("strong").textContent = "Firebase email verification enabled.";
+        verificationNote.querySelector("span").textContent = "New members will receive a verification link in their inbox before ordering.";
+        return firebaseAuth;
+      }
+
+      function firebaseMemberFromUser(user, fallback = {}) {
+        const [firstName = fallback.firstName || "Breo", ...lastParts] = (user.displayName || "").split(" ").filter(Boolean);
+        return {
+          firstName,
+          lastName: lastParts.join(" ") || fallback.lastName || "Member",
+          email: user.email,
+          phone: fallback.phone || "",
+          gender: fallback.gender || "Prefer not to say",
+          provider: "Firebase",
+          verified: user.emailVerified,
+          salesAssociateCode: fallback.salesAssociateCode || "",
+          assignedSalesMember: fallback.assignedSalesMember || "",
+          assignedSalesMemberDisplay: fallback.assignedSalesMemberDisplay || "",
+          assignmentSource: fallback.assignmentSource || "",
+        };
+      }
+
+      async function requireFirebase() {
+        const auth = await initFirebase();
+        if (!auth) {
+          addMessage("Firebase is not configured yet. Paste your Firebase web config into the file before real inbox email verification can run.");
+        }
+        return auth;
+      }
+
+      function loginMember(member, message) {
+        state.member = {
+          ...member,
+          name: memberDisplayName(member),
+        };
+        applyMemberAssociateAssignment();
+        localStorage.setItem("breoMember", JSON.stringify(state.member));
+        updateMemberState();
+        startCustomerOrderWatch();
+        addMessage(message || `Welcome back, ${state.member.name}. Your email has been verified as a Breo member.`);
+        window.setTimeout(showMemberPromoPopup, 350);
+      }
+
+      function setAuthMode(mode) {
+        const isRegister = mode === "register";
+        loginForm.classList.toggle("hidden", isRegister);
+        registerForm.classList.toggle("hidden", !isRegister);
+        showLogin.classList.toggle("active", !isRegister);
+        showRegister.classList.toggle("active", isRegister);
+        if (isRegister) postRegisterNotice.classList.add("hidden");
+      }
+
+      function renderProducts() {
+        productGrid.innerHTML = products
+          .map(
+            (product) => `
+              <article class="product-card">
+                <a href="product.html?id=${product.id}" aria-label="${t("View details for")} ${t(product.name)}">
+                  <img class="product-photo" src="${product.image}" alt="${t(product.name)}" loading="lazy" />
+                </a>
+                <div class="product-body">
+                  <div>
+                    <div class="product-icon">${product.icon}</div>
+                    <h3><a href="product.html?id=${product.id}">${t(product.name)}</a></h3>
+                    <p>${t(product.description)}</p>
+                  </div>
+                  <div class="product-actions">
+                    <div class="price">${formatMoney(product.price)}</div>
+                    <a class="button secondary full" href="product.html?id=${product.id}">${t("View product details")}</a>
+                  </div>
+                </div>
+              </article>
+            `
+          )
+          .join("");
+      }
+
+      function quizScores() {
+        const scores = Object.fromEntries(products.map((product) => [product.id, 0]));
+        Object.entries(state.quizAnswers).forEach(([questionId, answerIndex]) => {
+          const answer = quizQuestions.find((question) => question.id === questionId)?.options[answerIndex];
+          Object.entries(answer?.scores || {}).forEach(([productId, score]) => {
+            scores[productId] += score;
+          });
+        });
+        return scores;
+      }
+
+      function recommendedProduct() {
+        const scores = quizScores();
+        const answeredCount = Object.keys(state.quizAnswers).length;
+        if (!answeredCount) return null;
+        return products.reduce((best, product) => (scores[product.id] > scores[best.id] ? product : best), products[0]);
+      }
+
+      function renderQuiz() {
+        if (!recommendationQuiz) return;
+        const match = recommendedProduct();
+        const answeredCount = Object.keys(state.quizAnswers).length;
+        const fallback = products.find((product) => product.id === "neck-relax") || products[0];
+        const preview = match || fallback;
+
+        quizPreviewName.textContent = match ? t(preview.name) : t("Answer the quiz to reveal your match.");
+        quizPreviewText.textContent = match
+          ? t(quizReasons[preview.id])
+          : t("This preview will show the matched product in the center, with a care note below once you answer the quiz.");
+        quizPreviewImage.src = preview.image;
+        quizPreviewImage.alt = match ? t(preview.name) : t("Recommended Breo product");
+
+        const questionHtml = quizQuestions
+          .map(
+            (question) => `
+              <div class="quiz-step">
+                <div>
+                  <h3>${t(question.title)}</h3>
+                  <p>${t(question.prompt)}</p>
+                </div>
+                <div class="quiz-options">
+                  ${question.options
+                    .map(
+                      (option, index) => `
+                        <button class="${state.quizAnswers[question.id] === index ? "active" : ""}" type="button" data-quiz-question="${question.id}" data-quiz-answer="${index}">
+                          ${t(option.label)}
+                        </button>
+                      `
+                    )
+                    .join("")}
+                </div>
+              </div>
+            `
+          )
+          .join("");
+
+        const resultHtml = match
+          ? `
+            <div class="quiz-result">
+              <img src="${match.image}" alt="" loading="lazy" />
+              <div>
+                <span>${localizedAnswerCount(answeredCount)}</span>
+                <h3>${t(match.name)}</h3>
+                <p>${t(quizReasons[match.id])}</p>
+                <div class="price">${formatMoney(match.price)}</div>
+              </div>
+            </div>
+            <div class="quiz-actions">
+              <button class="button primary" type="button" data-add-recommendation="${match.id}">${t("Add match to order")}</button>
+              <a class="button secondary" href="#products">${t("Compare products")}</a>
+            </div>
+          `
+          : `
+            <div class="quiz-result">
+              <img src="${fallback.image}" alt="" loading="lazy" />
+              <div>
+                <span>${localizedAnswerCount(0)}</span>
+                <h3>${t("Start with one answer.")}</h3>
+                <p>${t("Your match will update instantly as you choose each option.")}</p>
+              </div>
+            </div>
+          `;
+
+        recommendationQuiz.innerHTML = `${questionHtml}${resultHtml}`;
+      }
+
+      function renderCart() {
+        cartList.innerHTML = products
+          .map(
+            (product) => `
+              <div class="cart-row">
+                <div class="cart-product">
+                  <img src="${product.image}" alt="" loading="lazy" />
+                  <div>
+                    <strong>${product.name}</strong>
+                    <span>${formatMoney(product.price)} each</span>
+                  </div>
+                </div>
+                <label>
+                  Qty
+                  <input type="number" min="0" max="20" value="${state.quantities[product.id]}" data-product="${product.id}" aria-label="${product.name} quantity" />
+                </label>
+              </div>
+            `
+          )
+          .join("");
+
+        cartList.querySelectorAll("input[type='number']").forEach((input) => {
+          input.addEventListener("input", (event) => {
+            const value = Number.parseInt(event.target.value, 10);
+            state.quantities[event.target.dataset.product] = Number.isNaN(value) ? 0 : Math.max(0, value);
+            updateSummary();
+          });
+        });
+      }
+
+      function addRecommendationToOrder(productId) {
+        const product = products.find((item) => item.id === productId);
+        if (!product) return;
+        state.quantities[product.id] = Math.max(1, state.quantities[product.id] || 0);
+        state.orderProcessed = false;
+        renderCart();
+        updateSummary();
+        updatePaymentLock();
+        document.querySelector("#order")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        addMessage(`<strong>${product.name} added from the recommendation quiz.</strong><br />Review the quantity, branch, and payment details before asking the helper to process the order.`);
+      }
+
+      function daysUntilBirthday(birthday) {
+        if (!birthday) return null;
+        const birthDate = new Date(`${birthday}T00:00:00`);
+        if (Number.isNaN(birthDate.getTime())) return null;
+
+        const today = new Date();
+        const nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+        today.setHours(0, 0, 0, 0);
+
+        if (nextBirthday < today) {
+          nextBirthday.setFullYear(today.getFullYear() + 1);
+        }
+
+        return Math.round((nextBirthday - today) / 86400000);
+      }
+
+      function currentPromo() {
+        if (!state.member) return null;
+        const days = daysUntilBirthday(state.member.birthday);
+        const firstName = state.member.firstName || state.member.name?.split(" ")[0] || "Member";
+
+        if (days !== null && days <= 30) {
+          if (state.language === "zh") {
+            const title = days === 0 ? `${firstName}，生日快乐！您的 Breo 礼物已准备好。` : `${firstName}，您的生日快到了！领取您的 Breo 礼物。`;
+            const text = days === 0
+              ? "庆祝生日时，分店团队会在审核您的会员订单后加入生日礼物。"
+              : `您的生日还有 ${days} 天。下单时 AI 助手会提醒分店加入生日礼物。`;
+            return {
+              type: "birthday",
+              label: "生日护理礼物",
+              title,
+              text,
+              code: "BDAYGIFT",
+              badge: `<div><strong>礼物</strong><small>已备好</small></div>`,
+              modalTitle: title,
+              modalText: "您的生日礼物优惠券已保存在会员优惠券页面。结账时可请 AI 助手提醒分店。",
+            };
+          }
+
+          const title = days === 0 ? `Happy birthday, ${firstName}. Your gift is ready.` : `${firstName}, your birthday is coming. Your Breo gift is waiting.`;
+          const text = days === 0
+            ? "Celebrate with a complimentary birthday gift added by the branch team after your member order is reviewed."
+            : `Your birthday is in ${days} day${days === 1 ? "" : "s"}. Place a member order and the AI helper will remind the branch to include your birthday gift.`;
+          return {
+            type: "birthday",
+            label: "Birthday care gift",
+            title,
+            text,
+            code: "BDAYGIFT",
+            badge: `<div><strong>Gift</strong><small>READY</small></div>`,
+            modalTitle: days === 0 ? `Happy Birthday, ${firstName}! Your Breo gift is ready.` : `Your birthday is coming, ${firstName}! Claim your Breo gift.`,
+            modalText: "Your birthday gift voucher is saved in Member Vouchers. Ask the AI helper to remind the branch when you checkout.",
+          };
+        }
+
+        return {
+          type: "welcome",
+          label: state.language === "zh" ? "新会员优惠" : "New member reward",
+          title: state.language === "zh" ? `您好，新顾客！使用 WELCOME10 享受 10% 折扣。` : `${firstName}, new member care starts with 10% off.`,
+          text: state.language === "zh" ? "欢迎来到 Breo。首次会员结账可使用 10% 欢迎优惠。" : "Welcome to Breo. Your first member checkout can be marked with a 10% welcome reward before the branch prepares your order.",
+          code: "WELCOME10",
+          badge: `<div><strong>10%</strong><small>OFF</small></div>`,
+          modalTitle: state.language === "zh" ? "您好，新顾客！使用 WELCOME10 享受 10% 折扣。" : `Hello, New Customer! Enjoy 10% off with code WELCOME10.`,
+          modalText: state.language === "zh" ? "如果关闭此弹窗，您的欢迎优惠券仍会保存在会员优惠券页面。" : "Your welcome voucher is saved in Member Vouchers if you close this popup.",
+        };
+      }
+
+      function updateMemberPromo() {
+        const promo = currentPromo();
+        if (!promo) return;
+
+        promoModalTitle.textContent = promo.modalTitle;
+        promoModalText.textContent = promo.modalText;
+        copyPromoCode.textContent = state.language === "zh" ? `复制代码：${promo.code}` : `Copy Code: ${promo.code}`;
+        voucherPrimaryLabel.textContent = promo.label;
+        voucherPrimaryTitle.textContent = promo.type === "birthday" ? t("Birthday gift voucher") : t("10% off first member order");
+        voucherPrimaryText.textContent = promo.text;
+        voucherPrimaryCode.textContent = promo.code;
+      }
+
+      function showMemberPromoPopup() {
+        updateMemberPromo();
+        if (!state.member?.verified) return;
+        promoModal.classList.add("open");
+      }
+
+      function closeMemberPromoPopup() {
+        closeModal(promoModal);
+      }
+
+      async function copyCurrentPromoCode(button) {
+        const promo = currentPromo();
+        if (!promo) return;
+        await navigator.clipboard.writeText(promo.code);
+        const originalText = button.textContent;
+        button.textContent = localizedCopiedLabel(promo.code);
+        window.setTimeout(() => {
+          button.textContent = originalText;
+        }, 1400);
+      }
+
+      function updateMemberState() {
+        if (state.member) {
+          applyMemberAssociateAssignment();
+          memberStatus.textContent = localizedMemberLabel(state.member.name);
+          memberMenuName.textContent = state.member.name;
+          const associateDetail = state.assignedSalesMemberDisplay ? ` | ${state.language === "zh" ? "销售员" : "Associate"}: ${state.assignedSalesMemberDisplay}` : "";
+          memberMenuDetails.textContent = `${state.member.email} | ${state.member.phone || (state.language === "zh" ? "无电话" : "No phone")}${associateDetail}`;
+          memberCardName.textContent = state.member.name;
+          memberCardDetails.textContent = `${state.member.email} | ${state.member.phone || (state.language === "zh" ? "无电话" : "No phone")} | ${state.member.birthday || (state.language === "zh" ? "无生日" : "No birthday")} | ${state.member.verified ? (state.language === "zh" ? "电邮已验证" : "Email verified") : (state.language === "zh" ? "电邮未验证" : "Email not verified")} | ${state.member.provider || "Email"}${associateDetail}`;
+          flowStatus.textContent = t("Ready for order");
+          logoutButton.disabled = false;
+          orderSection.classList.add("member-active");
+          document.body.classList.add("member-ready");
+          resendVerification.classList.toggle("hidden", state.member.verified);
+          refreshVerification.classList.toggle("hidden", state.member.verified);
+          updateMemberPromo();
+          if (state.member.verified) {
+            window.clearTimeout(promoOpenTimer);
+            promoOpenTimer = window.setTimeout(showMemberPromoPopup, 650);
+          }
+        } else {
+          memberStatus.textContent = t("Guest");
+          memberMenuName.textContent = t("Guest");
+          memberMenuDetails.textContent = t("Login to manage your Breo member account.");
+          memberCardName.textContent = t("Guest");
+          memberCardDetails.textContent = t("Verify your email to continue.");
+          flowStatus.textContent = t("Waiting for login");
+          logoutButton.disabled = true;
+          orderSection.classList.remove("member-active");
+          document.body.classList.remove("member-ready");
+          resendVerification.classList.add("hidden");
+          refreshVerification.classList.add("hidden");
+        }
+      }
+
+      function updateSummary() {
+        orderTotal.textContent = formatMoney(cartTotal());
+      }
+
+      function updatePaymentLock() {
+        const unlocked = state.orderProcessed;
+        paymentPanel.classList.toggle("locked", !unlocked);
+        paymentStatus.textContent = unlocked ? t("Ready") : t("Locked");
+        deliveryAddress.disabled = !unlocked;
+        deliveryNote.disabled = !unlocked;
+        confirmPayment.disabled = !unlocked;
+        if (!unlocked) {
+          locationSuggestions.classList.remove("show");
+          locationSuggestions.innerHTML = "";
+        }
+        document.querySelectorAll("input[name='payment']").forEach((input) => {
+          input.disabled = !unlocked;
+        });
+      }
+
+      function localOrders() {
+        return JSON.parse(localStorage.getItem("breoLocalOrders") || "[]");
+      }
+
+      function localCustomerOrder() {
+        const lastOrderId = localStorage.getItem("breoLastOrderId");
+        const memberEmail = state.member ? normalizeEmail(state.member.email) : "";
+        return localOrders().find((order) => order.orderId === lastOrderId) || localOrders().find((order) => normalizeEmail(order.customerEmail || "") === memberEmail);
+      }
+
+      function isReviewedOrder(order) {
+        return order?.status === "Accepted" || order?.status === "Declined" || order?.status === "Sent to Branch";
+      }
+
+      function isPendingOrder(order) {
+        return !order?.status || order.status === "Pending Admin Review" || order.adminDecision === "Pending";
+      }
+
+      function bestCustomerOrder() {
+        const localOrder = localCustomerOrder();
+        const cloudOrder = latestCloudCustomerOrder;
+
+        if (localOrder && cloudOrder && (localOrder.orderId === cloudOrder.orderId || localOrder.id === cloudOrder.id)) {
+          return isReviewedOrder(localOrder) && isPendingOrder(cloudOrder) ? { ...cloudOrder, ...localOrder } : { ...localOrder, ...cloudOrder };
+        }
+
+        return localOrder || cloudOrder;
+      }
+
+      function orderStatusClass(order) {
+        const status = `${order.status || ""} ${order.branchStatus || ""}`.toLowerCase();
+        if (status.includes("declined")) return "declined";
+        if (status.includes("sent")) return "sent";
+        if (status.includes("shipped")) return "shipped";
+        if (status.includes("completed")) return "completed";
+        if (status.includes("accepted")) return "accepted";
+        return "pending";
+      }
+
+      function customerOrderTitle(order) {
+        if (order.status === "Declined") return "Order declined";
+        if (order.status === "Accepted") return "Order accepted";
+        if (order.status === "Sent to Branch") return "Order sent to branch";
+        if (order.branchStatus === "Shipped") return "Order shipped";
+        if (order.branchStatus === "Completed") return "Order completed";
+        return "Order pending admin review";
+      }
+
+      function estimatedArrival(order) {
+        if (order.estimatedDeliveryDate) return order.estimatedDeliveryDate;
+        if (order.estimatedShipDate) return order.estimatedShipDate;
+
+        const base = order.reviewedAtLocal || order.sentToBranchAtLocal || order.createdAtLocal || new Date().toISOString();
+        const date = new Date(base);
+        date.setDate(date.getDate() + 5);
+        return date.toLocaleDateString("en-MY", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+      }
+
+      function mapsDirectionsUrl(order) {
+        const branchAddress = branchLocations[order.branch] || order.branch || "";
+        const delivery = order.deliveryAddress || "";
+        const params = new URLSearchParams({
+          api: "1",
+          origin: branchAddress,
+          destination: delivery,
+          travelmode: "driving",
+        });
+        return `https://www.google.com/maps/dir/?${params.toString()}`;
+      }
+
+      function routeMapHtml(order) {
+        if (order.status !== "Accepted" && order.status !== "Sent to Branch" && order.branchStatus !== "Shipped") {
+          return "";
+        }
+
+        const branchAddress = branchLocations[order.branch] || order.branch || "Selected branch";
+        const delivery = order.deliveryAddress || "Customer address";
+
+        return `
+          <div class="route-map">
+            <div class="route-visual" aria-label="Delivery route map from branch to customer address">
+              <div class="map-pin branch">
+                <strong>${order.branch || "Branch"}</strong>
+                <span>${branchAddress}</span>
+              </div>
+              <div class="map-pin customer">
+                <strong>Your address</strong>
+                <span>${delivery}</span>
+              </div>
+            </div>
+            <div class="route-meta">
+              <strong>Expected delivery arrival: ${estimatedArrival(order)}</strong>
+              <small>Route shown from ${order.branch || "branch"} to your delivery address. The branch can still adjust the courier timing after packing.</small>
+              <a href="${mapsDirectionsUrl(order)}" target="_blank" rel="noopener">Open route in Google Maps</a>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderCustomerOrderStatus(order) {
+        if (!order) {
+          customerOrderStatus.className = "order-status-card";
+          customerOrderStatus.innerHTML = "";
+          return;
+        }
+
+        const statusClass = orderStatusClass(order);
+        const reason = order.status === "Declined" ? order.adminNote || order.customerMessage || "The admin team declined this order. Please contact support for the reason." : "";
+        const acceptedMessage = order.status === "Accepted"
+          ? order.customerMessage || `Your Breo order has been accepted. Expected delivery arrival: ${estimatedArrival(order)}.`
+          : "";
+        const branchMessage = order.status === "Sent to Branch"
+          ? order.customerMessage || `Your Breo order was accepted and sent to ${order.branch}. The branch is preparing it for shipment.`
+          : "";
+        const pendingMessage = order.status === "Pending Admin Review" ? "Admin has received your paid order and is checking the product codes, branch, and delivery details." : "";
+        const branchStatus = order.branchStatus && order.branchStatus !== "Waiting for admin" ? `Branch status: ${order.branchStatus}` : "";
+        const mainMessage = reason || acceptedMessage || branchMessage || order.customerMessage || pendingMessage || "Your order status has been updated.";
+
+        customerOrderStatus.className = `order-status-card show ${statusClass}`;
+        customerOrderStatus.innerHTML = `
+          <h4>${customerOrderTitle(order)}</h4>
+          <p>${mainMessage}</p>
+          <small>Order ID: ${order.orderId || order.id} | ${order.branch || "Branch pending"}${branchStatus ? ` | ${branchStatus}` : ""}</small>
+          <a class="button primary" href="track-order.html">Track order</a>
+          ${routeMapHtml(order)}
+        `;
+
+        if (order.status === "Accepted") {
+          flowStatus.textContent = "Accepted";
+          const noticeKey = `${order.orderId || order.id}:Accepted`;
+          if (lastCustomerStatusNotice !== noticeKey) {
+            lastCustomerStatusNotice = noticeKey;
+            addMessage(`<strong>Order accepted.</strong><br />Track the delivery date and route here: <a href="track-order.html">Track order</a>`);
+          }
+        } else if (order.status === "Declined") {
+          flowStatus.textContent = "Declined";
+        } else if (order.status === "Sent to Branch") {
+          flowStatus.textContent = "On its way soon";
+        }
+      }
+
+      async function startCustomerOrderWatch() {
+        if (customerOrderUnsubscribe) {
+          customerOrderUnsubscribe();
+          customerOrderUnsubscribe = null;
+        }
+        latestCloudCustomerOrder = null;
+
+        if (localStatusTimer) {
+          window.clearInterval(localStatusTimer);
+          localStatusTimer = null;
+        }
+
+        if (!state.member) {
+          renderCustomerOrderStatus(null);
+          return;
+        }
+
+        renderCustomerOrderStatus(bestCustomerOrder());
+        localStatusTimer = window.setInterval(() => renderCustomerOrderStatus(bestCustomerOrder()), 3000);
+
+        try {
+          await initFirebase();
+          if (!firestoreDb || !firestoreFns?.onSnapshot) return;
+
+          customerOrderUnsubscribe = firestoreFns.onSnapshot(firestoreFns.collection(firestoreDb, "orders"), (snapshot) => {
+            const memberEmail = normalizeEmail(state.member.email);
+            const lastOrderId = localStorage.getItem("breoLastOrderId");
+            const orders = snapshot.docs
+              .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+              .filter((order) => normalizeEmail(order.customerEmail || "") === memberEmail || order.orderId === lastOrderId)
+              .sort((a, b) => {
+                const aTime = a.reviewedAtLocal || a.sentToBranchAtLocal || a.createdAtLocal || a.orderId || "";
+                const bTime = b.reviewedAtLocal || b.sentToBranchAtLocal || b.createdAtLocal || b.orderId || "";
+                return bTime.localeCompare(aTime);
+              });
+
+            latestCloudCustomerOrder = orders[0] || null;
+            renderCustomerOrderStatus(bestCustomerOrder());
+          });
+        } catch (error) {
+          addMessage(`I could not watch Firestore order updates yet: ${error.message}`);
+        }
+      }
+
+      function addMessage(message, type = "assistant") {
+        const paragraph = document.createElement("div");
+        paragraph.className = type === "user" ? "user-message" : "assistant-message";
+        paragraph.innerHTML = message;
+        if (state.language === "zh") translateSubtree(paragraph);
+        helperLog.append(paragraph);
+        helperLog.scrollTop = helperLog.scrollHeight;
+      }
+
+      function addGlobalHelperMessage(message, type = "assistant") {
+        const bubble = document.createElement("p");
+        bubble.className = type === "user" ? "floating-helper-bubble user" : "floating-helper-bubble";
+        bubble.textContent = message;
+        if (!globalHelperManuallyMinimized) {
+          globalHelper.classList.remove("minimized");
+          globalHelperToggle.textContent = "-";
+        }
+        globalHelperLog.append(bubble);
+        if (!globalHelperManuallyMinimized) {
+          globalHelperLog.scrollTop = globalHelperLog.scrollHeight;
+        }
+      }
+
+      function globalHelperReply(rawQuestion) {
+        const question = rawQuestion.toLowerCase();
+        if (question.includes("product") || question.includes("massage") || question.includes("neck") || question.includes("eye") || question.includes("mini")) {
+          if (state.language === "zh") return "产品选择：请用产品卡片比较价格和用途。筋膜枪适合深层酸痛，颈部按摩器适合久坐肩颈紧绷，眼部按摩器适合屏幕疲劳，迷你手持款适合便携全身舒缓。";
+          return "For products: use the collection cards to compare price and purpose. Massage Gun is for deep soreness, Neck Massager is for desk tension, Eye Massager is for screen fatigue, and Mini Handheld is for compact all-round comfort.";
+        }
+        if (question.includes("quiz") || question.includes("match") || question.includes("recommend")) {
+          if (state.language === "zh") return "测验说明：先选择最需要舒缓的部位。您可以随时更改任何答案，推荐结果会根据最新选择更新。";
+          return "For the quiz: choose what bothers you most first. You can change any answer anytime, and the recommendation updates based on your latest choices.";
+        }
+        if (question.includes("quantity") || question.includes("qty") || question.includes("order") || question.includes("checkout")) {
+          if (state.language === "zh") return "结账说明：至少选择一个产品数量，确认是否有销售员代码，然后点击 AI 助手处理订单。";
+          return "For checkout: add at least one product quantity, choose whether you have a sales associate code, then press Ask AI helper to prepare the order ticket.";
+        }
+        if (question.includes("branch") || question.includes("bukit") || question.includes("1u") || question.includes("utama")) {
+          if (state.language === "zh") return "分店选择：Bukit Jalil 适合吉隆坡南部和自取协调。1U 适合 PJ、Damansara 和 Klang Valley 北部。";
+          return "For branch choice: Bukit Jalil is best for KL south and pickup coordination. 1U is best for PJ, Damansara, and north Klang Valley.";
+        }
+        if (question.includes("payment") || question.includes("card") || question.includes("wallet") || question.includes("atome")) {
+          if (state.language === "zh") return "付款说明：AI 助手准备订单后，付款和配送栏位会解锁。之后可选择信用卡 / 借记卡、电子钱包或 Atome。";
+          return "For payment: the payment and delivery fields unlock after the AI helper prepares the order ticket. Then choose card, e-wallet, or Atome.";
+        }
+        if (question.includes("delivery") || question.includes("address") || question.includes("ship")) {
+          if (state.language === "zh") return "配送说明：开始输入地区或地址。如页面出现建议地点，请选择它，系统会自动协助选择适合的分店路线。";
+          return "For delivery: start typing your area or address. If the page suggests a location, choose it so the branch route can be selected automatically.";
+        }
+        if (question.includes("voucher") || question.includes("reward") || question.includes("discount")) {
+          if (state.language === "zh") return "优惠券说明：已验证会员可在分店发货前使用欢迎优惠或生日优惠。";
+          return "For vouchers: verified members can use the welcome reward or birthday reward shown in the voucher section before branch fulfilment.";
+        }
+        if (state.language === "zh") return "请告诉我您现在正在选择或输入什么：产品、测验、数量、分店、付款、配送、优惠券或订单状态。";
+        return "Tell me what you are choosing or typing now: product, quiz, quantity, branch, payment, delivery, voucher, or order status.";
+      }
+
+      function answerGlobalHelper(question) {
+        const trimmed = question.trim();
+        if (!trimmed) return;
+        addGlobalHelperMessage(localizedGlobalQuestion(trimmed), "user");
+        addGlobalHelperMessage(globalHelperReply(trimmed));
+      }
+
+      function videoGuideHtml(guides) {
+        return `
+          <div class="video-guides">
+            ${guides
+              .map(
+                (guide) => `
+                  <div class="video-guide">
+                    <strong>${t(guide.title)}</strong>
+                    <span>${t(guide.steps)}</span>
+                    <a href="${guide.videoUrl}" target="_blank" rel="noopener">${state.language === "zh" ? "观看使用视频" : "Watch video guide"}</a>
+                  </div>
+                `
+              )
+              .join("")}
+          </div>
+        `;
+      }
+
+      function showSalesAssociateOptions() {
+        const choices = salesAssociates.map((associate) => `
+          <button class="associate-choice" type="button" data-associate="${associate.name}">
+            <span class="associate-name">${associate.name}</span>
+            <a class="associate-phone" href="tel:${associate.phone.replace(/\s/g,'')}" onclick="event.stopPropagation()">${associate.phone}</a>
+          </button>
+        `).join("");
+        const intro = state.language === "zh"
+          ? "可以，您可以联系真人销售员。请选择一位销售员，然后输入您的电话号码，方便他们打电话或 WhatsApp 您。"
+          : "Sure, you can contact a real person. Choose a sales associate below, then type your phone number so they can call or WhatsApp you.";
+        const phonePlaceholder = state.language === "zh" ? "您的电话号码，例如 +6012..." : "Your phone number, example +6012...";
+        const sendLabel = state.language === "zh" ? "发送联系请求" : "Send contact request";
+        addMessage(`
+          ${intro}
+          <div class="associate-options">${choices}</div>
+          <div class="associate-form">
+            <input id="associateContactPhone" type="tel" placeholder="${phonePlaceholder}" />
+            <button class="button primary full" type="button" id="submitAssociateContact">${sendLabel}</button>
+          </div>
+        `);
+      }
+
+      async function saveAssociateRequest(associate, phone) {
+        const request = {
+          associate,
+          phone,
+          customerName: state.member?.name || "Guest customer",
+          customerEmail: state.member?.email || "",
+          createdAtLocal: new Date().toISOString(),
+          status: "New contact request",
+        };
+        const requests = JSON.parse(localStorage.getItem("breoAssociateRequests") || "[]");
+        localStorage.setItem("breoAssociateRequests", JSON.stringify([request, ...requests]));
+
+        try {
+          await initFirebase();
+          if (firestoreDb && firestoreFns) {
+            await firestoreFns.addDoc(firestoreFns.collection(firestoreDb, "associateRequests"), {
+              ...request,
+              createdAt: firestoreFns.serverTimestamp(),
+            });
+          }
+        } catch (error) {
+          addMessage(`I saved the contact request locally, but Firebase did not receive it yet: ${error.message}`);
+        }
+      }
+
+      function handleHelperQuestion(rawQuestion) {
+        const question = rawQuestion.trim();
+        if (!question) return;
+
+        addMessage(question, "user");
+        const normalized = question.toLowerCase();
+        const hasChinese = /[\u3400-\u9fff]/.test(question);
+        const replyChinese = state.language === "zh" || hasChinese;
+
+        if (
+          normalized.includes("real person") ||
+          normalized.includes("contact") ||
+          normalized.includes("sales associate") ||
+          normalized.includes("human") ||
+          normalized.includes("person") ||
+          /真人|人工|客服|销售|聯絡|联系|人/.test(question)
+        ) {
+          if (hasChinese && state.language !== "zh") {
+            state.language = "zh";
+            localStorage.setItem("breoLanguage", state.language);
+            applyLanguage();
+          }
+          showSalesAssociateOptions();
+          return;
+        }
+
+        const matchingGuides = productGuides.filter((guide) =>
+          guide.keywords.some((keyword) => normalized.includes(keyword)) ||
+          (guide.title.includes("Massage Gun") && /筋膜枪|按摩枪|肌肉/.test(question)) ||
+          (guide.title.includes("Neck") && /颈|頸|脖子/.test(question)) ||
+          (guide.title.includes("Eye") && /眼|眼部|眼睛/.test(question)) ||
+          (guide.title.includes("Mini") && /迷你|手持|便携|便攜/.test(question))
+        );
+        if (normalized.includes("how") || normalized.includes("use") || normalized.includes("video") || normalized.includes("guide") || /怎么|如何|使用|视频|教學|教学|教程/.test(question)) {
+          if (hasChinese && state.language !== "zh") {
+            state.language = "zh";
+            localStorage.setItem("breoLanguage", state.language);
+            applyLanguage();
+          }
+          const guideIntro = replyChinese
+            ? `我可以帮您了解产品使用方式。以下是${matchingGuides.length === 1 ? "最适合的视频指南" : "相关视频指南"}：`
+            : `I can help with product usage. Here ${matchingGuides.length === 1 ? "is the best video guide" : "are the video guides"}:`;
+          addMessage(`${guideIntro}${videoGuideHtml(matchingGuides.length ? matchingGuides : productGuides)}`);
+          return;
+        }
+
+        if (normalized.includes("delivery") || normalized.includes("ship") || /配送|送货|送貨|发货|發貨|多久|到货|到貨/.test(question)) {
+          addMessage(replyChinese
+            ? "管理员接受订单后，您的客户页面会显示预计送达日期，以及从所选分店到您地址的路线。"
+            : "After admin accepts the order, your dashboard will show the expected delivery arrival date and a route from the selected branch to your address.");
+          return;
+        }
+
+        if (normalized.includes("payment") || normalized.includes("pay") || /付款|支付|信用卡|借记卡|電子錢包|电子钱包|atome|分期/.test(question)) {
+          addMessage(replyChinese
+            ? "AI 助手准备订单后，您可以在付款区选择信用卡 / 借记卡、电子钱包或 Atome 分期。"
+            : "You can choose Credit / Debit Card, E-Wallet, or Atome Installments in the payment section after the AI helper prepares your order.");
+          return;
+        }
+
+        addMessage(replyChinese
+          ? "我可以帮您查看产品视频、付款、配送、订单状态，或帮您联系 Louis、Kowaii、Win、Rongyi、SY 销售团队。"
+          : "I can help with product videos, payment, delivery, order status, or connect you to Louis, Kowaii, Win, Rongyi, or SY from the sales team.");
+      }
+
+      function refocusHelperInput() {
+        window.requestAnimationFrame(() => {
+          helperInput.disabled = false;
+          helperInput.focus();
+        });
+      }
+
+      function associateFromCode(code) {
+        return salesAssociateCodes[code.trim().toUpperCase()] || "";
+      }
+
+      function associateDisplayNameFromCode(code) {
+        return salesAssociateDisplayNames[code.trim().toUpperCase()] || associateFromCode(code);
+      }
+
+      function applyMemberAssociateAssignment() {
+        const code = state.member?.salesAssociateCode?.trim().toUpperCase() || "";
+        if (!code || !associateFromCode(code)) return;
+        state.associateCode = code;
+        state.assignedSalesMember = associateFromCode(code);
+        state.assignedSalesMemberDisplay = associateDisplayNameFromCode(code);
+        state.member.assignedSalesMember = state.assignedSalesMember;
+        state.member.assignedSalesMemberDisplay = state.assignedSalesMemberDisplay;
+        state.member.assignmentSource = state.member.assignmentSource || "member associate code";
+        hasCode.checked = true;
+        associateCode.disabled = false;
+        associateCode.value = code;
+      }
+
+      function announceMemberAssociateAssignment() {
+        if (!state.assignedSalesMemberDisplay || !state.associateCode) return;
+        addMessage(state.language === "zh"
+          ? `<strong>已连接销售员会员代码。</strong><br />代码 <strong>${state.associateCode}</strong> 已分配给 <strong>${state.assignedSalesMemberDisplay}</strong>。产品订单和销售支持会安排在这位销售员名下。`
+          : `<strong>Associate member code connected.</strong><br />Code <strong>${state.associateCode}</strong> is assigned to <strong>${state.assignedSalesMemberDisplay}</strong>. Product orders and sales support will be arranged under this associate.`);
+      }
+
+      function setBranch(branchName) {
+        const branchInput = document.querySelector(`input[name='branch'][value='${branchName}']`);
+        if (branchInput) branchInput.checked = true;
+      }
+
+      function renderLocationSuggestions(query) {
+        const normalized = query.trim().toLowerCase();
+
+        if (normalized.length < 2 || deliveryAddress.disabled) {
+          locationSuggestions.classList.remove("show");
+          locationSuggestions.innerHTML = "";
+          return;
+        }
+
+        const matches = deliveryLocations
+          .filter((location) => {
+            const searchable = `${location.area} ${location.address}`.toLowerCase();
+            return searchable.includes(normalized) || (normalized.includes("ouchong") && location.area.toLowerCase() === "puchong");
+          })
+          .slice(0, 5);
+
+        if (!matches.length) {
+          locationSuggestions.innerHTML = `
+            <button class="location-option" type="button" data-custom-address="${query}">
+              <strong>Use typed address</strong>
+              <span>${query}</span>
+            </button>
+          `;
+          locationSuggestions.classList.add("show");
+          return;
+        }
+
+        locationSuggestions.innerHTML = matches
+          .map(
+            (location, index) => `
+              <button class="location-option" type="button" data-location-index="${index}">
+                <strong>${location.area} | Ship from ${location.branch}</strong>
+                <span>${location.address}</span>
+              </button>
+            `
+          )
+          .join("");
+
+        locationSuggestions.querySelectorAll("[data-location-index]").forEach((button) => {
+          const location = matches[Number(button.dataset.locationIndex)];
+          button.addEventListener("click", () => {
+            deliveryAddress.value = location.address;
+            setBranch(location.branch);
+            locationSuggestions.classList.remove("show");
+            addMessage(`Delivery location selected: ${location.area}. I will route this order from ${location.branch}.`);
+          });
+        });
+
+        locationSuggestions.classList.add("show");
+      }
+
+      function openModal(modal) {
+        modal.classList.add("open");
+      }
+
+      function closeModal(modal) {
+        modal.classList.remove("open");
+      }
+
+      function orderReviewHtml() {
+        const items = cartItems()
+          .map((item) => `${item.quantity} x ${item.name} | ${item.code} (${formatMoney(item.subtotal)})`)
+          .join("<br />");
+        const address = deliveryAddress.value.trim();
+        const note = deliveryNote.value.trim() || "No special delivery note.";
+
+        return `
+          <strong>Member:</strong> ${state.member.name} (${state.member.phone})<br />
+          <strong>Products:</strong><br />${items}<br />
+          <strong>Total:</strong> ${formatMoney(cartTotal())}<br />
+          <strong>Ship from:</strong> ${selectedBranch()}<br />
+          <strong>Payment:</strong> ${selectedPayment()}<br />
+          <strong>Delivery address:</strong> ${address}<br />
+          <strong>Delivery note:</strong> ${note}
+        `;
+      }
+
+      function processOrderFlow() {
+        const items = cartItems();
+        const branch = selectedBranch();
+        const memberCode = state.member?.salesAssociateCode || "";
+        const code = (hasCode.checked ? associateCode.value.trim() : memberCode).trim();
+
+        if (!state.member) {
+          addMessage("Please login as a member first. I need the member name and phone before preparing the Breo order.");
+          return;
+        }
+
+        if (!state.member.verified) {
+          addMessage("Please verify your email from your inbox before I prepare the Breo order. After clicking the Firebase verification link, return here and click 'I verified my email'.");
+          return;
+        }
+
+        if ((hasCode.checked || memberCode) && !code) {
+          addMessage("The associate code option is switched on, but no code is entered yet. Add the code or use Skip code.");
+          return;
+        }
+
+        if (code && !associateFromCode(code)) {
+          addMessage("That sales associate code is not recognized yet. Try 0000 for Kowaii, or skip the code if the customer does not have one.");
+          return;
+        }
+
+        if (!items.length) {
+          addMessage("Choose at least one Breo product so I can prepare the order ticket.");
+          return;
+        }
+
+        state.associateCode = code;
+        state.assignedSalesMember = associateFromCode(code);
+        state.assignedSalesMemberDisplay = code ? associateDisplayNameFromCode(code) : "";
+        state.skippedCode = !code;
+        state.orderProcessed = true;
+
+        const orderId = `BREO-${Date.now().toString().slice(-6)}`;
+        const itemLines = items.map((item) => `${item.quantity} x ${item.name} (${formatMoney(item.subtotal)})`).join("<br />");
+        const codeLine = code ? `Sales associate code recorded: <strong>${code}</strong>. Assigned sales member: <strong>${state.assignedSalesMemberDisplay || state.assignedSalesMember}</strong>. Product order and sales support will be arranged under this associate.` : "No sales associate code. Order can proceed without commission tagging.";
+        const branchNote = branch === "Bukit Jalil" ? "Bukit Jalil branch should prepare KL south fulfilment or pickup coordination." : "1U branch should prepare PJ, Damansara, or north Klang Valley fulfilment.";
+
+        addMessage(`Member ${state.member.name} asked me to process an order from ${branch}.`, "user");
+        if (code) {
+          addMessage(`You chose the sales associate member <strong>${associateDisplayNameFromCode(code)}</strong> with code <strong>${code}</strong>. I will attach this member to the order.`);
+        }
+        addMessage(
+          `<strong>Order ticket ${orderId} prepared.</strong><br /><br />${itemLines}<br /><br />Estimated total: <strong>${formatMoney(cartTotal())}</strong><br />${codeLine}<br />Ship from: <strong>${branch}</strong><br />${branchNote}<br /><br />Next step: customer connects payment, then branch staff confirms stock and ships.`
+        );
+        flowStatus.textContent = "Order processed";
+        updatePaymentLock();
+      }
+
+      function confirmPaymentAndShip() {
+        if (!state.orderProcessed) {
+          addMessage("Please ask the AI helper to process the order before connecting payment.");
+          return;
+        }
+
+        const address = deliveryAddress.value.trim();
+        const note = deliveryNote.value.trim();
+
+        if (!address) {
+          addMessage("Add the customer delivery address before sending the order to the branch.");
+          return;
+        }
+
+        orderReview.innerHTML = orderReviewHtml();
+        openModal(orderConfirmModal);
+      }
+
+      function openPaymentPopup() {
+        paymentReference.value = "";
+        paymentEmail.value = "";
+        paymentReview.innerHTML = orderReviewHtml();
+        closeModal(orderConfirmModal);
+        openModal(paymentModal);
+      }
+
+      async function saveOrderToBranch({ paymentId, payment, reference, receiptEmail, address, note }) {
+        const orderId = `BREO-${Date.now().toString().slice(-6)}`;
+        const order = {
+          id: orderId,
+          orderId,
+          customerName: state.member.name,
+          customerEmail: state.member.email,
+          customerPhone: state.member.phone || "",
+          customerVerified: !!state.member.verified,
+          branch: selectedBranch(),
+          salesAssociateCode: state.associateCode || "",
+          assignedFulfilmentMember: state.assignedSalesMember || "",
+          assignedSalesMemberDisplay: state.assignedSalesMemberDisplay || "",
+          assignmentSource: state.assignedSalesMember ? (state.member?.assignmentSource || "sales associate code") : "",
+          products: orderProducts(),
+          total: cartTotal(),
+          paymentId,
+          paymentMethod: payment,
+          paymentReference: reference || "Payment reference pending",
+          receiptEmail: receiptEmail || "",
+          paymentStatus: "Paid",
+          deliveryAddress: address,
+          deliveryNote: note || "",
+          status: "Pending Admin Review",
+          adminDecision: "Pending",
+          branchStatus: "Waiting for admin",
+          createdAtLocal: new Date().toISOString(),
+        };
+
+        const localOrders = JSON.parse(localStorage.getItem("breoLocalOrders") || "[]");
+        localStorage.setItem("breoLocalOrders", JSON.stringify([order, ...localOrders]));
+        localStorage.setItem("breoLastOrderId", orderId);
+        renderCustomerOrderStatus(order);
+
+        await initFirebase();
+
+        if (!firestoreDb || !firestoreFns) {
+          addMessage("Firestore is not connected yet, so I saved the order locally. Admin dashboard on this laptop can still see it.");
+          return orderId;
+        }
+
+        await firestoreFns.setDoc(firestoreFns.doc(firestoreDb, "orders", orderId), {
+          ...order,
+          createdAt: firestoreFns.serverTimestamp(),
+        });
+        return orderId;
+      }
+
+      async function completePaymentAndShip() {
+        const reference = paymentReference.value.trim();
+        const email = paymentEmail.value.trim();
+        const address = deliveryAddress.value.trim();
+        const note = deliveryNote.value.trim();
+        const payment = selectedPayment();
+        const branch = selectedBranch();
+        const shippingNote = note || "No special delivery note.";
+        const paymentId = `PAY-${Date.now().toString().slice(-6)}`;
+
+        if (!reference) {
+          addMessage("Please enter a card or wallet reference in the payment popup before completing payment.");
+          return;
+        }
+
+        closeModal(paymentModal);
+        let savedOrderId = null;
+
+        try {
+          savedOrderId = await saveOrderToBranch({ paymentId, payment, reference, receiptEmail: email, address, note });
+        } catch (error) {
+          addMessage(`Branch notification failed: ${error.message}. The order is confirmed on screen, but Firestore did not receive it.`);
+        }
+
+        addMessage(`Customer confirmed the order and completed the ${payment} payment step.`, "user");
+        addMessage(
+          `<strong>Payment confirmed. Order sent for admin review.</strong><br /><br />Order ID: <strong>${savedOrderId || "Local only"}</strong><br />Payment ID: <strong>${paymentId}</strong><br />Method: <strong>${payment}</strong><br />Reference: <strong>${reference}</strong><br />Receipt email: <strong>${email || "Not provided"}</strong><br />Total paid: <strong>${formatMoney(cartTotal())}</strong><br />Delivery address: <strong>${address}</strong><br />Delivery note: ${shippingNote}<br /><br />Admin action: review this order, accept or decline it, then send accepted orders to <strong>${branch}</strong> for shipping.`
+        );
+        flowStatus.textContent = "Pending admin review";
+      }
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const email = document.querySelector("#loginEmail").value;
+        const password = document.querySelector("#loginPassword").value;
+        const phone = document.querySelector("#loginPhone").value.trim();
+        const auth = await requireFirebase();
+
+        if (!auth) {
+          return;
+        }
+
+        try {
+          const credential = await firebaseFns.signInWithEmailAndPassword(auth, email, password);
+          await firebaseFns.reload(credential.user);
+          const member = findMemberByEmail(email) || firebaseMemberFromUser(credential.user, { phone });
+
+          if (phone) member.phone = phone;
+          member.verified = credential.user.emailVerified;
+          if (state.member?.salesAssociateCode && !member.salesAssociateCode) {
+            member.salesAssociateCode = state.member.salesAssociateCode;
+            member.assignedSalesMember = state.member.assignedSalesMember;
+            member.assignedSalesMemberDisplay = state.member.assignedSalesMemberDisplay;
+            member.assignmentSource = state.member.assignmentSource;
+          }
+
+          if (!findMemberByEmail(email)) {
+            state.members.push(member);
+          }
+          saveMembers();
+
+          if (!credential.user.emailVerified) {
+            await firebaseFns.signOut(auth);
+            state.member = null;
+            localStorage.removeItem("breoMember");
+            updateMemberState();
+            updatePaymentLock();
+            addMessage("Login blocked because this email is not verified yet. Open the Firebase verification email in your inbox, click the link, then login again with your email and password.");
+            return;
+          }
+
+          loginMember(member, `Email verified. Welcome back, ${memberDisplayName(member)}. You can now choose products and continue the Breo order.`);
+        } catch (error) {
+          addMessage(`Login failed: ${error.message}`);
+        }
+      });
+
+      registerForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const email = document.querySelector("#registerEmail").value;
+        const password = document.querySelector("#registerPassword").value;
+        const auth = await requireFirebase();
+
+        if (!auth) {
+          return;
+        }
+
+        try {
+          const member = {
+            firstName: document.querySelector("#firstName").value.trim(),
+            lastName: document.querySelector("#lastName").value.trim(),
+            email: normalizeEmail(email),
+            phone: document.querySelector("#registerPhone").value.trim(),
+            birthday: document.querySelector("#birthday").value,
+            gender: document.querySelector("#gender").value,
+            provider: "Firebase",
+            verified: false,
+            joinedAt: new Date().toISOString(),
+          };
+          const credential = await firebaseFns.createUserWithEmailAndPassword(auth, email, password);
+          await firebaseFns.updateProfile(credential.user, { displayName: memberDisplayName(member) });
+          await firebaseFns.sendEmailVerification(credential.user);
+
+          const existing = findMemberByEmail(email);
+          if (existing) {
+            Object.assign(existing, member);
+          } else {
+            state.members.push(member);
+          }
+          saveMembers();
+          registerForm.reset();
+          setAuthMode("login");
+          document.querySelector("#loginEmail").value = member.email;
+          document.querySelector("#loginPassword").value = "";
+          postRegisterNotice.classList.remove("hidden");
+          await firebaseFns.signOut(auth);
+          state.member = null;
+          localStorage.removeItem("breoMember");
+          updateMemberState();
+          updatePaymentLock();
+          addMessage(`Member profile created for ${memberDisplayName(member)}. I sent a Firebase verification link to ${member.email}. Please verify from your inbox first, then come back and login again with your email and password.`);
+        } catch (error) {
+          addMessage(`Member creation failed: ${error.message}`);
+        }
+      });
+
+      logoutButton.addEventListener("click", async () => {
+        if (firebaseAuth && firebaseFns) {
+          await firebaseFns.signOut(firebaseAuth);
+        }
+        state.member = null;
+        state.orderProcessed = false;
+        localStorage.removeItem("breoMember");
+        localStorage.removeItem("breoLastOrderId");
+        loginForm.reset();
+        registerForm.reset();
+        updateMemberState();
+        updatePaymentLock();
+        startCustomerOrderWatch();
+        addMessage("Member logged out. New customers can login before placing the next order.");
+        window.location.href = "index.html";
+      });
+
+      memberStatus.addEventListener("click", () => {
+        memberDropdown.classList.toggle("open");
+      });
+
+      memberSettingsButton.addEventListener("click", () => {
+        if (!state.member) {
+          addMessage("Login first, then your member settings will show your email, phone, birthday, and verification status.");
+          memberDropdown.classList.remove("open");
+          return;
+        }
+
+        addMessage(`<strong>Member settings</strong><br />Name: ${state.member.name}<br />Email: ${state.member.email}<br />Phone: ${state.member.phone || "No phone"}<br />Birthday: ${state.member.birthday || "No birthday"}<br />Status: ${state.member.verified ? "Email verified" : "Email not verified"}`);
+        memberDropdown.classList.remove("open");
+      });
+
+      memberMenuLogout.addEventListener("click", () => {
+        memberDropdown.classList.remove("open");
+        logoutButton.click();
+      });
+
+      languageSelect.addEventListener("change", () => {
+        state.language = languageSelect.value;
+        localStorage.setItem("breoLanguage", state.language);
+        applyLanguage();
+        addMessage(state.language === "zh" ? "语言已切换为中文。" : "Language switched to English.");
+      });
+
+      closePromoModal.addEventListener("click", closeMemberPromoPopup);
+      viewVouchersLink.addEventListener("click", closeMemberPromoPopup);
+      copyPromoCode.addEventListener("click", () => copyCurrentPromoCode(copyPromoCode));
+      copyVoucherButton.addEventListener("click", () => copyCurrentPromoCode(copyVoucherButton));
+      showVoucherPopup.addEventListener("click", showMemberPromoPopup);
+
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".member-menu")) {
+          memberDropdown.classList.remove("open");
+        }
+      });
+
+      showLogin.addEventListener("click", () => setAuthMode("login"));
+      showRegister.addEventListener("click", () => setAuthMode("register"));
+
+      googleLogin.addEventListener("click", () => {
+        const googleMember = {
+          firstName: "Google",
+          lastName: "Member",
+          email: "google.member@breo-demo.com",
+          phone: "+60170000001",
+          birthday: "1999-01-01",
+          gender: "Prefer not to say",
+          provider: "Google",
+          verified: true,
+          joinedAt: new Date().toISOString(),
+        };
+        const existing = findMemberByEmail(googleMember.email);
+        if (!existing) {
+          state.members.push(googleMember);
+          saveMembers();
+        }
+        loginMember(existing || googleMember, "Connected with Google demo sign-in. Member email verified for Breo checkout.");
+      });
+
+      appleLogin.addEventListener("click", () => {
+        const appleMember = {
+          firstName: "Apple",
+          lastName: "Member",
+          email: "apple.member@breo-demo.com",
+          phone: "+60170000002",
+          birthday: "1999-01-01",
+          gender: "Prefer not to say",
+          provider: "Apple",
+          verified: true,
+          joinedAt: new Date().toISOString(),
+        };
+        const existing = findMemberByEmail(appleMember.email);
+        if (!existing) {
+          state.members.push(appleMember);
+          saveMembers();
+        }
+        loginMember(existing || appleMember, "Connected with Apple demo sign-in. Member email verified for Breo checkout.");
+      });
+
+      resendVerification.addEventListener("click", async () => {
+        const auth = await requireFirebase();
+        if (!auth || !auth.currentUser) {
+          addMessage("Please login with Firebase first before resending the verification email.");
+          return;
+        }
+
+        await firebaseFns.sendEmailVerification(auth.currentUser);
+        addMessage(`Verification email resent to ${auth.currentUser.email}. Check the inbox and click the Firebase verification link.`);
+      });
+
+      refreshVerification.addEventListener("click", async () => {
+        const auth = await requireFirebase();
+        if (!auth || !auth.currentUser) {
+          addMessage("Please login again first, then I can refresh your Firebase verification status.");
+          return;
+        }
+
+        await firebaseFns.reload(auth.currentUser);
+        const user = auth.currentUser;
+        const member = findMemberByEmail(user.email) || firebaseMemberFromUser(user);
+        member.verified = user.emailVerified;
+        saveMembers();
+        if (!user.emailVerified) {
+          await firebaseFns.signOut(auth);
+          state.member = null;
+          localStorage.removeItem("breoMember");
+          updateMemberState();
+          updatePaymentLock();
+          addMessage("Email is still not verified. Please click the verification link in your inbox first, then login again with your email and password.");
+          return;
+        }
+
+        loginMember(member, "Email verification confirmed. You can now place a Breo order.");
+      });
+
+      hasCode.addEventListener("change", () => {
+        associateCode.disabled = !hasCode.checked;
+        if (!hasCode.checked) {
+          associateCode.value = "";
+          state.associateCode = "";
+        }
+      });
+
+      skipCode.addEventListener("click", () => {
+        hasCode.checked = false;
+        associateCode.value = "";
+        associateCode.disabled = true;
+        state.skippedCode = true;
+        addMessage("No sales associate code selected. I will continue the order without code tagging.");
+      });
+
+      helperChatForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        handleHelperQuestion(helperInput.value);
+        helperInput.value = "";
+        refocusHelperInput();
+      });
+
+      document.querySelectorAll("[data-helper-prompt]").forEach((button) => {
+        button.addEventListener("click", () => {
+          handleHelperQuestion(button.dataset.helperPrompt);
+          refocusHelperInput();
+        });
+      });
+
+      globalHelperToggle.addEventListener("click", () => {
+        globalHelper.classList.toggle("minimized");
+        globalHelperManuallyMinimized = globalHelper.classList.contains("minimized");
+        localStorage.setItem("breoGlobalHelperMinimized", String(globalHelperManuallyMinimized));
+        globalHelperToggle.textContent = globalHelperManuallyMinimized ? "+" : "-";
+        if (!globalHelperManuallyMinimized) {
+          globalHelperLog.scrollTop = globalHelperLog.scrollHeight;
+        }
+      });
+
+      document.querySelectorAll("[data-global-help]").forEach((button) => {
+        button.addEventListener("click", () => answerGlobalHelper(button.dataset.globalHelp));
+      });
+
+      globalHelperForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        answerGlobalHelper(globalHelperInput.value);
+        globalHelperInput.value = "";
+      });
+
+      document.addEventListener("focusin", (event) => {
+        const field = event.target.closest("input, select, button, [data-quiz-question], [data-add-recommendation]");
+        if (!field || field.closest(".floating-helper") || field.closest(".helper-panel")) return;
+        const label = field.closest("label")?.textContent.trim() || field.textContent.trim() || field.placeholder || "";
+        const section = field.closest("section")?.id || "";
+        const context = `${section} ${label}`.trim();
+        if (context) addGlobalHelperMessage(`${localizedFocusPrefix(label || section)} ${globalHelperReply(context)}`);
+      });
+
+      helperLog.addEventListener("click", async (event) => {
+        const associateButton = event.target.closest("[data-associate]");
+        if (associateButton) {
+          helperLog.querySelectorAll("[data-associate]").forEach((button) => button.classList.toggle("active", button === associateButton));
+          helperLog.dataset.selectedAssociate = associateButton.dataset.associate;
+          addMessage(`Selected sales associate: ${associateButton.dataset.associate}. Add your phone number and tap Send contact request.`);
+          return;
+        }
+
+        if (event.target.id === "submitAssociateContact") {
+          const associate = helperLog.dataset.selectedAssociate;
+          const phoneInput = document.querySelector("#associateContactPhone");
+          const phone = phoneInput?.value.trim() || "";
+
+          if (!associate) {
+            addMessage("Please choose Louis, Kowaii, Win, Rongyi, or SY first.");
+            return;
+          }
+
+          if (!phone) {
+            addMessage("Please enter your phone number so the sales associate can contact you.");
+            return;
+          }
+
+          await saveAssociateRequest(associate, phone);
+          addMessage(`<strong>Contact request sent.</strong><br />${associate} will contact ${phone}.`);
+        }
+      });
+
+      processOrder.addEventListener("click", processOrderFlow);
+      confirmPayment.addEventListener("click", confirmPaymentAndShip);
+      deliveryAddress.addEventListener("input", (event) => {
+        renderLocationSuggestions(event.target.value);
+      });
+      locationSuggestions.addEventListener("click", (event) => {
+        const customButton = event.target.closest("[data-custom-address]");
+        if (!customButton) return;
+        deliveryAddress.value = customButton.dataset.customAddress;
+        locationSuggestions.classList.remove("show");
+        addMessage("Custom delivery address selected. Branch staff will confirm the best fulfilment branch before shipping.");
+      });
+      editOrderButton.addEventListener("click", () => closeModal(orderConfirmModal));
+      continuePaymentButton.addEventListener("click", openPaymentPopup);
+      backToReviewButton.addEventListener("click", () => {
+        closeModal(paymentModal);
+        openModal(orderConfirmModal);
+      });
+      completePaymentButton.addEventListener("click", completePaymentAndShip);
+
+      recommendationQuiz?.addEventListener("click", (event) => {
+        const answerButton = event.target.closest("[data-quiz-question]");
+        if (answerButton) {
+          state.quizAnswers[answerButton.dataset.quizQuestion] = Number.parseInt(answerButton.dataset.quizAnswer, 10);
+          renderQuiz();
+          translateSubtree(recommendationQuiz);
+          return;
+        }
+
+        const addButton = event.target.closest("[data-add-recommendation]");
+        if (addButton) {
+          addRecommendationToOrder(addButton.dataset.addRecommendation);
+        }
+      });
+
+      [promoModal, orderConfirmModal, paymentModal].forEach((modal) => {
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            if (modal === promoModal) {
+              closeMemberPromoPopup();
+            } else {
+              closeModal(modal);
+            }
+          }
+        });
+      });
+
+      document.querySelectorAll("input[name='branch']").forEach((input) => {
+        input.addEventListener("change", () => {
+          addMessage(`Branch selected: ${selectedBranch()}. I will route the order there when processing.`);
+        });
+      });
+
+      applyLanguage();
+      globalHelper.classList.toggle("minimized", globalHelperManuallyMinimized);
+      globalHelperToggle.textContent = globalHelperManuallyMinimized ? "+" : "-";
+      const pendingProductId = localStorage.getItem("breoPendingProductId");
+      if (pendingProductId) {
+        localStorage.removeItem("breoPendingProductId");
+        addRecommendationToOrder(pendingProductId);
+      }
+      updatePaymentLock();
+      startCustomerOrderWatch();
+      announceMemberAssociateAssignment();
+      if (state.member?.verified) {
+        window.setTimeout(showMemberPromoPopup, 450);
+      }
+    </script>
+  </body>
+</html>

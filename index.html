@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breo Malaysia | Member Access</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+      try {
+        const member = JSON.parse(localStorage.getItem("breoMember") || "null");
+        if (member?.verified) window.location.replace("main.html");
+      } catch (error) {
+        localStorage.removeItem("breoMember");
+      }
+    </script>
+    <style>
+      :root {
+        --ink: #171411;
+        --muted: #74685c;
+        --cream: #f7f0e4;
+        --paper: #fbf7ef;
+        --line: rgba(82, 58, 38, 0.18);
+        --wood: #5f3e27;
+        --wood-dark: #25160f;
+        --sage: #304a3a;
+        --gold: #c9a66b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(110deg, rgba(37, 22, 15, 0.92), rgba(95, 62, 39, 0.72)),
+          repeating-linear-gradient(90deg, #4d301f 0 28px, #5d3b26 28px 56px, #44291b 56px 84px);
+        color: var(--ink);
+        font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent 24%, rgba(255, 255, 255, 0.04) 54%, transparent),
+          radial-gradient(circle at 72% 16%, rgba(244, 224, 184, 0.22), transparent 28%);
+        mix-blend-mode: screen;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .access-shell {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(340px, 520px);
+        gap: clamp(28px, 6vw, 88px);
+        align-items: center;
+        min-height: 100vh;
+        padding: clamp(22px, 5vw, 72px);
+      }
+
+      .brand-panel {
+        color: white;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: clamp(42px, 8vw, 96px);
+        font-weight: 800;
+        font-size: 1.2rem;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        color: var(--gold);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 820px;
+        font-size: clamp(3.4rem, 8vw, 8rem);
+        line-height: 0.88;
+        letter-spacing: 0;
+      }
+
+      .brand-panel p:not(.eyebrow) {
+        max-width: 610px;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 1.06rem;
+        line-height: 1.75;
+      }
+
+      .product-plinth {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 12px;
+        max-width: 620px;
+        margin-top: 38px;
+      }
+
+      .product-plinth img {
+        width: 100%;
+        height: 180px;
+        object-fit: contain;
+        padding: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 28px 60px rgba(0, 0, 0, 0.22);
+      }
+
+      .product-plinth img:first-child {
+        grid-row: span 2;
+        height: 372px;
+      }
+
+      .access-card {
+        display: grid;
+        gap: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 8px;
+        padding: clamp(22px, 4vw, 34px);
+        background: rgba(251, 247, 239, 0.94);
+        box-shadow: 0 34px 90px rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(18px);
+      }
+
+      .access-card h2 {
+        margin: 0 0 8px;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1;
+      }
+
+      .access-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 6px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #efe4d4;
+      }
+
+      .tab,
+      .button {
+        min-height: 46px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 12px 16px;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .tab {
+        background: transparent;
+        color: var(--muted);
+      }
+
+      .tab.active {
+        background: white;
+        color: var(--ink);
+        box-shadow: 0 10px 24px rgba(68, 41, 27, 0.12);
+      }
+
+      form {
+        display: grid;
+        gap: 14px;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      input,
+      select {
+        width: 100%;
+        min-height: 46px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 11px 12px;
+        background: rgba(255, 255, 255, 0.78);
+        color: var(--ink);
+      }
+
+      .button.primary {
+        background: linear-gradient(135deg, var(--wood-dark), var(--wood));
+        color: white;
+      }
+
+      .button.secondary {
+        border-color: var(--line);
+        background: white;
+        color: var(--ink);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .notice {
+        display: grid;
+        gap: 8px;
+        padding: 14px;
+        border: 1px solid rgba(48, 74, 58, 0.24);
+        border-radius: 8px;
+        background: #eef4ec;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .notice strong {
+        color: var(--sage);
+      }
+
+      .status {
+        min-height: 24px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .floating-helper {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 20;
+        width: min(380px, calc(100vw - 36px));
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(251, 247, 239, 0.96);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(18px);
+      }
+
+      .floating-helper.minimized .floating-helper-body {
+        display: none;
+      }
+
+      .floating-helper-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        background: linear-gradient(135deg, var(--wood-dark), var(--wood));
+        color: white;
+      }
+
+      .floating-helper-header strong {
+        display: block;
+      }
+
+      .floating-helper-header span {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.82rem;
+      }
+
+      .floating-helper-toggle {
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .floating-helper-body {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .floating-helper-log {
+        display: grid;
+        gap: 8px;
+        max-height: 190px;
+        overflow: auto;
+      }
+
+      .helper-bubble {
+        margin: 0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        background: #f1e5d2;
+        color: var(--ink);
+        font-size: 0.9rem;
+        line-height: 1.45;
+      }
+
+      .helper-bubble.user {
+        justify-self: end;
+        background: var(--sage);
+        color: white;
+      }
+
+      .floating-helper-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .floating-helper-chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 10px;
+        background: white;
+        color: var(--wood-dark);
+        cursor: pointer;
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+
+      .floating-helper-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+      }
+
+      .floating-helper-form input {
+        min-height: 42px;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 960px) {
+        .access-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .brand {
+          margin-bottom: 42px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .access-shell {
+          padding: 18px;
+        }
+
+        .product-plinth {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .product-plinth img,
+        .product-plinth img:first-child {
+          grid-row: auto;
+          height: 150px;
+        }
+
+        .floating-helper {
+          right: 12px;
+          bottom: 12px;
+          width: calc(100vw - 24px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="access-shell">
+      <section class="brand-panel" aria-labelledby="access-title">
+        <div class="brand"><span class="brand-mark">b</span><span>Breo Malaysia</span></div>
+        <p class="eyebrow">Members-only wellness house</p>
+        <h1 id="access-title">Begin with your Breo member profile.</h1>
+        <p>Customers register and verify their email first. After verification, the collection, quiz, vouchers, and checkout concierge open on the main Breo experience.</p>
+        <div class="product-plinth" aria-label="Breo product preview">
+          <img src="assets/massage-gun.png" alt="Breo Massage Gun Pro" />
+          <img src="assets/neck-massager.png" alt="Breo Neck Massager" />
+          <img src="assets/eye-massager.png" alt="Breo Eye Massager" />
+        </div>
+        <nav class="footer-links" aria-label="Support links">
+          <a href="track-order.html">Track order</a>
+          <a href="terms.html">Terms</a>
+        </nav>
+      </section>
+
+      <section class="access-card" aria-labelledby="form-title">
+        <div>
+          <p class="eyebrow">Member access</p>
+          <h2 id="form-title">Register first, then login after email verification.</h2>
+          <p>Use the same email and password after clicking the Firebase verification link in your inbox.</p>
+          <label>Language
+            <select id="languageSelect" aria-label="Language">
+              <option value="en">English</option>
+              <option value="zh">中文</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Member access">
+          <button class="tab active" id="showRegister" type="button">Create member</button>
+          <button class="tab" id="showLogin" type="button">Login</button>
+        </div>
+
+        <form id="registerForm">
+          <label>First name <input id="firstName" type="text" autocomplete="given-name" required /></label>
+          <label>Last name <input id="lastName" type="text" autocomplete="family-name" required /></label>
+          <label>Email address <input id="registerEmail" type="email" autocomplete="email" required /></label>
+          <label>Password <input id="registerPassword" type="password" autocomplete="new-password" minlength="6" required /></label>
+          <label>Phone number <input id="registerPhone" type="tel" autocomplete="tel" required /></label>
+          <label>Birthday <input id="birthday" type="date" autocomplete="bday" required /></label>
+          <label>
+            Gender
+            <select id="gender" required>
+              <option value="">Select gender</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Non-binary">Non-binary</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </select>
+          </label>
+          <button class="button primary" type="submit">Create member & send verification email</button>
+        </form>
+
+        <form class="hidden" id="loginForm">
+          <label>Email address <input id="loginEmail" type="email" autocomplete="email" required /></label>
+          <label>Password <input id="loginPassword" type="password" autocomplete="current-password" required /></label>
+          <label>Phone number <input id="loginPhone" type="tel" autocomplete="tel" placeholder="+60... optional" /></label>
+          <label>Associate member code <input id="loginAssociateCode" type="text" placeholder="Optional, example: 0000" autocomplete="off" /></label>
+          <div class="notice">
+            <strong>Sales associate assignment</strong>
+            <span>If you received a member code, enter it during login. Example: code 0000.</span>
+          </div>
+          <button class="button primary" type="submit">Login to main page</button>
+        </form>
+
+        <div class="notice hidden" id="verifyNotice">
+          <strong>Please check your email inbox.</strong>
+          <span>Your member account was created. Click the Firebase verification link, then return here and login.</span>
+        </div>
+
+        <p class="status" id="statusText" aria-live="polite"></p>
+        <button class="button secondary" id="demoLogin" type="button">Use verified demo member</button>
+      </section>
+
+      <aside class="floating-helper" id="floatingHelper" aria-label="Breo AI registration helper">
+        <div class="floating-helper-header">
+          <div>
+            <strong>AI Member Helper</strong>
+            <span>Ask before you choose or type</span>
+          </div>
+          <button class="floating-helper-toggle" id="floatingHelperToggle" type="button" aria-label="Minimize helper">-</button>
+        </div>
+        <div class="floating-helper-body">
+          <div class="floating-helper-log" id="floatingHelperLog" aria-live="polite">
+            <p class="helper-bubble">I am here for every step. Register first, verify your email, then login to enter the Breo main page.</p>
+          </div>
+          <div class="floating-helper-chips">
+            <button class="floating-helper-chip" type="button" data-access-help="register">How to register</button>
+            <button class="floating-helper-chip" type="button" data-access-help="verify">Email verification</button>
+            <button class="floating-helper-chip" type="button" data-access-help="login">Login help</button>
+          </div>
+          <form class="floating-helper-form" id="floatingHelperForm">
+            <input id="floatingHelperInput" type="text" placeholder="Ask the helper..." autocomplete="off" />
+            <button class="button primary" type="submit">Send</button>
+          </form>
+        </div>
+      </aside>
+    </main>
+
+    <script type="module">
+      const firebaseConfig = {
+        apiKey: "AIzaSyCjybi81PE45GUROrLoJ_1jiw9AGAh1NO0",
+        authDomain: "breo-5e8f7.firebaseapp.com",
+        projectId: "breo-5e8f7",
+        storageBucket: "breo-5e8f7.firebasestorage.app",
+        messagingSenderId: "875116064178",
+        appId: "1:875116064178:web:5bafddb2b4fe4f3e2f08ab",
+        measurementId: "G-DRL2NMCLKV",
+      };
+
+      const statusText = document.querySelector("#statusText");
+      const registerForm = document.querySelector("#registerForm");
+      const loginForm = document.querySelector("#loginForm");
+      const showRegister = document.querySelector("#showRegister");
+      const showLogin = document.querySelector("#showLogin");
+      const verifyNotice = document.querySelector("#verifyNotice");
+      const demoLogin = document.querySelector("#demoLogin");
+      const languageSelect = document.querySelector("#languageSelect");
+      const floatingHelper = document.querySelector("#floatingHelper");
+      const floatingHelperToggle = document.querySelector("#floatingHelperToggle");
+      const floatingHelperLog = document.querySelector("#floatingHelperLog");
+      const floatingHelperForm = document.querySelector("#floatingHelperForm");
+      const floatingHelperInput = document.querySelector("#floatingHelperInput");
+
+      let firebaseAuth = null;
+      let firebaseFns = null;
+      let accessLanguage = localStorage.getItem("breoLanguage") || "en";
+
+      const salesAssociateCodes = {
+        "0000": "Kowaii",
+        "1111": "Louis",
+        "2222": "Win",
+        "3333": "Rongyi",
+        "4444": "SY",
+      };
+
+      const salesAssociateDisplayNames = {
+        "0000": "Kowaii Kok Xin Ning",
+        "1111": "Louis",
+        "2222": "Win",
+        "3333": "Rongyi",
+        "4444": "SY",
+      };
+
+      const accessZhTranslations = {
+        "Breo Malaysia": "Breo 马来西亚",
+        "Members-only wellness house": "会员专属健康空间",
+        "Begin with your Breo member profile.": "请先创建您的 Breo 会员资料。",
+        "Customers register and verify their email first. After verification, the collection, quiz, vouchers, and checkout concierge open on the main Breo experience.": "顾客需要先注册并验证电邮。验证后，才可进入 Breo 主页使用产品系列、测验、优惠券和礼宾式结账。",
+        "Track order": "追踪订单",
+        "Terms": "条款",
+        "Member access": "会员登录",
+        "Register first, then login after email verification.": "请先注册，完成电邮验证后再登录。",
+        "Use the same email and password after clicking the Firebase verification link in your inbox.": "点击邮箱中的 Firebase 验证链接后，请使用同一电邮和密码登录。",
+        "Language": "语言",
+        "Create member": "创建会员",
+        "Login": "登录",
+        "First name": "名字",
+        "Last name": "姓氏",
+        "Email address": "电邮地址",
+        "Password": "密码",
+        "Phone number": "电话号码",
+        "Associate member code": "销售员会员代码",
+        "Sales associate assignment": "销售员分配",
+        "If you received a member code, enter it during login. Example: code 0000.": "如果您收到会员代码，请在登录时输入。例如：代码 0000。",
+        "Example: 0000 for Kowaii": "例如：0000 代表 Kowaii",
+        "Optional, example: 0000": "可选，例如：0000",
+        "Birthday": "生日",
+        "Gender": "性别",
+        "Select gender": "选择性别",
+        "Female": "女性",
+        "Male": "男性",
+        "Non-binary": "非二元",
+        "Prefer not to say": "不想透露",
+        "Create member & send verification email": "创建会员并发送验证电邮",
+        "Login to main page": "登录进入主页",
+        "Please check your email inbox.": "请检查您的邮箱。",
+        "Your member account was created. Click the Firebase verification link, then return here and login.": "您的会员账户已创建。请点击 Firebase 验证链接，然后回到这里登录。",
+        "Use verified demo member": "使用已验证演示会员",
+        "AI Member Helper": "AI 会员助手",
+        "Ask before you choose or type": "选择或输入前都可以询问",
+        "I am here for every step. Register first, verify your email, then login to enter the Breo main page.": "我会协助您完成每一步。请先注册、验证电邮，然后登录进入 Breo 主页。",
+        "How to register": "如何注册",
+        "Email verification": "电邮验证",
+        "Login help": "登录帮助",
+        "Ask the helper...": "询问助手...",
+        "Send": "发送",
+        "+60... optional": "+60... 可选",
+        "English": "英文",
+      };
+
+      const originalAccessTextNodes = new WeakMap();
+      let helperManuallyMinimized = localStorage.getItem("breoAccessHelperMinimized") === "true";
+
+      function accessT(text) {
+        if (accessLanguage !== "zh") return text;
+        return accessZhTranslations[text] || text;
+      }
+
+      function localizedAccessQuestion(question) {
+        if (accessLanguage !== "zh") return question;
+        const labels = {
+          register: "注册",
+          verify: "电邮验证",
+          login: "登录",
+        };
+        return labels[question] || question;
+      }
+
+      function applyAccessLanguage() {
+        languageSelect.value = accessLanguage;
+        document.documentElement.lang = accessLanguage === "zh" ? "zh-Hans" : "en";
+
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+          acceptNode(node) {
+            if (!node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+            if (node.parentElement?.closest("script, style")) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          },
+        });
+
+        while (walker.nextNode()) {
+          const node = walker.currentNode;
+          const original = originalAccessTextNodes.get(node) || node.textContent.trim();
+          originalAccessTextNodes.set(node, original);
+          const leading = node.textContent.match(/^\s*/)?.[0] || "";
+          const trailing = node.textContent.match(/\s*$/)?.[0] || "";
+          node.textContent = `${leading}${accessT(original)}${trailing}`;
+        }
+
+        document.querySelectorAll("input[placeholder], textarea[placeholder]").forEach((field) => {
+          if (!field.dataset.originalPlaceholder) field.dataset.originalPlaceholder = field.placeholder;
+          field.placeholder = accessT(field.dataset.originalPlaceholder);
+        });
+      }
+
+      function normalizeEmail(email) {
+        return email.trim().toLowerCase();
+      }
+
+      function memberDisplayName(member) {
+        return `${member.firstName} ${member.lastName}`.trim();
+      }
+
+      function normalizedAssociateCode(code) {
+        return code.trim().toUpperCase();
+      }
+
+      function associateFromCode(code) {
+        return salesAssociateCodes[normalizedAssociateCode(code)] || "";
+      }
+
+      function associateDisplayNameFromCode(code) {
+        return salesAssociateDisplayNames[normalizedAssociateCode(code)] || associateFromCode(code);
+      }
+
+      function memberAssociateFields(code) {
+        const normalized = normalizedAssociateCode(code);
+        if (!normalized) return { salesAssociateCode: "", assignedSalesMember: "", assignedSalesMemberDisplay: "", assignmentSource: "" };
+        const assignedSalesMember = associateFromCode(normalized);
+        return {
+          salesAssociateCode: normalized,
+          assignedSalesMember,
+          assignedSalesMemberDisplay: assignedSalesMember ? associateDisplayNameFromCode(normalized) : "",
+          assignmentSource: assignedSalesMember ? "member associate code" : "",
+        };
+      }
+
+      function associateCodeHelperMessage(code) {
+        const normalized = normalizedAssociateCode(code);
+        if (!normalized) {
+          return accessLanguage === "zh"
+            ? "如果您有销售员会员代码，请在这里输入。例如：代码 0000。"
+            : "If you have a sales associate member code, enter it here. Example: code 0000.";
+        }
+
+        const assignedMember = associateFromCode(normalized);
+        if (assignedMember) {
+          const displayName = associateDisplayNameFromCode(normalized);
+          return accessLanguage === "zh"
+            ? `代码 ${normalized} 已分配给 ${displayName}。登录后，订单会自动记录在这位销售员名下。`
+            : `Code ${normalized} is assigned to ${displayName}. After login, the order will be recorded under this sales associate.`;
+        }
+
+        return accessLanguage === "zh"
+          ? `代码 ${normalized} 暂时没有匹配到销售员。请检查代码，或留空继续。`
+          : `Code ${normalized} is not matched to a sales associate yet. Check the code, or leave it blank.`;
+      }
+
+      function members() {
+        return JSON.parse(localStorage.getItem("breoMembers") || "[]");
+      }
+
+      function saveMember(member) {
+        const existing = members();
+        const index = existing.findIndex((item) => normalizeEmail(item.email) === normalizeEmail(member.email));
+        if (index >= 0) existing[index] = { ...existing[index], ...member };
+        else existing.unshift(member);
+        localStorage.setItem("breoMembers", JSON.stringify(existing));
+      }
+
+      function enterMain(member) {
+        const readyMember = { ...member, name: memberDisplayName(member), verified: true };
+        localStorage.setItem("breoMember", JSON.stringify(readyMember));
+        window.location.href = "main.html";
+      }
+
+      function setMode(mode) {
+        const isRegister = mode === "register";
+        registerForm.classList.toggle("hidden", !isRegister);
+        loginForm.classList.toggle("hidden", isRegister);
+        showRegister.classList.toggle("active", isRegister);
+        showLogin.classList.toggle("active", !isRegister);
+        statusText.textContent = "";
+      }
+
+      function helperMessage(message, type = "assistant") {
+        const bubble = document.createElement("p");
+        bubble.className = type === "user" ? "helper-bubble user" : "helper-bubble";
+        bubble.textContent = message;
+        if (!helperManuallyMinimized) {
+          floatingHelper.classList.remove("minimized");
+          floatingHelperToggle.textContent = "-";
+        }
+        floatingHelperLog.append(bubble);
+        if (!helperManuallyMinimized) {
+          floatingHelperLog.scrollTop = floatingHelperLog.scrollHeight;
+        }
+      }
+
+      function accessHelpReply(rawQuestion) {
+        const question = rawQuestion.toLowerCase();
+        if (question.includes("verify") || question.includes("email") || question.includes("inbox")) {
+          if (accessLanguage === "zh") return "创建会员账户后，请打开邮箱并点击 Firebase 验证链接。然后回到这里，用同一电邮和密码登录。";
+          return "After creating a member account, open your email inbox and click the Firebase verification link. Then return here and login with the same email and password.";
+        }
+        if (question.includes("login") || question.includes("password")) {
+          if (accessLanguage === "zh") return "完成电邮验证后才使用登录。如果系统显示尚未验证，代表您还没有点击邮箱中的验证链接。";
+          return "Use login only after email verification. If login says not verified, the inbox link has not been clicked yet.";
+        }
+        if (question.includes("birthday") || question.includes("gender") || question.includes("phone")) {
+          if (accessLanguage === "zh") return "这些会员资料会帮助 Breo 保存优惠券、生日奖励和分店联系资料。";
+          return "These member details help Breo save vouchers, birthday rewards, and branch contact details for checkout.";
+        }
+        if (question.includes("associate") || question.includes("code") || question.includes("0000") || question.includes("kowaii")) {
+          return associateCodeHelperMessage(question.match(/\b[0-9a-zA-Z]{4,}\b/)?.[0] || "");
+        }
+        if (question.includes("demo")) {
+          if (accessLanguage === "zh") return "演示会员只用于测试。真实顾客应创建会员并完成电邮验证。";
+          return "Use the demo member button only for testing. Real customers should create a member and verify their email.";
+        }
+        if (accessLanguage === "zh") return "请从创建会员开始。填完所有栏位并提交，到邮箱验证后，再登录进入 Breo 主页。";
+        return "Start with Create member. Fill every field, submit, verify your email from the inbox, then login to enter the main Breo page.";
+      }
+
+      function answerAccessHelper(question) {
+        const trimmed = question.trim();
+        if (!trimmed) return;
+        helperMessage(localizedAccessQuestion(trimmed), "user");
+        helperMessage(accessHelpReply(trimmed));
+      }
+
+      async function initFirebase() {
+        if (firebaseAuth) return firebaseAuth;
+        const appModule = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
+        const authModule = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
+        const app = appModule.initializeApp(firebaseConfig);
+        firebaseFns = {
+          createUserWithEmailAndPassword: authModule.createUserWithEmailAndPassword,
+          signInWithEmailAndPassword: authModule.signInWithEmailAndPassword,
+          sendEmailVerification: authModule.sendEmailVerification,
+          updateProfile: authModule.updateProfile,
+          signOut: authModule.signOut,
+          reload: authModule.reload,
+        };
+        firebaseAuth = authModule.getAuth(app);
+        return firebaseAuth;
+      }
+
+      showRegister.addEventListener("click", () => setMode("register"));
+      showLogin.addEventListener("click", () => setMode("login"));
+
+      floatingHelperToggle.addEventListener("click", () => {
+        floatingHelper.classList.toggle("minimized");
+        helperManuallyMinimized = floatingHelper.classList.contains("minimized");
+        localStorage.setItem("breoAccessHelperMinimized", String(helperManuallyMinimized));
+        floatingHelperToggle.textContent = helperManuallyMinimized ? "+" : "-";
+        if (!helperManuallyMinimized) {
+          floatingHelperLog.scrollTop = floatingHelperLog.scrollHeight;
+        }
+      });
+
+      document.querySelectorAll("[data-access-help]").forEach((button) => {
+        button.addEventListener("click", () => answerAccessHelper(button.dataset.accessHelp));
+      });
+
+      floatingHelperForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        answerAccessHelper(floatingHelperInput.value);
+        floatingHelperInput.value = "";
+      });
+
+      document.addEventListener("focusin", (event) => {
+        const field = event.target.closest("input, select, button");
+        if (!field || field.closest(".floating-helper")) return;
+        if (field.id === "loginAssociateCode") {
+          helperMessage(`${accessLanguage === "zh" ? "您正在：销售员会员代码。" : "You are on: Associate member code."} ${associateCodeHelperMessage(field.value)}`);
+          return;
+        }
+        const label = field.closest("label")?.textContent.trim() || field.textContent.trim() || field.placeholder || "";
+        if (label) helperMessage(`${accessLanguage === "zh" ? `您正在：${label}。` : `You are on: ${label}.`} ${accessHelpReply(label)}`);
+      });
+
+      document.querySelector("#loginAssociateCode").addEventListener("input", (event) => {
+        const code = event.target.value.trim();
+        if (code.length >= 4 || code.length === 0) {
+          helperMessage(associateCodeHelperMessage(code));
+        }
+      });
+
+      languageSelect.addEventListener("change", () => {
+        accessLanguage = languageSelect.value;
+        localStorage.setItem("breoLanguage", accessLanguage);
+        applyAccessLanguage();
+      });
+
+      registerForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        statusText.textContent = accessLanguage === "zh" ? "正在创建您的 Breo 会员账户..." : "Creating your Breo member account...";
+
+        try {
+          const auth = await initFirebase();
+          const member = {
+            firstName: document.querySelector("#firstName").value.trim(),
+            lastName: document.querySelector("#lastName").value.trim(),
+            email: normalizeEmail(document.querySelector("#registerEmail").value),
+            phone: document.querySelector("#registerPhone").value.trim(),
+            birthday: document.querySelector("#birthday").value,
+            gender: document.querySelector("#gender").value,
+            provider: "Firebase",
+            verified: false,
+            joinedAt: new Date().toISOString(),
+          };
+          const credential = await firebaseFns.createUserWithEmailAndPassword(auth, member.email, document.querySelector("#registerPassword").value);
+          await firebaseFns.updateProfile(credential.user, { displayName: memberDisplayName(member) });
+          await firebaseFns.sendEmailVerification(credential.user);
+          await firebaseFns.signOut(auth);
+          saveMember(member);
+          registerForm.reset();
+          document.querySelector("#loginEmail").value = member.email;
+          document.querySelector("#loginAssociateCode").value = "";
+          verifyNotice.classList.remove("hidden");
+          setMode("login");
+          statusText.textContent = accessLanguage === "zh" ? "验证电邮已发送。请点击邮箱链接后再登录。" : "Verification email sent. Login after clicking the inbox link.";
+        } catch (error) {
+          statusText.textContent = accessLanguage === "zh" ? `会员创建失败：${error.message}` : `Member creation failed: ${error.message}`;
+        }
+      });
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        statusText.textContent = accessLanguage === "zh" ? "正在检查验证状态..." : "Checking verification status...";
+
+        try {
+          const auth = await initFirebase();
+          const email = normalizeEmail(document.querySelector("#loginEmail").value);
+          const credential = await firebaseFns.signInWithEmailAndPassword(auth, email, document.querySelector("#loginPassword").value);
+          await firebaseFns.reload(credential.user);
+
+          if (!credential.user.emailVerified) {
+            await firebaseFns.signOut(auth);
+            localStorage.removeItem("breoMember");
+            statusText.textContent = accessLanguage === "zh" ? "此电邮尚未验证。请先点击 Firebase 电邮链接，然后再登录。" : "This email is not verified yet. Click the Firebase email link first, then login again.";
+            return;
+          }
+
+          const stored = members().find((member) => normalizeEmail(member.email) === email) || {};
+          const loginAssociateFields = memberAssociateFields(document.querySelector("#loginAssociateCode").value || stored.salesAssociateCode || "");
+          if (loginAssociateFields.salesAssociateCode && !loginAssociateFields.assignedSalesMember) {
+            await firebaseFns.signOut(auth);
+            statusText.textContent = accessLanguage === "zh" ? "销售员会员代码无效。请检查代码，或留空继续。" : "That associate member code is not recognized. Check the code or leave it blank.";
+            return;
+          }
+          const displayParts = (credential.user.displayName || "Breo Member").split(" ");
+          const member = {
+            firstName: stored.firstName || displayParts[0] || "Breo",
+            lastName: stored.lastName || displayParts.slice(1).join(" ") || "Member",
+            email,
+            phone: document.querySelector("#loginPhone").value.trim() || stored.phone || "",
+            birthday: stored.birthday || "",
+            gender: stored.gender || "Prefer not to say",
+            provider: "Firebase",
+            verified: true,
+            ...loginAssociateFields,
+          };
+          saveMember(member);
+          enterMain(member);
+        } catch (error) {
+          statusText.textContent = accessLanguage === "zh" ? `登录失败：${error.message}` : `Login failed: ${error.message}`;
+        }
+      });
+
+      demoLogin.addEventListener("click", () => {
+        enterMain({
+          firstName: "Demo",
+          lastName: "Member",
+          email: "demo.member@breo.local",
+          phone: "+60120000000",
+          birthday: "1999-01-01",
+          gender: "Prefer not to say",
+          provider: "Demo",
+          salesAssociateCode: "0000",
+          assignedSalesMember: "Kowaii",
+          assignedSalesMemberDisplay: "Kowaii Kok Xin Ning",
+          assignmentSource: "member associate code",
+        });
+      });
+
+      applyAccessLanguage();
+      floatingHelper.classList.toggle("minimized", helperManuallyMinimized);
+      floatingHelperToggle.textContent = helperManuallyMinimized ? "+" : "-";
+    </script>
+  </body>
+</html>

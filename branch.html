@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breo Branch Orders</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --ink: #17201d;
+        --muted: #61706b;
+        --paper: #f5faf6;
+        --panel: #ffffff;
+        --line: #dce4df;
+        --green: #1f7a4d;
+        --mint: #e6f5eb;
+        --coral: #e9654f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Manrope", system-ui, sans-serif;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px clamp(18px, 4vw, 56px);
+        background: rgba(255, 255, 255, 0.92);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(16px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.35rem;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--ink);
+        color: white;
+      }
+
+      main {
+        padding: clamp(28px, 5vw, 56px);
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 5vw, 4rem);
+        line-height: 1;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 28px 0;
+      }
+
+      button,
+      select {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 14px;
+        background: white;
+        color: var(--ink);
+        cursor: pointer;
+        font: inherit;
+        font-weight: 800;
+      }
+
+      button.active {
+        border-color: var(--green);
+        background: var(--green);
+        color: white;
+      }
+
+      .status-bar {
+        margin-bottom: 16px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .orders {
+        display: grid;
+        gap: 16px;
+      }
+
+      .branch-group {
+        display: grid;
+        gap: 14px;
+      }
+
+      .branch-group h2 {
+        margin: 16px 0 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line);
+        font-size: 1.45rem;
+      }
+
+      .order-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 220px;
+        gap: 18px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px;
+        background: var(--panel);
+        box-shadow: 0 14px 40px rgba(21, 35, 30, 0.07);
+      }
+
+      .order-card h2 {
+        margin: 0 0 8px;
+        font-size: 1.35rem;
+      }
+
+      .tag {
+        display: inline-flex;
+        width: fit-content;
+        border-radius: 999px;
+        padding: 6px 10px;
+        background: var(--mint);
+        color: var(--green);
+        font-size: 0.82rem;
+        font-weight: 800;
+      }
+
+      .tag.new {
+        background: #fff1ea;
+        color: var(--coral);
+      }
+
+      .meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 14px 0;
+      }
+
+      .meta div,
+      .products {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfcfa;
+      }
+
+      .meta strong,
+      .products strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .product-row {
+        display: grid;
+        grid-template-columns: 120px minmax(0, 1fr) 70px;
+        gap: 10px;
+        padding: 10px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .product-row:first-of-type {
+        border-top: 0;
+      }
+
+      .side {
+        display: grid;
+        gap: 10px;
+        align-content: start;
+      }
+
+      .empty {
+        border: 1px dashed var(--line);
+        border-radius: 10px;
+        padding: 28px;
+        background: white;
+      }
+
+      @media (max-width: 860px) {
+        .order-card,
+        .meta,
+        .product-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <span class="brand-mark">b</span>
+        <span>Breo Branch Dashboard</span>
+      </div>
+      <a href="main.html">Customer site</a>
+    </header>
+
+    <main>
+      <h1>Branch Orders</h1>
+      <p>New paid orders appear here from Firestore in real time. Branch staff can check product codes, customer details, delivery address, and update fulfilment status.</p>
+
+      <div class="filters" aria-label="Branch filter">
+        <button class="active" type="button" data-branch="All">All branches</button>
+        <button type="button" data-branch="Bukit Jalil">Bukit Jalil</button>
+        <button type="button" data-branch="1 Utama">1U / 1 Utama</button>
+      </div>
+
+      <div class="status-bar" id="statusBar">Connecting to Firestore...</div>
+      <section class="orders" id="orders"></section>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+      import {
+        collection,
+        doc,
+        getFirestore,
+        onSnapshot,
+        orderBy,
+        query,
+        updateDoc,
+      } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCjybi81PE45GUROrLoJ_1jiw9AGAh1NO0",
+        authDomain: "breo-5e8f7.firebaseapp.com",
+        projectId: "breo-5e8f7",
+        storageBucket: "breo-5e8f7.firebasestorage.app",
+        messagingSenderId: "875116064178",
+        appId: "1:875116064178:web:5bafddb2b4fe4f3e2f08ab",
+        measurementId: "G-DRL2NMCLKV",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const ordersEl = document.querySelector("#orders");
+      const statusBar = document.querySelector("#statusBar");
+      const pageTitle = document.querySelector("h1");
+      let allOrders = [];
+      const branchParam = new URLSearchParams(window.location.search).get("branch");
+      const pageName = window.location.pathname.split("/").pop().replace(".html", "");
+      let activeBranch =
+        branchParam === "bukit-jalil" || pageName === "bukit-jalil"
+          ? "Bukit Jalil"
+          : branchParam === "1u" || branchParam === "1-utama" || pageName === "1u" || pageName === "1-utama"
+            ? "1 Utama"
+            : "All";
+
+      function localOrders() {
+        return JSON.parse(localStorage.getItem("breoLocalOrders") || "[]").map((order) => ({
+          ...order,
+          source: order.source || "local",
+        }));
+      }
+
+      function saveLocalOrder(updatedOrder) {
+        const orders = localOrders();
+        const nextOrders = orders.map((order) => (order.id === updatedOrder.id ? { ...order, ...updatedOrder } : order));
+        localStorage.setItem("breoLocalOrders", JSON.stringify(nextOrders));
+        allOrders = nextOrders;
+        renderOrders();
+      }
+
+      function mergeCloudAndLocalOrders(cloudOrders, browserOrders) {
+        const mergedByOrderId = new Map();
+
+        cloudOrders.forEach((order) => {
+          mergedByOrderId.set(order.orderId || order.id, order);
+        });
+
+        browserOrders.forEach((localOrder) => {
+          const key = localOrder.orderId || localOrder.id;
+          const cloudOrder = mergedByOrderId.get(key);
+
+          if (!cloudOrder) {
+            mergedByOrderId.set(key, localOrder);
+            return;
+          }
+
+          const localIsReady = localOrder.status === "Accepted" || localOrder.status === "Sent to Branch" || localOrder.branchStatus !== "Waiting for admin";
+          const cloudIsPending = !cloudOrder.status || cloudOrder.status === "Pending Admin Review" || cloudOrder.adminDecision === "Pending";
+          mergedByOrderId.set(key, localIsReady && cloudIsPending ? { ...cloudOrder, ...localOrder } : { ...localOrder, ...cloudOrder });
+        });
+
+        return [...mergedByOrderId.values()];
+      }
+
+      function formatMoney(value) {
+        return new Intl.NumberFormat("en-MY", {
+          style: "currency",
+          currency: "MYR",
+          maximumFractionDigits: 0,
+        }).format(value || 0);
+      }
+
+      function branchMatches(order, branch) {
+        const name = (order.branch || "").toLowerCase();
+        if (branch === "Bukit Jalil") return name.includes("bukit jalil");
+        if (branch === "1 Utama") return name.includes("1 utama") || name.includes("1u");
+        return true;
+      }
+
+      function firestoreDocumentId(order) {
+        return order.firestoreDocId || order.id || order.orderId;
+      }
+
+      function syncBranchView() {
+        pageTitle.textContent = activeBranch === "All" ? "Branch Orders" : `${activeBranch === "1 Utama" ? "1U / 1 Utama" : activeBranch} Orders`;
+        document.querySelectorAll("[data-branch]").forEach((item) => item.classList.toggle("active", item.dataset.branch === activeBranch));
+      }
+
+      function orderCardHtml(order) {
+        const products = (order.products || [])
+          .map(
+            (product) => `
+              <div class="product-row">
+                <strong>${product.productCode}</strong>
+                <span>${product.name}</span>
+                <span>Qty ${product.quantity}</span>
+              </div>
+            `
+          )
+          .join("");
+
+        return `
+          <article class="order-card">
+            <div>
+              <span class="tag ${order.branchStatus === "New Order" ? "new" : ""}">${order.branchStatus || "New Order"}</span>
+              <h2>${order.orderId || order.id}</h2>
+              <div class="meta">
+                <div><strong>Customer</strong>${order.customerName}<br />${order.customerEmail}<br />${order.customerPhone || ""}</div>
+                <div><strong>Branch</strong>${order.branch}<br />${order.paymentStatus || ""}</div>
+                <div><strong>Payment</strong>${order.paymentMethod}<br />${order.paymentReference || ""}<br />${formatMoney(order.total)}</div>
+                <div><strong>Delivery</strong>${order.deliveryAddress}<br />${order.deliveryNote || "No note"}</div>
+              </div>
+              <div class="products">
+                <strong>Products and codes</strong>
+                ${products}
+              </div>
+            </div>
+            <div class="side">
+              <label>
+                Order status
+                <select data-order-status="${order.id}">
+                  ${["New Order", "Packing", "Ready for Courier", "Shipped", "Completed"].map((status) => `<option value="${status}" ${status === order.branchStatus ? "selected" : ""}>${status}</option>`).join("")}
+                </select>
+              </label>
+              <button type="button" data-copy="${order.id}">Copy delivery info</button>
+            </div>
+          </article>
+        `;
+      }
+
+      function renderOrders() {
+        const branchReadyOrders = allOrders.filter((order) => order.status === "Accepted" || order.status === "Sent to Branch" || order.branchStatus !== "Waiting for admin");
+        const filtered = activeBranch === "All" ? branchReadyOrders : branchReadyOrders.filter((order) => branchMatches(order, activeBranch));
+        statusBar.textContent = `${filtered.length} ${activeBranch === "All" ? "branch" : activeBranch} order${filtered.length === 1 ? "" : "s"} shown`;
+
+        if (!filtered.length) {
+          ordersEl.innerHTML = `<div class="empty">No orders for this branch yet.</div>`;
+          return;
+        }
+
+        if (activeBranch === "All") {
+          const bukitJalilOrders = filtered.filter((order) => branchMatches(order, "Bukit Jalil"));
+          const oneUtamaOrders = filtered.filter((order) => branchMatches(order, "1 Utama"));
+          ordersEl.innerHTML = `
+            <div class="branch-group">
+              <h2>Bukit Jalil</h2>
+              ${bukitJalilOrders.length ? bukitJalilOrders.map(orderCardHtml).join("") : `<div class="empty">No Bukit Jalil orders yet.</div>`}
+            </div>
+            <div class="branch-group">
+              <h2>1U / 1 Utama</h2>
+              ${oneUtamaOrders.length ? oneUtamaOrders.map(orderCardHtml).join("") : `<div class="empty">No 1U orders yet.</div>`}
+            </div>
+          `;
+        } else {
+          ordersEl.innerHTML = filtered.map(orderCardHtml).join("");
+        }
+
+        ordersEl.querySelectorAll("[data-order-status]").forEach((select) => {
+          select.addEventListener("change", async () => {
+            const order = allOrders.find((item) => item.id === select.dataset.orderStatus);
+            if (order.source === "local") {
+              saveLocalOrder({ ...order, branchStatus: select.value });
+            } else {
+              await updateDoc(doc(db, "orders", firestoreDocumentId(order)), { branchStatus: select.value });
+            }
+          });
+        });
+
+        ordersEl.querySelectorAll("[data-copy]").forEach((button) => {
+          button.addEventListener("click", async () => {
+            const order = allOrders.find((item) => item.id === button.dataset.copy);
+            const text = `${order.orderId}\n${order.customerName}\n${order.customerPhone}\n${order.deliveryAddress}\n${order.deliveryNote || ""}`;
+            await navigator.clipboard.writeText(text);
+            button.textContent = "Copied";
+          });
+        });
+      }
+
+      document.querySelectorAll("[data-branch]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeBranch = button.dataset.branch;
+          const branchPage = activeBranch === "Bukit Jalil" ? "bukit-jalil.html" : activeBranch === "1 Utama" ? "1u.html" : "branch.html";
+          window.history.replaceState({}, "", branchPage);
+          syncBranchView();
+          renderOrders();
+        });
+      });
+
+      const ordersQuery = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+      syncBranchView();
+      allOrders = localOrders();
+      renderOrders();
+      onSnapshot(
+        ordersQuery,
+        (snapshot) => {
+          const cloudOrders = snapshot.docs.map((docSnap) => {
+            const data = docSnap.data();
+            return { ...data, id: data.id || data.orderId || docSnap.id, firestoreDocId: docSnap.id, source: "cloud" };
+          });
+          allOrders = mergeCloudAndLocalOrders(cloudOrders, localOrders());
+          renderOrders();
+        },
+        (error) => {
+          allOrders = localOrders();
+          renderOrders();
+          statusBar.textContent = `Firestore not readable yet. Showing local orders. ${error.message}`;
+        }
+      );
+    </script>
+  </body>
+</html>
