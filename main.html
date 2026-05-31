@@ -863,6 +863,19 @@
         overflow-x: auto;
       }
 
+      .comparison-wrap {
+        margin-top: 22px;
+      }
+
+      .comparison-wrap h3 {
+        margin-bottom: 6px;
+      }
+
+      .comparison-wrap p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
       .comparison-table {
         width: 100%;
         min-width: 760px;
@@ -2239,6 +2252,23 @@
           <h2>Massage care presented like a boutique range, not a crowded catalogue.</h2>
         </div>
         <div class="product-grid" id="productGrid"></div>
+        <div class="comparison-wrap" aria-labelledby="comparison-title">
+          <h3 id="comparison-title">Product Comparison Table</h3>
+          <p>Compare massage gun, eye massager, neck massager, and mini handheld by need, price, portability, heat function, and product code.</p>
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Best for</th>
+                <th scope="col">Price</th>
+                <th scope="col">Portability</th>
+                <th scope="col">Heat function</th>
+                <th scope="col">Product code</th>
+              </tr>
+            </thead>
+            <tbody id="comparisonTable"></tbody>
+          </table>
+        </div>
       </section>
 
       <section class="section" id="stock-status">
@@ -2615,10 +2645,54 @@
 
     <script>
       const products = [
-        { id: "mg-pro", code: "BREO-MG-PRO", name: "Breo Massage Gun Pro", description: "Deep muscle recovery with quiet percussion settings.", price: 699, icon: "MG", image: "assets/massage-gun.png" },
-        { id: "neck-relax", code: "BREO-NECK-HEAT", name: "Breo Neck Massager", description: "Portable heat and pulse care for desk workers and drivers.", price: 429, icon: "N", image: "assets/neck-massager.png" },
-        { id: "eye-comfort", code: "BREO-EYE-FOLD", name: "Breo Eye Massager", description: "Foldable eye relaxation with gentle warmth and pressure.", price: 389, icon: "E", image: "assets/eye-massager.png" },
-        { id: "mini-care", code: "BREO-MINI-CARE", name: "Breo Mini Handheld", description: "Compact daily relief for travel, gifting, and quick care.", price: 299, icon: "M", image: "assets/mini-handheld.png" },
+        {
+          id: "mg-pro",
+          code: "BREO-MG-PRO",
+          name: "Breo Massage Gun Pro",
+          description: "Deep muscle recovery with quiet percussion settings.",
+          bestFor: "Deep muscle soreness and workout recovery",
+          portability: "Medium",
+          heatFunction: "No",
+          price: 699,
+          icon: "MG",
+          image: "assets/massage-gun.png",
+        },
+        {
+          id: "neck-relax",
+          code: "BREO-NECK-HEAT",
+          name: "Breo Neck Massager",
+          description: "Portable heat and pulse care for desk workers and drivers.",
+          bestFor: "Neck and shoulder tension",
+          portability: "High",
+          heatFunction: "Yes",
+          price: 429,
+          icon: "N",
+          image: "assets/neck-massager.png",
+        },
+        {
+          id: "eye-comfort",
+          code: "BREO-EYE-FOLD",
+          name: "Breo Eye Massager",
+          description: "Foldable eye relaxation with gentle warmth and pressure.",
+          bestFor: "Screen fatigue and bedtime relaxation",
+          portability: "High",
+          heatFunction: "Yes",
+          price: 389,
+          icon: "E",
+          image: "assets/eye-massager.png",
+        },
+        {
+          id: "mini-care",
+          code: "BREO-MINI-CARE",
+          name: "Breo Mini Handheld",
+          description: "Compact daily relief for travel, gifting, and quick care.",
+          bestFor: "Travel, gifting, and quick daily relief",
+          portability: "Very high",
+          heatFunction: "No",
+          price: 299,
+          icon: "M",
+          image: "assets/mini-handheld.png",
+        },
       ];
 
       const quizQuestions = [
@@ -2831,6 +2905,7 @@
       localStorage.setItem("breoMembers", JSON.stringify(state.members));
 
       const productGrid = document.querySelector("#productGrid");
+      const comparisonTable = document.querySelector("#comparisonTable");
       const recommendationQuiz = document.querySelector("#recommendationQuiz");
       const quizPreviewName = document.querySelector("#quizPreviewName");
       const quizPreviewText = document.querySelector("#quizPreviewText");
@@ -2936,6 +3011,23 @@
         "Local checkout estimate": "本地结账估算",
         "Featured collection": "精选系列",
         "Massage care presented like a boutique range, not a crowded catalogue.": "以精品系列方式呈现按摩护理，而不是拥挤的目录。",
+        "Product Comparison Table": "产品比较表",
+        "Compare massage gun, eye massager, neck massager, and mini handheld by need, price, portability, heat function, and product code.": "按需求、价格、便携性、热敷功能和产品代码比较筋膜枪、眼部按摩器、颈部按摩器和迷你手持按摩器。",
+        "Product": "产品",
+        "Best for": "适合",
+        "Price": "价格",
+        "Portability": "便携性",
+        "Heat function": "热敷功能",
+        "Product code": "产品代码",
+        "Deep muscle soreness and workout recovery": "深层肌肉酸痛和运动恢复",
+        "Neck and shoulder tension": "颈部和肩膀紧绷",
+        "Screen fatigue and bedtime relaxation": "屏幕疲劳和睡前放松",
+        "Travel, gifting, and quick daily relief": "旅行、送礼和日常快速舒缓",
+        "Medium": "中等",
+        "High": "高",
+        "Very high": "非常高",
+        "Yes": "有",
+        "No": "没有",
         "Branch stock status": "分店库存状态",
         "Operational branch stock visibility before checkout.": "结账前查看分店库存状态。",
         "In stock": "有库存",
@@ -3206,6 +3298,7 @@
         languageSelect.value = state.language;
         document.documentElement.lang = state.language === "zh" ? "zh-Hans" : "en";
         renderProducts();
+        renderComparisonTable();
         renderQuiz();
         renderCart();
         translateSubtree();
@@ -3369,6 +3462,23 @@
                   </div>
                 </div>
               </article>
+            `
+          )
+          .join("");
+      }
+
+      function renderComparisonTable() {
+        comparisonTable.innerHTML = products
+          .map(
+            (product) => `
+              <tr>
+                <th scope="row">${t(product.name)}</th>
+                <td>${t(product.bestFor)}</td>
+                <td>${formatMoney(product.price)}</td>
+                <td>${t(product.portability)}</td>
+                <td>${t(product.heatFunction)}</td>
+                <td>${product.code}</td>
+              </tr>
             `
           )
           .join("");
