@@ -26,7 +26,9 @@
 
       body {
         margin: 0;
-        background: var(--paper);
+        background:
+          radial-gradient(circle at 12% 0%, rgba(31, 122, 77, 0.12), transparent 28%),
+          linear-gradient(180deg, #f8fbf8, var(--paper));
         color: var(--ink);
         font-family: "Manrope", system-ui, sans-serif;
       }
@@ -39,7 +41,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        padding: 18px clamp(18px, 4vw, 56px);
+        padding: 14px clamp(18px, 4vw, 56px);
         background: rgba(255, 255, 255, 0.92);
         border-bottom: 1px solid var(--line);
         backdrop-filter: blur(16px);
@@ -53,8 +55,23 @@
       nav {
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 8px;
         align-items: center;
+      }
+
+      nav a {
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 8px 12px;
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      nav a:hover,
+      nav a[href="admin.html"] {
+        border-color: var(--line);
+        background: #f7faf8;
+        color: var(--ink);
       }
 
       .brand {
@@ -78,7 +95,7 @@
       main {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 360px;
-        gap: 18px;
+        gap: 22px;
         padding: clamp(28px, 5vw, 56px);
       }
 
@@ -88,16 +105,238 @@
         line-height: 1;
       }
 
+      main > section > h1 {
+        max-width: 780px;
+        letter-spacing: 0;
+      }
+
+      main > section > h1 + p {
+        max-width: 820px;
+        margin-bottom: 0;
+        font-size: 1rem;
+      }
+
       p {
         color: var(--muted);
         line-height: 1.55;
       }
 
       .filters {
+        display: inline-grid;
+        grid-template-columns: repeat(5, max-content);
+        align-items: center;
+        gap: 4px;
+        margin: 26px 0;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        width: fit-content;
+        max-width: 100%;
+        overflow-x: auto;
+        padding: 5px;
+        background: rgba(255, 255, 255, 0.74);
+        box-shadow: 0 10px 30px rgba(21, 35, 30, 0.05);
+      }
+
+      .analytics-dashboard {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin: 30px 0;
+      }
+
+      .analytics-card {
+        display: grid;
+        grid-template-rows: auto auto minmax(92px, 1fr) auto;
+        gap: 14px;
+        min-height: 260px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 20px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(251, 252, 250, 0.98)),
+          var(--panel);
+        color: inherit;
+        text-decoration: none;
+        box-shadow: 0 18px 54px rgba(21, 35, 30, 0.08);
+      }
+
+      .analytics-card:hover {
+        border-color: rgba(31, 122, 77, 0.38);
+        box-shadow: 0 18px 48px rgba(21, 35, 30, 0.12);
+        transform: translateY(-1px);
+      }
+
+      .analytics-card h2 {
+        margin: 0;
+        font-size: 1.05rem;
+        letter-spacing: 0;
+      }
+
+      .analytics-card-head {
         display: flex;
-        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
         gap: 10px;
-        margin: 28px 0;
+      }
+
+      .analytics-card-head span {
+        border-radius: 999px;
+        padding: 5px 8px;
+        background: var(--mint);
+        color: var(--green);
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .metric-value {
+        color: var(--green);
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .metric-subtext {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .mini-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .mini-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px;
+        background: #fbfcfa;
+      }
+
+      .mini-stat span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .mini-stat strong {
+        display: block;
+        margin-top: 4px;
+      }
+
+      .distribution-chart {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        align-items: center;
+        justify-items: center;
+      }
+
+      .donut {
+        width: 118px;
+        height: 118px;
+      }
+
+      .donut-bg {
+        fill: none;
+        stroke: #edf3ef;
+        stroke-width: 16;
+      }
+
+      .donut-segment {
+        fill: none;
+        stroke-width: 16;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 60px 60px;
+      }
+
+      .donut-center {
+        fill: var(--panel);
+      }
+
+      .donut-total {
+        fill: var(--green);
+        font-family: "Manrope", system-ui, sans-serif;
+        font-size: 17px;
+        font-weight: 800;
+      }
+
+      .donut-caption {
+        fill: var(--muted);
+        font-family: "Manrope", system-ui, sans-serif;
+        font-size: 8px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .distribution-legend {
+        width: 100%;
+        display: grid;
+        gap: 6px;
+      }
+
+      .legend-row {
+        display: grid;
+        grid-template-columns: 10px minmax(0, 1fr);
+        gap: 7px;
+        align-items: center;
+      }
+
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--legend-color);
+      }
+
+      .legend-label {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--ink);
+        font-size: 0.86rem;
+        font-weight: 800;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .legend-value {
+        grid-column: 2;
+        flex-shrink: 0;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-align: left;
+        white-space: normal;
+      }
+
+      .line-preview {
+        display: grid;
+        place-items: center;
+        min-height: 86px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px;
+        background: linear-gradient(180deg, #fbfcfa, #f0f8f3);
+      }
+
+      .line-preview svg {
+        width: min(100%, 280px);
+        height: 72px;
+      }
+
+      .line-preview path {
+        fill: none;
+        stroke: var(--green);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .line-preview polygon {
+        fill: rgba(31, 122, 77, 0.12);
       }
 
       button,
@@ -112,6 +351,21 @@
         cursor: pointer;
         font: inherit;
         font-weight: 800;
+      }
+
+      .filters button {
+        min-height: 36px;
+        border: 0;
+        border-radius: 8px;
+        padding: 8px 12px;
+        background: transparent;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .filters button.active {
+        background: var(--green);
+        color: white;
       }
 
       textarea {
@@ -138,6 +392,7 @@
         border-color: var(--green);
         background: var(--green);
         color: white;
+        box-shadow: 0 8px 20px rgba(31, 122, 77, 0.18);
       }
 
       .orders,
@@ -149,10 +404,10 @@
       .order-card,
       .helper-panel {
         border: 1px solid var(--line);
-        border-radius: 10px;
+        border-radius: 14px;
         padding: 18px;
         background: var(--panel);
-        box-shadow: 0 14px 40px rgba(21, 35, 30, 0.07);
+        box-shadow: 0 18px 54px rgba(21, 35, 30, 0.07);
       }
 
       .order-card {
@@ -275,6 +530,9 @@
         align-self: start;
         max-height: calc(100vh - 110px);
         overflow: auto;
+        background:
+          linear-gradient(180deg, #ffffff, #f7fbf8),
+          var(--panel);
       }
 
       .helper-head {
@@ -320,7 +578,8 @@
       @media (max-width: 980px) {
         main,
         .meta,
-        .product-row {
+        .product-row,
+        .analytics-dashboard {
           grid-template-columns: 1fr;
         }
 
@@ -328,6 +587,16 @@
           position: static;
           max-height: none;
         }
+
+        .distribution-chart {
+          grid-template-columns: 1fr;
+        }
+
+        .filters {
+          display: flex;
+          width: 100%;
+        }
+
       }
     </style>
   </head>
@@ -339,13 +608,9 @@
       </div>
       <nav>
         <a href="main.html">Customer site</a>
-        &nbsp;|&nbsp;
         <a href="admin.html">All orders</a>
-        &nbsp;|&nbsp;
         <a href="accepted.html">Accepted page</a>
-        &nbsp;|&nbsp;
         <a href="declined.html">Declined page</a>
-        &nbsp;|&nbsp;
         <a href="branch.html">Branch dashboard</a>
       </nav>
     </header>
@@ -354,6 +619,44 @@
       <section>
         <h1>Admin Order Review</h1>
         <p>Accept, decline, or send paid orders to the selected branch. The AI helper summarizes what should happen next.</p>
+
+        <section class="analytics-dashboard" aria-label="Admin analytics dashboard">
+          <a class="analytics-card" href="analytics.html?view=revenue#revenue" data-analytics-link="revenue">
+            <div class="analytics-card-head">
+              <h2>Revenue</h2>
+              <span>Open graph</span>
+            </div>
+            <div class="metric-value" id="analyticsRevenue">RM 0</div>
+            <p class="metric-subtext" id="analyticsRevenueText">No accepted revenue yet.</p>
+            <div class="line-preview" id="revenueSparkline" aria-label="Revenue trend preview"></div>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <span>Orders</span>
+                <strong id="analyticsOrderCount">0</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Average</span>
+                <strong id="analyticsAverageOrder">RM 0</strong>
+              </div>
+            </div>
+          </a>
+          <a class="analytics-card" href="analytics.html?view=products#products" data-analytics-link="products">
+            <div class="analytics-card-head">
+              <h2>Top-selling products</h2>
+              <span>Open graph</span>
+            </div>
+            <p class="metric-subtext">Ranked by quantity sold from accepted orders.</p>
+            <div class="distribution-chart" id="productChart"></div>
+          </a>
+          <a class="analytics-card" href="analytics.html?view=branches#branches" data-analytics-link="branches">
+            <div class="analytics-card-head">
+              <h2>Branch performance</h2>
+              <span>Open graph</span>
+            </div>
+            <p class="metric-subtext">Revenue and order count by fulfilment branch.</p>
+            <div class="distribution-chart" id="branchChart"></div>
+          </a>
+        </section>
 
         <div class="filters" aria-label="Order filters">
           <button class="active" type="button" data-filter="All">All</button>
@@ -407,12 +710,20 @@
       const db = getFirestore(app);
       const ordersEl = document.querySelector("#orders");
       const helperLog = document.querySelector("#helperLog");
+      const analyticsRevenue = document.querySelector("#analyticsRevenue");
+      const analyticsRevenueText = document.querySelector("#analyticsRevenueText");
+      const analyticsOrderCount = document.querySelector("#analyticsOrderCount");
+      const analyticsAverageOrder = document.querySelector("#analyticsAverageOrder");
+      const productChart = document.querySelector("#productChart");
+      const branchChart = document.querySelector("#branchChart");
+      const revenueSparkline = document.querySelector("#revenueSparkline");
       const pageTitle = document.querySelector("h1");
       const pageIntro = pageTitle.nextElementSibling;
       let allOrders = [];
       const pageName = window.location.pathname.split("/").pop().replace(".html", "");
       const pageView = pageName === "accepted" ? "Accepted" : pageName === "declined" ? "Declined" : "All";
-      let activeFilter = pageView;
+      const urlFilter = new URLSearchParams(window.location.search).get("filter");
+      let activeFilter = urlFilter || pageView;
       const fulfilmentMembers = ["Louis", "Kowaii", "SY", "Rong Yi", "Win"];
       const salesAssociateCodes = {
         "0000": "Kowaii",
@@ -536,6 +847,149 @@
           currency: "MYR",
           maximumFractionDigits: 0,
         }).format(value || 0);
+      }
+
+      function orderTotal(order) {
+        return Number(order.total || order.grandTotal || order.orderTotal || order.amount || 0);
+      }
+
+      function revenueOrders() {
+        return allOrders.filter((order) => ["Accepted", "Sent to Branch", "Completed"].includes(order.status) || order.adminDecision === "Accepted");
+      }
+
+      function productName(product) {
+        return product.name || product.productName || product.productCode || product.id || "Unknown product";
+      }
+
+      function productQuantity(product) {
+        return Number(product.quantity || product.qty || 1);
+      }
+
+      function groupedProducts(orders) {
+        const totals = new Map();
+        orders.forEach((order) => {
+          (order.products || order.items || []).forEach((product) => {
+            const name = productName(product);
+            const current = totals.get(name) || { label: name, quantity: 0, revenue: 0 };
+            current.quantity += productQuantity(product);
+            current.revenue += Number(product.subtotal || product.total || product.price || 0);
+            totals.set(name, current);
+          });
+        });
+        return [...totals.values()].sort((a, b) => b.quantity - a.quantity || b.revenue - a.revenue).slice(0, 5);
+      }
+
+      function groupedBranches(orders) {
+        const totals = new Map();
+        orders.forEach((order) => {
+          const branch = order.branch || "Branch pending";
+          const current = totals.get(branch) || { label: branch, orders: 0, revenue: 0 };
+          current.orders += 1;
+          current.revenue += orderTotal(order);
+          totals.set(branch, current);
+        });
+        return [...totals.values()].sort((a, b) => b.revenue - a.revenue || b.orders - a.orders);
+      }
+
+      function revenueTrend(orders) {
+        const totals = new Map();
+        orders.forEach((order) => {
+          const date = new Date(order.reviewedAtLocal || order.createdAtLocal || order.createdAt || Date.now());
+          const key = date.toISOString().slice(0, 10);
+          totals.set(key, (totals.get(key) || 0) + orderTotal(order));
+        });
+        return [...totals.entries()]
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([date, revenue]) => ({ date, revenue }));
+      }
+
+      function lineChartMarkup(points) {
+        const chartPoints = points.length ? points : [{ date: "Start", revenue: 0 }, { date: "Now", revenue: 0 }];
+        const max = Math.max(...chartPoints.map((point) => point.revenue), 1);
+        const width = 320;
+        const height = 72;
+        const step = chartPoints.length > 1 ? width / (chartPoints.length - 1) : width;
+        const coordinates = chartPoints.map((point, index) => {
+          const x = index * step;
+          const y = height - (point.revenue / max) * (height - 12) - 6;
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        });
+        const area = `0,${height} ${coordinates.join(" ")} ${width},${height}`;
+        return `
+          <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Revenue line graph">
+            <polygon points="${area}"></polygon>
+            <path d="M ${coordinates.join(" L ")}"></path>
+          </svg>
+        `;
+      }
+
+      function distributionChartMarkup(rows, valueKey, valueFormatter, emptyText, centerLabel) {
+        if (!rows.length) return `<div class="empty">${emptyText}</div>`;
+        const colors = ["#1f7a4d", "#d99b34", "#5b8fb9", "#b98358", "#7866a8"];
+        const circumference = 2 * Math.PI * 45;
+        const total = rows.reduce((sum, row) => sum + Number(row[valueKey] || 0), 0) || 1;
+        let offset = 0;
+        const segments = rows
+          .map((row, index) => {
+            const value = Number(row[valueKey] || 0);
+            const length = (value / total) * circumference;
+            const segment = `<circle class="donut-segment" cx="60" cy="60" r="45" stroke="${colors[index % colors.length]}" stroke-dasharray="${length} ${circumference - length}" stroke-dashoffset="${-offset}"></circle>`;
+            offset += length;
+            return segment;
+          })
+          .join("");
+        const legend = rows
+          .map((row) => {
+            const value = Number(row[valueKey] || 0);
+            const percent = Math.round((value / total) * 100);
+            const color = colors[rows.indexOf(row) % colors.length];
+            return `
+              <div class="legend-row">
+                <span class="legend-dot" style="--legend-color: ${color}"></span>
+                <span class="legend-label" title="${row.label}">${row.label}</span>
+                <span class="legend-value">${percent}% | ${valueFormatter(row)}</span>
+              </div>
+            `;
+          })
+          .join("");
+        return `
+          <svg class="donut" viewBox="0 0 120 120" role="img" aria-label="${centerLabel} distribution chart">
+            <circle class="donut-bg" cx="60" cy="60" r="45"></circle>
+            ${segments}
+            <circle class="donut-center" cx="60" cy="60" r="29"></circle>
+            <text class="donut-total" x="60" y="58" text-anchor="middle">${rows.length}</text>
+            <text class="donut-caption" x="60" y="71" text-anchor="middle">${centerLabel}</text>
+          </svg>
+          <div class="distribution-legend">${legend}</div>
+        `;
+      }
+
+      function renderAnalytics() {
+        const orders = revenueOrders();
+        const totalRevenue = orders.reduce((sum, order) => sum + orderTotal(order), 0);
+        const averageOrder = orders.length ? totalRevenue / orders.length : 0;
+
+        analyticsRevenue.textContent = money(totalRevenue);
+        analyticsRevenueText.textContent = orders.length
+          ? `${orders.length} accepted or sent order${orders.length === 1 ? "" : "s"} counted in revenue.`
+          : "No accepted revenue yet.";
+        analyticsOrderCount.textContent = String(orders.length);
+        analyticsAverageOrder.textContent = money(averageOrder);
+        revenueSparkline.innerHTML = lineChartMarkup(revenueTrend(orders));
+        productChart.innerHTML = distributionChartMarkup(
+          groupedProducts(orders),
+          "quantity",
+          (row) => `${row.quantity} sold`,
+          "No product sales yet.",
+          "Products"
+        );
+        branchChart.innerHTML = distributionChartMarkup(
+          groupedBranches(orders),
+          "revenue",
+          (row) => `${money(row.revenue)} | ${row.orders} order${row.orders === 1 ? "" : "s"}`,
+          "No branch performance yet.",
+          "Branches"
+        );
       }
 
       function deliveryEta(order) {
@@ -726,6 +1180,7 @@
       }
 
       function renderOrders() {
+        renderAnalytics();
         const orders = visibleOrders();
 
         if (!orders.length) {
@@ -984,19 +1439,29 @@
 
       function syncFilterButtons() {
         document.querySelectorAll("[data-filter]").forEach((item) => item.classList.toggle("active", item.dataset.filter === activeFilter));
-        if (pageView === "Accepted" || pageView === "Declined") {
-          document.querySelectorAll("[data-filter]").forEach((item) => {
-            item.disabled = true;
-            item.classList.toggle("active", item.dataset.filter === pageView);
-          });
-        }
+      }
+
+      function filterUrl(filter) {
+        if (filter === "Accepted") return "accepted.html";
+        if (filter === "Declined") return "declined.html";
+        if (filter === "All") return "admin.html";
+        return `admin.html?filter=${encodeURIComponent(filter)}`;
       }
 
       document.querySelectorAll("[data-filter]").forEach((button) => {
         button.addEventListener("click", () => {
+          if (pageView === "Accepted" || pageView === "Declined") {
+            window.location.href = filterUrl(button.dataset.filter);
+            return;
+          }
           activeFilter = button.dataset.filter;
           syncFilterButtons();
           renderOrders();
+        });
+      });
+      document.querySelectorAll("[data-analytics-link]").forEach((link) => {
+        link.addEventListener("click", () => {
+          sessionStorage.setItem("breoAnalyticsView", link.dataset.analyticsLink);
         });
       });
       syncFilterButtons();

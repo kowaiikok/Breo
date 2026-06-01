@@ -986,14 +986,24 @@
         document.querySelectorAll("[data-filter]").forEach((item) => item.classList.toggle("active", item.dataset.filter === activeFilter));
         if (pageView === "Accepted" || pageView === "Declined") {
           document.querySelectorAll("[data-filter]").forEach((item) => {
-            item.disabled = true;
             item.classList.toggle("active", item.dataset.filter === pageView);
           });
         }
       }
 
+      function filterUrl(filter) {
+        if (filter === "Accepted") return "accepted.html";
+        if (filter === "Declined") return "declined.html";
+        if (filter === "All") return "admin.html";
+        return `admin.html?filter=${encodeURIComponent(filter)}`;
+      }
+
       document.querySelectorAll("[data-filter]").forEach((button) => {
         button.addEventListener("click", () => {
+          if (pageView === "Accepted" || pageView === "Declined") {
+            window.location.href = filterUrl(button.dataset.filter);
+            return;
+          }
           activeFilter = button.dataset.filter;
           syncFilterButtons();
           renderOrders();

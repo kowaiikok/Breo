@@ -693,7 +693,6 @@
       .reward-card,
       .recommendation-visual,
       .quiz-panel,
-      .comparison-wrap,
       .timeline-panel {
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -857,44 +856,6 @@
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-      }
-
-      .comparison-wrap {
-        overflow-x: auto;
-      }
-
-      .comparison-wrap {
-        margin-top: 22px;
-      }
-
-      .comparison-wrap h3 {
-        margin-bottom: 6px;
-      }
-
-      .comparison-wrap p {
-        color: var(--muted);
-        line-height: 1.55;
-      }
-
-      .comparison-table {
-        width: 100%;
-        min-width: 760px;
-        border-collapse: collapse;
-      }
-
-      .comparison-table th,
-      .comparison-table td {
-        border-bottom: 1px solid var(--line);
-        padding: 14px;
-        text-align: left;
-        vertical-align: top;
-      }
-
-      .comparison-table th {
-        color: var(--green-dark);
-        font-size: 0.86rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
       }
 
       .review-card {
@@ -1779,6 +1740,26 @@
         margin-top: 16px;
       }
 
+      .payment-provider-panel {
+        display: grid;
+        gap: 10px;
+        margin-top: 16px;
+        border: 1px solid rgba(31, 122, 77, 0.22);
+        border-radius: 8px;
+        padding: 14px;
+        background: #f2fbf5;
+      }
+
+      .payment-provider-panel strong {
+        display: block;
+      }
+
+      .payment-provider-panel p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
       .modal-actions {
         display: flex;
         justify-content: flex-end;
@@ -2150,6 +2131,7 @@
           width: calc(100vw - 24px);
         }
 
+
         .trust-strip,
         .voucher-grid,
         .recommendation-shell,
@@ -2252,23 +2234,6 @@
           <h2>Massage care presented like a boutique range, not a crowded catalogue.</h2>
         </div>
         <div class="product-grid" id="productGrid"></div>
-        <div class="comparison-wrap" aria-labelledby="comparison-title">
-          <h3 id="comparison-title">Product Comparison Table</h3>
-          <p>Compare massage gun, eye massager, neck massager, and mini handheld by need, price, portability, heat function, and product code.</p>
-          <table class="comparison-table">
-            <thead>
-              <tr>
-                <th scope="col">Product</th>
-                <th scope="col">Best for</th>
-                <th scope="col">Price</th>
-                <th scope="col">Portability</th>
-                <th scope="col">Heat function</th>
-                <th scope="col">Product code</th>
-              </tr>
-            </thead>
-            <tbody id="comparisonTable"></tbody>
-          </table>
-        </div>
       </section>
 
       <section class="section" id="stock-status">
@@ -2621,14 +2586,21 @@
       <div class="modal">
         <div class="modal-header">
           <h3 id="paymentModalTitle">Connect payment</h3>
-          <p>This demo simulates a payment popup for card, e-wallet, or Atome.</p>
+          <p>Open the secure hosted checkout, complete payment with the provider, then paste the transaction reference here.</p>
         </div>
         <div class="modal-body">
           <div class="review-box" id="paymentReview"></div>
+          <div class="payment-provider-panel">
+            <div>
+              <strong id="paymentProviderTitle">Secure hosted checkout</strong>
+              <p id="paymentProviderText">A real payment provider link can be connected without storing card details on this website.</p>
+            </div>
+            <button class="button secondary full" id="openHostedCheckoutButton" type="button">Open secure checkout</button>
+          </div>
           <div class="payment-fields">
             <label>
-              Card / wallet reference
-              <input id="paymentReference" type="text" placeholder="Last 4 digits, wallet name, or Atome reference" />
+              Payment transaction reference
+              <input id="paymentReference" type="text" placeholder="Provider transaction ID or receipt number" />
             </label>
             <label>
               Customer email for receipt
@@ -2638,7 +2610,7 @@
         </div>
         <div class="modal-actions">
           <button class="button secondary" id="backToReviewButton" type="button">Back</button>
-          <button class="button primary" id="completePaymentButton" type="button">Complete payment</button>
+          <button class="button primary" id="completePaymentButton" type="button">I have paid, submit order</button>
         </div>
       </div>
     </div>
@@ -2756,7 +2728,6 @@
       let localStatusTimer = null;
       let latestCloudCustomerOrder = null;
       let lastCustomerStatusNotice = "";
-      let promoOpenTimer = null;
 
       const demoMembers = [
         {
@@ -2905,7 +2876,6 @@
       localStorage.setItem("breoMembers", JSON.stringify(state.members));
 
       const productGrid = document.querySelector("#productGrid");
-      const comparisonTable = document.querySelector("#comparisonTable");
       const recommendationQuiz = document.querySelector("#recommendationQuiz");
       const quizPreviewName = document.querySelector("#quizPreviewName");
       const quizPreviewText = document.querySelector("#quizPreviewText");
@@ -2964,6 +2934,8 @@
       const continuePaymentButton = document.querySelector("#continuePaymentButton");
       const backToReviewButton = document.querySelector("#backToReviewButton");
       const completePaymentButton = document.querySelector("#completePaymentButton");
+      const openHostedCheckoutButton = document.querySelector("#openHostedCheckoutButton");
+      const paymentProviderText = document.querySelector("#paymentProviderText");
       const paymentReference = document.querySelector("#paymentReference");
       const paymentEmail = document.querySelector("#paymentEmail");
       const verificationNote = document.querySelector("#verificationNote");
@@ -2976,6 +2948,11 @@
       const globalHelperForm = document.querySelector("#globalHelperForm");
       const globalHelperInput = document.querySelector("#globalHelperInput");
       let globalHelperManuallyMinimized = localStorage.getItem("breoGlobalHelperMinimized") === "true";
+      const defaultHostedPaymentLinks = {
+        "Credit / Debit Card": "",
+        "E-Wallet": "",
+        "Atome Installments": "",
+      };
 
       function formatMoney(value) {
         return new Intl.NumberFormat("en-MY", { style: "currency", currency: "MYR", maximumFractionDigits: 0 }).format(value);
@@ -3011,8 +2988,6 @@
         "Local checkout estimate": "本地结账估算",
         "Featured collection": "精选系列",
         "Massage care presented like a boutique range, not a crowded catalogue.": "以精品系列方式呈现按摩护理，而不是拥挤的目录。",
-        "Product Comparison Table": "产品比较表",
-        "Compare massage gun, eye massager, neck massager, and mini handheld by need, price, portability, heat function, and product code.": "按需求、价格、便携性、热敷功能和产品代码比较筋膜枪、眼部按摩器、颈部按摩器和迷你手持按摩器。",
         "Product": "产品",
         "Best for": "适合",
         "Price": "价格",
@@ -3120,11 +3095,40 @@
         "Edit order": "修改订单",
         "Yes, continue to payment": "是的，继续付款",
         "Connect payment": "连接付款",
-        "This demo simulates a payment popup for card, e-wallet, or Atome.": "此演示模拟信用卡、电子钱包或 Atome 的付款弹窗。",
-        "Card / wallet reference": "卡号 / 钱包参考",
+        "Open the secure hosted checkout, complete payment with the provider, then paste the transaction reference here.": "打开安全托管结账页面，完成付款后将交易参考编号粘贴到这里。",
+        "Secure hosted checkout": "安全托管结账",
+        "A real payment provider link can be connected without storing card details on this website.": "可连接真实支付供应商链接，而无需在本网站保存银行卡资料。",
+        "Open secure checkout": "打开安全结账",
+        "Payment transaction reference": "付款交易参考编号",
         "Customer email for receipt": "收据电邮",
         "Back": "返回",
-        "Complete payment": "完成付款",
+        "I have paid, submit order": "我已付款，提交订单",
+        "Provider transaction ID or receipt number": "支付供应商交易编号或收据号码",
+        "Order declined": "订单已拒绝",
+        "Order accepted": "订单已接受",
+        "Order sent to branch": "订单已发送到分店",
+        "Order shipped": "订单已发货",
+        "Order completed": "订单已完成",
+        "Order pending admin review": "订单等待管理员审核",
+        "Branch status": "分店状态",
+        "Order ID": "订单编号",
+        "Branch pending": "分店待确认",
+        "Track order": "追踪订单",
+        "Packing": "正在包装",
+        "New Order": "新订单",
+        "Ready for Courier": "等待快递取件",
+        "Shipped": "已发货",
+        "Completed": "已完成",
+        "Waiting for admin": "等待管理员",
+        "Pending Admin Review": "等待管理员审核",
+        "Accepted": "已接受",
+        "Declined": "已拒绝",
+        "Sent to Branch": "已发送到分店",
+        "Your order status has been updated.": "您的订单状态已更新。",
+        "The admin team declined this order. Please contact support for the reason.": "管理员已拒绝此订单。请联系客服了解原因。",
+        "Admin has received your paid order and is checking the product codes, branch, and delivery details.": "管理员已收到您的付款订单，正在检查产品代码、分店和配送资料。",
+        "Your Breo order has been delivered. Thank you for shopping with Breo.": "您的 Breo 订单已送达。感谢您在 Breo 购物。",
+        "Your Breo order has been delivered.": "您的 Breo 订单已送达。",
         "Copy Code: WELCOME10": "复制代码：WELCOME10",
         "View vouchers": "查看优惠券",
         "Breo Malaysia sales concept": "Breo 马来西亚销售概念",
@@ -3298,7 +3302,6 @@
         languageSelect.value = state.language;
         document.documentElement.lang = state.language === "zh" ? "zh-Hans" : "en";
         renderProducts();
-        renderComparisonTable();
         renderQuiz();
         renderCart();
         translateSubtree();
@@ -3314,6 +3317,38 @@
 
       function selectedPayment() {
         return document.querySelector("input[name='payment']:checked").value;
+      }
+
+      function hostedPaymentLinks() {
+        try {
+          return {
+            ...defaultHostedPaymentLinks,
+            ...(JSON.parse(localStorage.getItem("breoHostedPaymentLinks") || "{}")),
+          };
+        } catch (error) {
+          return defaultHostedPaymentLinks;
+        }
+      }
+
+      function hostedCheckoutUrl() {
+        return hostedPaymentLinks()[selectedPayment()] || "";
+      }
+
+      function checkoutUrlWithOrderContext(url) {
+        if (!url) return "";
+        const checkoutUrl = new URL(url, window.location.href);
+        checkoutUrl.searchParams.set("client_reference_id", `BREO-${Date.now().toString().slice(-6)}`);
+        checkoutUrl.searchParams.set("amount_myr", String(cartTotal()));
+        checkoutUrl.searchParams.set("customer_email", state.member?.email || "");
+        return checkoutUrl.toString();
+      }
+
+      function updateHostedCheckoutState() {
+        const url = hostedCheckoutUrl();
+        openHostedCheckoutButton.disabled = !url;
+        paymentProviderText.textContent = url
+          ? "Secure checkout is connected. Open the provider page, pay, then return here with the transaction reference."
+          : "No hosted checkout link is configured yet. Add your provider checkout URL to localStorage key breoHostedPaymentLinks or set it in defaultHostedPaymentLinks.";
       }
 
       function cartItems() {
@@ -3462,23 +3497,6 @@
                   </div>
                 </div>
               </article>
-            `
-          )
-          .join("");
-      }
-
-      function renderComparisonTable() {
-        comparisonTable.innerHTML = products
-          .map(
-            (product) => `
-              <tr>
-                <th scope="row">${t(product.name)}</th>
-                <td>${t(product.bestFor)}</td>
-                <td>${formatMoney(product.price)}</td>
-                <td>${t(product.portability)}</td>
-                <td>${t(product.heatFunction)}</td>
-                <td>${product.code}</td>
-              </tr>
             `
           )
           .join("");
@@ -3692,9 +3710,17 @@
         voucherPrimaryCode.textContent = promo.code;
       }
 
-      function showMemberPromoPopup() {
+      function memberPromoPopupKey() {
+        const email = normalizeEmail(state.member?.email || "");
+        return email ? `breoVoucherPopupSeen:${email}` : "";
+      }
+
+      function showMemberPromoPopup({ force = false } = {}) {
         updateMemberPromo();
         if (!state.member?.verified) return;
+        const popupKey = memberPromoPopupKey();
+        if (!force && popupKey && localStorage.getItem(popupKey) === "true") return;
+        if (!force && popupKey) localStorage.setItem(popupKey, "true");
         promoModal.classList.add("open");
       }
 
@@ -3729,10 +3755,6 @@
           resendVerification.classList.toggle("hidden", state.member.verified);
           refreshVerification.classList.toggle("hidden", state.member.verified);
           updateMemberPromo();
-          if (state.member.verified) {
-            window.clearTimeout(promoOpenTimer);
-            promoOpenTimer = window.setTimeout(showMemberPromoPopup, 650);
-          }
         } else {
           memberStatus.textContent = t("Guest");
           memberMenuName.textContent = t("Guest");
@@ -3808,12 +3830,30 @@
       }
 
       function customerOrderTitle(order) {
-        if (order.status === "Declined") return "Order declined";
-        if (order.status === "Accepted") return "Order accepted";
-        if (order.status === "Sent to Branch") return "Order sent to branch";
-        if (order.branchStatus === "Shipped") return "Order shipped";
-        if (order.branchStatus === "Completed") return "Order completed";
-        return "Order pending admin review";
+        if (order.status === "Declined") return t("Order declined");
+        if (order.branchStatus === "Completed") return t("Order completed");
+        if (order.branchStatus === "Shipped") return t("Order shipped");
+        if (order.status === "Accepted") return t("Order accepted");
+        if (order.status === "Sent to Branch") return t("Order sent to branch");
+        return t("Order pending admin review");
+      }
+
+      function localizedBranchStatus(status) {
+        if (!status) return "";
+        return t(status);
+      }
+
+      function localizeOrderMessage(message) {
+        if (!message) return "";
+        if (state.language !== "zh") return message;
+        const branchStatusMatch = message.match(/^Branch status updated: (.+)\.$/);
+        if (branchStatusMatch) return `分店状态已更新：${localizedBranchStatus(branchStatusMatch[1])}。`;
+        if (zhTranslations[message]) return zhTranslations[message];
+        return message
+          .replace("Your Breo order has been accepted.", "您的 Breo 订单已被接受。")
+          .replace("Expected delivery arrival:", "预计送达日期：")
+          .replace("Your Breo order was accepted and sent to", "您的 Breo 订单已被接受并发送到")
+          .replace("The branch is preparing it for shipment.", "分店正在准备发货。");
       }
 
       function estimatedArrival(order) {
@@ -3823,7 +3863,7 @@
         const base = order.reviewedAtLocal || order.sentToBranchAtLocal || order.createdAtLocal || new Date().toISOString();
         const date = new Date(base);
         date.setDate(date.getDate() + 5);
-        return date.toLocaleDateString("en-MY", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+        return date.toLocaleDateString(state.language === "zh" ? "zh-CN" : "en-MY", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
       }
 
       function mapsDirectionsUrl(order) {
@@ -3855,13 +3895,13 @@
               </div>
               <div class="map-pin customer">
                 <strong>Your address</strong>
-                <span>${delivery}</span>
-              </div>
+              <span>${delivery}</span>
             </div>
-            <div class="route-meta">
-              <strong>Expected delivery arrival: ${estimatedArrival(order)}</strong>
-              <small>Route shown from ${order.branch || "branch"} to your delivery address. The branch can still adjust the courier timing after packing.</small>
-              <a href="${mapsDirectionsUrl(order)}" target="_blank" rel="noopener">Open route in Google Maps</a>
+          </div>
+          <div class="route-meta">
+              <strong>${state.language === "zh" ? "预计送达日期" : "Expected delivery arrival"}: ${estimatedArrival(order)}</strong>
+              <small>${state.language === "zh" ? `路线从 ${order.branch || "分店"} 到您的配送地址。分店仍可在包装后调整快递时间。` : `Route shown from ${order.branch || "branch"} to your delivery address. The branch can still adjust the courier timing after packing.`}</small>
+              <a href="${mapsDirectionsUrl(order)}" target="_blank" rel="noopener">${state.language === "zh" ? "在 Google Maps 打开路线" : "Open route in Google Maps"}</a>
             </div>
           </div>
         `;
@@ -3875,37 +3915,37 @@
         }
 
         const statusClass = orderStatusClass(order);
-        const reason = order.status === "Declined" ? order.adminNote || order.customerMessage || "The admin team declined this order. Please contact support for the reason." : "";
+        const reason = order.status === "Declined" ? order.adminNote || order.customerMessage || t("The admin team declined this order. Please contact support for the reason.") : "";
         const acceptedMessage = order.status === "Accepted"
-          ? order.customerMessage || `Your Breo order has been accepted. Expected delivery arrival: ${estimatedArrival(order)}.`
+          ? order.customerMessage || (state.language === "zh" ? `您的 Breo 订单已被接受。预计送达日期：${estimatedArrival(order)}。` : `Your Breo order has been accepted. Expected delivery arrival: ${estimatedArrival(order)}.`)
           : "";
         const branchMessage = order.status === "Sent to Branch"
-          ? order.customerMessage || `Your Breo order was accepted and sent to ${order.branch}. The branch is preparing it for shipment.`
+          ? order.customerMessage || (state.language === "zh" ? `您的 Breo 订单已被接受并发送到 ${order.branch}。分店正在准备发货。` : `Your Breo order was accepted and sent to ${order.branch}. The branch is preparing it for shipment.`)
           : "";
-        const pendingMessage = order.status === "Pending Admin Review" ? "Admin has received your paid order and is checking the product codes, branch, and delivery details." : "";
-        const branchStatus = order.branchStatus && order.branchStatus !== "Waiting for admin" ? `Branch status: ${order.branchStatus}` : "";
-        const mainMessage = reason || acceptedMessage || branchMessage || order.customerMessage || pendingMessage || "Your order status has been updated.";
+        const pendingMessage = order.status === "Pending Admin Review" ? t("Admin has received your paid order and is checking the product codes, branch, and delivery details.") : "";
+        const branchStatus = order.branchStatus && order.branchStatus !== "Waiting for admin" ? `${t("Branch status")}: ${localizedBranchStatus(order.branchStatus)}` : "";
+        const mainMessage = localizeOrderMessage(reason || acceptedMessage || branchMessage || order.customerMessage || pendingMessage || t("Your order status has been updated."));
 
         customerOrderStatus.className = `order-status-card show ${statusClass}`;
         customerOrderStatus.innerHTML = `
           <h4>${customerOrderTitle(order)}</h4>
           <p>${mainMessage}</p>
-          <small>Order ID: ${order.orderId || order.id} | ${order.branch || "Branch pending"}${branchStatus ? ` | ${branchStatus}` : ""}</small>
-          <a class="button primary" href="track-order.html">Track order</a>
+          <small>${t("Order ID")}: ${order.orderId || order.id} | ${order.branch || t("Branch pending")}${branchStatus ? ` | ${branchStatus}` : ""}</small>
+          <a class="button primary" href="track-order.html">${t("Track order")}</a>
           ${routeMapHtml(order)}
         `;
 
         if (order.status === "Accepted") {
-          flowStatus.textContent = "Accepted";
+          flowStatus.textContent = t("Accepted");
           const noticeKey = `${order.orderId || order.id}:Accepted`;
           if (lastCustomerStatusNotice !== noticeKey) {
             lastCustomerStatusNotice = noticeKey;
-            addMessage(`<strong>Order accepted.</strong><br />Track the delivery date and route here: <a href="track-order.html">Track order</a>`);
+            addMessage(state.language === "zh" ? `<strong>订单已接受。</strong><br />可在这里追踪送达日期和路线：<a href="track-order.html">追踪订单</a>` : `<strong>Order accepted.</strong><br />Track the delivery date and route here: <a href="track-order.html">Track order</a>`);
           }
         } else if (order.status === "Declined") {
-          flowStatus.textContent = "Declined";
+          flowStatus.textContent = t("Declined");
         } else if (order.status === "Sent to Branch") {
-          flowStatus.textContent = "On its way soon";
+          flowStatus.textContent = state.language === "zh" ? "即将发货" : "On its way soon";
         }
       }
 
@@ -4043,8 +4083,8 @@
           </button>
         `).join("");
         const intro = state.language === "zh"
-          ? "可以，您可以联系真人销售员。请选择一位销售员，然后输入您的电话号码，方便他们打电话或 WhatsApp 您。"
-          : "Sure, you can contact a real person. Choose a sales associate below, then type your phone number so they can call or WhatsApp you.";
+          ? "可以，您可以联系真人销售员。请选择一位销售员，然后输入您的电话号码，方便他们联系您。"
+          : "Sure, you can contact a real person. Choose a sales associate below, then type your phone number so they can contact you.";
         const phonePlaceholder = state.language === "zh" ? "您的电话号码，例如 +6012..." : "Your phone number, example +6012...";
         const sendLabel = state.language === "zh" ? "发送联系请求" : "Send contact request";
         addMessage(`
@@ -4340,11 +4380,22 @@
         paymentReference.value = "";
         paymentEmail.value = "";
         paymentReview.innerHTML = orderReviewHtml();
+        updateHostedCheckoutState();
         closeModal(orderConfirmModal);
         openModal(paymentModal);
       }
 
-      async function saveOrderToBranch({ paymentId, payment, reference, receiptEmail, address, note }) {
+      function openHostedCheckout() {
+        const checkoutUrl = hostedCheckoutUrl();
+        if (!checkoutUrl) {
+          addMessage("No hosted payment checkout is configured yet. Add a real Stripe, e-wallet, Atome, or payment gateway checkout URL before collecting live payment.");
+          return;
+        }
+        window.open(checkoutUrlWithOrderContext(checkoutUrl), "_blank", "noopener");
+        addMessage("Secure hosted checkout opened. After payment is complete, paste the provider transaction ID or receipt number back into the payment popup.");
+      }
+
+      async function saveOrderToBranch({ paymentId, payment, reference, receiptEmail, address, note, hostedCheckout }) {
         const orderId = `BREO-${Date.now().toString().slice(-6)}`;
         const order = {
           id: orderId,
@@ -4363,6 +4414,8 @@
           paymentId,
           paymentMethod: payment,
           paymentReference: reference || "Payment reference pending",
+          paymentProvider: hostedCheckout ? "Hosted checkout" : "Manual reference",
+          hostedCheckoutUrl: hostedCheckout || "",
           receiptEmail: receiptEmail || "",
           paymentStatus: "Paid",
           deliveryAddress: address,
@@ -4403,7 +4456,7 @@
         const paymentId = `PAY-${Date.now().toString().slice(-6)}`;
 
         if (!reference) {
-          addMessage("Please enter a card or wallet reference in the payment popup before completing payment.");
+          addMessage("Please enter the payment provider transaction ID or receipt number before submitting the order.");
           return;
         }
 
@@ -4411,7 +4464,7 @@
         let savedOrderId = null;
 
         try {
-          savedOrderId = await saveOrderToBranch({ paymentId, payment, reference, receiptEmail: email, address, note });
+          savedOrderId = await saveOrderToBranch({ paymentId, payment, reference, receiptEmail: email, address, note, hostedCheckout: hostedCheckoutUrl() });
         } catch (error) {
           addMessage(`Branch notification failed: ${error.message}. The order is confirmed on screen, but Firestore did not receive it.`);
         }
@@ -4566,7 +4619,7 @@
       viewVouchersLink.addEventListener("click", closeMemberPromoPopup);
       copyPromoCode.addEventListener("click", () => copyCurrentPromoCode(copyPromoCode));
       copyVoucherButton.addEventListener("click", () => copyCurrentPromoCode(copyVoucherButton));
-      showVoucherPopup.addEventListener("click", showMemberPromoPopup);
+      showVoucherPopup.addEventListener("click", () => showMemberPromoPopup({ force: true }));
 
       document.addEventListener("click", (event) => {
         if (!event.target.closest(".member-menu")) {

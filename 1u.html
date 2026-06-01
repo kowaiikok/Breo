@@ -282,7 +282,15 @@
 
       function saveLocalOrder(updatedOrder) {
         const orders = localOrders();
-        const nextOrders = orders.map((order) => (order.id === updatedOrder.id ? { ...order, ...updatedOrder } : order));
+        let found = false;
+        const nextOrders = orders.map((order) => {
+          if (order.id === updatedOrder.id || order.orderId === updatedOrder.orderId) {
+            found = true;
+            return { ...order, ...updatedOrder };
+          }
+          return order;
+        });
+        if (!found) nextOrders.unshift(updatedOrder);
         localStorage.setItem("breoLocalOrders", JSON.stringify(nextOrders));
         allOrders = nextOrders;
         renderOrders();
@@ -304,9 +312,10 @@
             return;
           }
 
-          const localIsReady = localOrder.status === "Accepted" || localOrder.status === "Sent to Branch" || localOrder.branchStatus !== "Waiting for admin";
+          const localHasBranchProgress = localOrder.branchStatus && localOrder.branchStatus !== "Waiting for admin";
+          const localIsReady = localOrder.status === "Accepted" || localOrder.status === "Sent to Branch" || localHasBranchProgress;
           const cloudIsPending = !cloudOrder.status || cloudOrder.status === "Pending Admin Review" || cloudOrder.adminDecision === "Pending";
-          mergedByOrderId.set(key, localIsReady && cloudIsPending ? { ...cloudOrder, ...localOrder } : { ...localOrder, ...cloudOrder });
+          mergedByOrderId.set(key, (localIsReady && cloudIsPending) || localHasBranchProgress ? { ...cloudOrder, ...localOrder } : { ...localOrder, ...cloudOrder });
         });
 
         return [...mergedByOrderId.values()];
@@ -408,10 +417,15 @@
         ordersEl.querySelectorAll("[data-order-status]").forEach((select) => {
           select.addEventListener("change", async () => {
             const order = allOrders.find((item) => item.id === select.dataset.orderStatus);
-            if (order.source === "local") {
-              saveLocalOrder({ ...order, branchStatus: select.value });
-            } else {
-              await updateDoc(doc(db, "orders", firestoreDocumentId(order)), { branchStatus: select.value });
+            const updates = {
+              branchStatus: select.value,
+              customerMessage: select.value === "Completed"
+                ? `Your Breo order has been delivered. Thank you for shopping with Breo.`
+                : `Branch status updated: ${select.value}.`,
+            };
+            saveLocalOrder({ ...order, ...updates });
+            if (order.source !== "local") {
+              await updateDoc(doc(db, "orders", firestoreDocumentId(order)), updates);
             }
           });
         });

@@ -49,6 +49,10 @@
         font-weight: 800;
       }
 
+      select {
+        font: inherit;
+      }
+
       .brand {
         display: flex;
         align-items: center;
@@ -66,6 +70,23 @@
         border-radius: 50%;
         background: var(--ink);
         color: white;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .language-select {
+        min-height: 38px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: white;
+        color: var(--muted);
+        font-size: 0.85rem;
+        font-weight: 800;
       }
 
       main {
@@ -107,6 +128,89 @@
       .status-pill.declined {
         background: #fff1ea;
         color: var(--coral);
+      }
+
+      .order-timeline {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0;
+        margin: 8px 0 4px;
+      }
+
+      .timeline-step {
+        position: relative;
+        display: grid;
+        gap: 8px;
+        justify-items: center;
+        min-width: 0;
+        text-align: center;
+      }
+
+      .timeline-step::before {
+        content: "";
+        position: absolute;
+        top: 17px;
+        left: -50%;
+        width: 100%;
+        height: 3px;
+        background: var(--line);
+      }
+
+      .timeline-step:first-child::before {
+        display: none;
+      }
+
+      .timeline-step.done::before {
+        background: var(--green);
+      }
+
+      .timeline-dot {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border: 2px solid var(--line);
+        border-radius: 50%;
+        background: white;
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .timeline-step.done .timeline-dot,
+      .timeline-step.current .timeline-dot {
+        border-color: var(--green);
+        background: var(--green);
+        color: white;
+      }
+
+      .timeline-step.current .timeline-dot {
+        box-shadow: 0 0 0 6px rgba(31, 122, 77, 0.12);
+      }
+
+      .timeline-step.declined .timeline-dot {
+        border-color: var(--coral);
+        background: var(--coral);
+        color: white;
+      }
+
+      .timeline-label {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 800;
+        line-height: 1.25;
+      }
+
+      .timeline-step.done .timeline-label,
+      .timeline-step.current .timeline-label {
+        color: var(--ink);
+      }
+
+      .timeline-note {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
       }
 
       .meta {
@@ -236,6 +340,24 @@
         .product-row {
           grid-template-columns: 1fr;
         }
+
+        .order-timeline {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .timeline-step {
+          grid-template-columns: 36px minmax(0, 1fr);
+          justify-items: start;
+          text-align: left;
+        }
+
+        .timeline-step::before {
+          top: -14px;
+          left: 17px;
+          width: 3px;
+          height: 14px;
+        }
       }
     </style>
   </head>
@@ -245,13 +367,19 @@
         <span class="brand-mark">b</span>
         <span>Breo</span>
       </a>
-      <a href="main.html">Back to customer dashboard</a>
+      <div class="header-actions">
+        <select class="language-select" id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+        </select>
+        <a href="main.html" id="backLink">Back to customer dashboard</a>
+      </div>
     </header>
 
     <main>
       <section>
-        <h1>Track Order</h1>
-        <p>See the latest admin decision, delivery ETA, branch route, and fulfilment status for your Breo order.</p>
+        <h1 id="pageTitle">Track Order</h1>
+        <p id="pageIntro">See the latest admin decision, delivery ETA, branch route, and fulfilment status for your Breo order.</p>
       </section>
       <section id="tracker"></section>
     </main>
@@ -276,8 +404,84 @@
       };
 
       const tracker = document.querySelector("#tracker");
+      const languageSelect = document.querySelector("#languageSelect");
+      let language = localStorage.getItem("breoLanguage") || "en";
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
+      let latestTrackedOrder = null;
+
+      const zhTranslations = {
+        "Back to customer dashboard": "返回顾客主页",
+        "Track Order": "追踪订单",
+        "See the latest admin decision, delivery ETA, branch route, and fulfilment status for your Breo order.": "查看您的 Breo 订单最新管理员决定、预计送达、分店路线和履行状态。",
+        "No tracked order found yet. Place an order from the customer dashboard first.": "暂时找不到可追踪订单。请先从顾客主页下单。",
+        "Paid": "已付款",
+        "Admin accepted": "管理员已接受",
+        "Packing": "正在包装",
+        "Shipped": "已发货",
+        "Delivered": "已送达",
+        "Waiting for payment/admin review": "等待付款 / 管理员审核",
+        "The order stopped after admin review. Check the admin note for the reason.": "订单已在管理员审核后停止。请查看管理员备注了解原因。",
+        "Current step": "当前步骤",
+        "This order was declined by admin.": "此订单已被管理员拒绝。",
+        "Your Breo order has been delivered.": "您的 Breo 订单已送达。",
+        "Your Breo order has been delivered. Thank you for shopping with Breo.": "您的 Breo 订单已送达。感谢您在 Breo 购物。",
+        "Your order has been accepted.": "您的订单已被接受。",
+        "Expected delivery arrival": "预计送达日期",
+        "Your order was sent to": "您的订单已发送到",
+        "Your order is pending admin review.": "您的订单正在等待管理员审核。",
+        "Customer": "顾客",
+        "Branch": "分店",
+        "Payment": "付款",
+        "Delivery": "配送",
+        "Products": "产品",
+        "No note": "无备注",
+        "Waiting for admin": "等待管理员",
+        "Pending Admin Review": "等待管理员审核",
+        "Accepted": "已接受",
+        "Declined": "已拒绝",
+        "Sent to Branch": "已发送到分店",
+        "New Order": "新订单",
+        "Ready for Courier": "等待快递取件",
+        "Completed": "已完成",
+        "Sales associate assigned": "已分配销售员",
+        "Assigned sales associate": "已分配销售员",
+        "Associate code": "销售员代码",
+        "is assigned to": "已分配给",
+        "Your product order and sales support are arranged under this associate.": "您的产品订单和销售支持会安排在这位销售员名下。",
+        "Your address": "您的地址",
+        "Selected branch": "已选择分店",
+        "Open route in Google Maps": "在 Google Maps 打开路线",
+        "Qty": "数量",
+      };
+
+      function t(text) {
+        return language === "zh" ? zhTranslations[text] || text : text;
+      }
+
+      function localizedStatus(status) {
+        return t(status || "Pending Admin Review");
+      }
+
+      function localizeMessage(message) {
+        if (!message || language !== "zh") return message || "";
+        const branchStatusMatch = message.match(/^Branch status updated: (.+)\.$/);
+        if (branchStatusMatch) return `分店状态已更新：${localizedStatus(branchStatusMatch[1])}。`;
+        if (zhTranslations[message]) return zhTranslations[message];
+        return message
+          .replace("Your order has been accepted.", "您的订单已被接受。")
+          .replace("Expected delivery arrival:", "预计送达日期：")
+          .replace("Your order was sent to", "您的订单已发送到");
+      }
+
+      function applyLanguageShell() {
+        document.documentElement.lang = language === "zh" ? "zh-Hans" : "en";
+        document.title = language === "zh" ? "Breo 订单追踪" : "Breo Track Order";
+        languageSelect.value = language;
+        document.querySelector("#backLink").textContent = t("Back to customer dashboard");
+        document.querySelector("#pageTitle").textContent = t("Track Order");
+        document.querySelector("#pageIntro").textContent = t("See the latest admin decision, delivery ETA, branch route, and fulfilment status for your Breo order.");
+      }
 
       function localOrders() {
         return JSON.parse(localStorage.getItem("breoLocalOrders") || "[]");
@@ -304,9 +508,10 @@
             merged.set(key, localOrder);
             return;
           }
-          const localReviewed = localOrder.status === "Accepted" || localOrder.status === "Declined" || localOrder.status === "Sent to Branch";
+          const localHasBranchProgress = localOrder.branchStatus && localOrder.branchStatus !== "Waiting for admin";
+          const localReviewed = localOrder.status === "Accepted" || localOrder.status === "Declined" || localOrder.status === "Sent to Branch" || localHasBranchProgress;
           const cloudPending = !cloudOrder.status || cloudOrder.status === "Pending Admin Review" || cloudOrder.adminDecision === "Pending";
-          merged.set(key, localReviewed && cloudPending ? { ...cloudOrder, ...localOrder } : { ...localOrder, ...cloudOrder });
+          merged.set(key, (localReviewed && cloudPending) || localHasBranchProgress ? { ...cloudOrder, ...localOrder } : { ...localOrder, ...cloudOrder });
         });
         return [...merged.values()];
       }
@@ -319,14 +524,62 @@
         if (order.estimatedDeliveryDate) return order.estimatedDeliveryDate;
         const date = new Date(order.reviewedAtLocal || order.createdAtLocal || new Date().toISOString());
         date.setDate(date.getDate() + 5);
-        return date.toLocaleDateString("en-MY", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+        return date.toLocaleDateString(language === "zh" ? "zh-CN" : "en-MY", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
       }
 
       function statusText(order) {
-        if (order.status === "Declined") return order.adminNote || order.customerMessage || "This order was declined by admin.";
-        if (order.status === "Accepted") return order.customerMessage || `Your order has been accepted. Expected delivery arrival: ${eta(order)}.`;
-        if (order.status === "Sent to Branch") return order.customerMessage || `Your order was sent to ${order.branch}.`;
-        return "Your order is pending admin review.";
+        if (order.status === "Declined") return localizeMessage(order.adminNote || order.customerMessage || "This order was declined by admin.");
+        if (order.branchStatus === "Completed") return localizeMessage(order.customerMessage || "Your Breo order has been delivered.");
+        if (order.status === "Accepted") return localizeMessage(order.customerMessage || (language === "zh" ? `您的订单已被接受。预计送达日期：${eta(order)}。` : `Your order has been accepted. Expected delivery arrival: ${eta(order)}.`));
+        if (order.status === "Sent to Branch") return localizeMessage(order.customerMessage || (language === "zh" ? `您的订单已发送到 ${order.branch}。` : `Your order was sent to ${order.branch}.`));
+        return t("Your order is pending admin review.");
+      }
+
+      function timelineIndex(order) {
+        if (order.status === "Declined") return -1;
+        const branchStatus = `${order.branchStatus || ""}`.toLowerCase();
+        const status = `${order.status || ""}`.toLowerCase();
+        const payment = `${order.paymentStatus || ""} ${order.paymentMethod || ""}`.toLowerCase();
+        if (branchStatus.includes("delivered") || branchStatus.includes("completed") || status.includes("delivered") || status.includes("completed")) return 4;
+        if (branchStatus.includes("shipped") || status.includes("shipped")) return 3;
+        if (branchStatus.includes("packing") || status.includes("sent to branch")) return 2;
+        if (branchStatus.includes("new order")) return 1;
+        if (status.includes("accepted")) return 1;
+        if (payment.includes("paid") || payment.includes("completed") || payment.includes("cash on delivery") || payment.includes("collect on delivery")) return 0;
+        return -1;
+      }
+
+      function timelineHtml(order) {
+        const steps = ["Paid", "Admin accepted", "Packing", "Shipped", "Delivered"];
+        const activeIndex = timelineIndex(order);
+        if (order.status === "Declined") {
+          return `
+            <div class="order-timeline" aria-label="Order tracking timeline">
+              ${steps.map((step, index) => `
+                <div class="timeline-step ${index === 0 ? "done" : index === 1 ? "declined current" : ""}">
+                  <span class="timeline-dot">${index === 1 ? "!" : index + 1}</span>
+                  <span class="timeline-label">${t(step)}</span>
+                </div>
+              `).join("")}
+            </div>
+            <p class="timeline-note">${t("The order stopped after admin review. Check the admin note for the reason.")}</p>
+          `;
+        }
+
+        return `
+          <div class="order-timeline" aria-label="Order tracking timeline">
+            ${steps.map((step, index) => {
+              const state = index < activeIndex ? "done" : index === activeIndex ? "current" : "";
+              return `
+                <div class="timeline-step ${state}">
+                  <span class="timeline-dot">${index < activeIndex ? "✓" : index + 1}</span>
+                  <span class="timeline-label">${t(step)}</span>
+                </div>
+              `;
+            }).join("")}
+          </div>
+          <p class="timeline-note">${t("Current step")}: ${activeIndex >= 0 ? t(steps[activeIndex]) : t("Waiting for payment/admin review")}.</p>
+        `;
       }
 
       function mapsUrl(order) {
@@ -341,64 +594,84 @@
 
       function routeHtml(order) {
         if (order.status !== "Accepted" && order.status !== "Sent to Branch" && order.branchStatus !== "Shipped") return "";
-        const branchAddress = branchLocations[order.branch] || order.branch || "Selected branch";
+        const branchAddress = branchLocations[order.branch] || order.branch || t("Selected branch");
         return `
           <div class="route-map">
             <div class="route-visual">
               <div class="map-pin branch"><strong>${order.branch}</strong><span>${branchAddress}</span></div>
-              <div class="map-pin customer"><strong>Your address</strong><span>${order.deliveryAddress}</span></div>
+              <div class="map-pin customer"><strong>${t("Your address")}</strong><span>${order.deliveryAddress}</span></div>
             </div>
-            <strong>Expected delivery arrival: ${eta(order)}</strong>
-            <a href="${mapsUrl(order)}" target="_blank" rel="noopener">Open route in Google Maps</a>
+            <strong>${t("Expected delivery arrival")}: ${eta(order)}</strong>
+            <a href="${mapsUrl(order)}" target="_blank" rel="noopener">${t("Open route in Google Maps")}</a>
           </div>
         `;
       }
 
       function associateHtml(order) {
         if (!order.salesAssociateCode) return "";
-        const member = order.assignedSalesMemberDisplay || order.assignedFulfilmentMember || order.assignedSalesMember || "Assigned sales associate";
+        const member = order.assignedSalesMemberDisplay || order.assignedFulfilmentMember || order.assignedSalesMember || t("Assigned sales associate");
         return `
           <div class="associate-card">
-            <strong>Sales associate assigned</strong>
-            <span>Associate code <strong>${order.salesAssociateCode}</strong> is assigned to <strong>${member}</strong>. Your product order and sales support are arranged under this associate.</span>
+            <strong>${t("Sales associate assigned")}</strong>
+            <span>${t("Associate code")} <strong>${order.salesAssociateCode}</strong> ${t("is assigned to")} <strong>${member}</strong>. ${t("Your product order and sales support are arranged under this associate.")}</span>
           </div>
         `;
       }
 
       function render(order) {
         if (!order) {
-          tracker.innerHTML = `<div class="empty">No tracked order found yet. Place an order from the customer dashboard first.</div>`;
+          tracker.innerHTML = `<div class="empty">${t("No tracked order found yet. Place an order from the customer dashboard first.")}</div>`;
           return;
         }
 
         const products = (order.products || [])
-          .map((product) => `<div class="product-row"><strong>${product.productCode}</strong><span>${product.name}</span><span>Qty ${product.quantity}</span></div>`)
+          .map((product) => `<div class="product-row"><strong>${product.productCode}</strong><span>${product.name}</span><span>${t("Qty")} ${product.quantity}</span></div>`)
           .join("");
 
         tracker.innerHTML = `
           <article class="tracker-card">
-            <span class="status-pill ${order.status === "Declined" ? "declined" : ""}">${order.status || "Pending Admin Review"}</span>
+            <span class="status-pill ${order.status === "Declined" ? "declined" : ""}">${localizedStatus(order.status || "Pending Admin Review")}</span>
             <h2>${order.orderId || order.id}</h2>
             <p>${statusText(order)}</p>
+            ${timelineHtml(order)}
             <div class="meta">
-              <div><strong>Customer</strong>${order.customerName}<br />${order.customerEmail}<br />${order.customerPhone || ""}</div>
-              <div><strong>Branch</strong>${order.branch}<br />${order.branchStatus || "Waiting for admin"}</div>
-              <div><strong>Payment</strong>${order.paymentMethod}<br />${order.paymentReference || ""}<br />${money(order.total)}</div>
-              <div><strong>Delivery</strong>${order.deliveryAddress}<br />${order.deliveryNote || "No note"}</div>
+              <div><strong>${t("Customer")}</strong>${order.customerName}<br />${order.customerEmail}<br />${order.customerPhone || ""}</div>
+              <div><strong>${t("Branch")}</strong>${order.branch}<br />${localizedStatus(order.branchStatus || "Waiting for admin")}</div>
+              <div><strong>${t("Payment")}</strong>${order.paymentMethod}<br />${order.paymentReference || ""}<br />${money(order.total)}</div>
+              <div><strong>${t("Delivery")}</strong>${order.deliveryAddress}<br />${order.deliveryNote || t("No note")}</div>
             </div>
             ${associateHtml(order)}
-            <div class="products"><strong>Products</strong>${products}</div>
+            <div class="products"><strong>${t("Products")}</strong>${products}</div>
             ${routeHtml(order)}
           </article>
         `;
       }
 
-      render(trackedOrder(localOrders()));
+      function rerender() {
+        applyLanguageShell();
+        render(latestTrackedOrder || trackedOrder(localOrders()));
+      }
+
+      languageSelect.addEventListener("change", () => {
+        language = languageSelect.value;
+        localStorage.setItem("breoLanguage", language);
+        rerender();
+      });
+
+      applyLanguageShell();
+      latestTrackedOrder = trackedOrder(localOrders());
+      render(latestTrackedOrder);
 
       onSnapshot(
         query(collection(db, "orders"), orderBy("createdAt", "desc")),
-        (snapshot) => render(trackedOrder(mergeOrders(snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })), localOrders()))),
-        () => render(trackedOrder(localOrders()))
+        (snapshot) => {
+          latestTrackedOrder = trackedOrder(mergeOrders(snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })), localOrders()));
+          render(latestTrackedOrder);
+        },
+        () => {
+          latestTrackedOrder = trackedOrder(localOrders());
+          render(latestTrackedOrder);
+        }
       );
     </script>
   </body>

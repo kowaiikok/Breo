@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breo Admin Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --ink: #17201d;
+        --muted: #61706b;
+        --paper: #f5faf6;
+        --panel: #ffffff;
+        --line: #dce4df;
+        --green: #1f7a4d;
+        --mint: #e6f5eb;
+        --warning: #d99b34;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Manrope", system-ui, sans-serif;
+      }
+
+      a {
+        color: inherit;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px clamp(18px, 4vw, 56px);
+        background: rgba(255, 255, 255, 0.92);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(16px);
+      }
+
+      nav,
+      .brand,
+      .tabs,
+      .metric-grid {
+        display: flex;
+        align-items: center;
+      }
+
+      nav {
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .brand {
+        gap: 10px;
+        font-size: 1.35rem;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--ink);
+        color: white;
+      }
+
+      main {
+        display: grid;
+        gap: 22px;
+        padding: clamp(28px, 5vw, 56px);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: end;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2.4rem, 6vw, 5rem);
+        line-height: 0.94;
+      }
+
+      p {
+        margin-top: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .tabs {
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .tab {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 14px;
+        background: white;
+      }
+
+      .tab.active {
+        border-color: var(--green);
+        background: var(--green);
+        color: white;
+      }
+
+      .metric-grid {
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .metric-card,
+      .chart-panel,
+      .insight-card {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--panel);
+        box-shadow: 0 14px 40px rgba(21, 35, 30, 0.07);
+      }
+
+      .metric-card {
+        min-width: 190px;
+        padding: 16px;
+      }
+
+      .metric-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .metric-card strong {
+        display: block;
+        margin-top: 6px;
+        color: var(--green);
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+
+      .chart-panel {
+        display: grid;
+        gap: 18px;
+        min-height: 520px;
+        padding: clamp(18px, 4vw, 28px);
+      }
+
+      .chart-title {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: start;
+      }
+
+      .chart-title h2 {
+        margin: 0;
+        font-size: clamp(1.7rem, 4vw, 3rem);
+        line-height: 1;
+      }
+
+      .line-chart {
+        display: grid;
+        gap: 18px;
+        min-height: 440px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 20px;
+        background:
+          linear-gradient(180deg, rgba(31, 122, 77, 0.08), transparent),
+          #fbfcfa;
+      }
+
+      .line-chart svg {
+        width: 100%;
+        height: 390px;
+      }
+
+      .line-chart .revenue-line {
+        fill: none;
+        stroke: var(--green);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        animation: drawLine 1.2s ease-out forwards;
+      }
+
+      .line-chart .revenue-area {
+        fill: rgba(31, 122, 77, 0.12);
+        opacity: 0;
+        animation: fadeChart 0.7s ease-out 0.7s forwards;
+      }
+
+      .line-chart .grid-line,
+      .line-chart .axis-line {
+        stroke: rgba(97, 112, 107, 0.22);
+        stroke-width: 1;
+      }
+
+      .line-chart .axis-line {
+        stroke: rgba(23, 32, 29, 0.42);
+        stroke-width: 2;
+      }
+
+      .line-chart .point {
+        fill: white;
+        stroke: var(--green);
+        stroke-width: 4;
+        opacity: 0;
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: popPoint 0.35s ease-out forwards;
+      }
+
+      .line-chart .point-label {
+        fill: var(--green);
+        font-size: 13px;
+      }
+
+      .line-chart text {
+        fill: var(--muted);
+        font-family: "Manrope", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .chart-details {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .detail-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: white;
+      }
+
+      .detail-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .detail-card strong {
+        display: block;
+        margin-top: 5px;
+      }
+
+      @keyframes drawLine {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      @keyframes fadeChart {
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes popPoint {
+        from {
+          opacity: 0;
+          transform: scale(0.6);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .distribution-panel {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+        gap: clamp(24px, 5vw, 44px);
+        align-items: center;
+        justify-items: center;
+      }
+
+      .donut-large {
+        width: min(100%, 360px);
+        margin: 0 auto;
+      }
+
+      .donut-bg {
+        fill: none;
+        stroke: #edf3ef;
+        stroke-width: 18;
+      }
+
+      .donut-segment {
+        fill: none;
+        stroke-width: 18;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 120px 120px;
+        transition: stroke-dasharray 0.4s ease;
+      }
+
+      .donut-center {
+        fill: var(--panel);
+      }
+
+      .donut-total {
+        fill: var(--green);
+        font-family: "Manrope", system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+      }
+
+      .donut-caption {
+        fill: var(--muted);
+        font-family: "Manrope", system-ui, sans-serif;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .distribution-list {
+        width: 100%;
+        display: grid;
+        gap: 12px;
+      }
+
+      .distribution-row {
+        display: grid;
+        grid-template-columns: 14px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 12px;
+      }
+
+      .distribution-row:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .distribution-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        background: var(--slice-color);
+      }
+
+      .distribution-name {
+        min-width: 0;
+        overflow: hidden;
+        font-weight: 800;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .distribution-meta {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 0.86rem;
+        font-weight: 700;
+      }
+
+      .distribution-value {
+        color: var(--green);
+        font-weight: 800;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .insights {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .insight-card {
+        padding: 16px;
+      }
+
+      .empty {
+        border: 1px dashed var(--line);
+        border-radius: 10px;
+        padding: 28px;
+        background: white;
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        header,
+        .hero,
+        .chart-title,
+        .chart-details,
+        .insights {
+          grid-template-columns: 1fr;
+        }
+
+        .distribution-panel {
+          grid-template-columns: 1fr;
+        }
+
+        header,
+        .chart-title {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="admin.html">
+        <span class="brand-mark">b</span>
+        <span>Breo Admin</span>
+      </a>
+      <nav>
+        <a href="admin.html">Orders</a>
+        <a href="analytics.html?view=revenue">Revenue</a>
+        <a href="analytics.html?view=products">Top products</a>
+        <a href="analytics.html?view=branches">Branch performance</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <h1 id="pageTitle">Revenue analytics</h1>
+          <p id="pageIntro">Track accepted order revenue over time with a cumulative upward line graph.</p>
+        </div>
+        <div class="tabs" aria-label="Analytics views">
+          <a class="tab" data-view-link="revenue" href="analytics.html?view=revenue">Revenue</a>
+          <a class="tab" data-view-link="products" href="analytics.html?view=products">Top products</a>
+          <a class="tab" data-view-link="branches" href="analytics.html?view=branches">Branch performance</a>
+        </div>
+      </section>
+
+      <section class="metric-grid" aria-label="Analytics summary">
+        <div class="metric-card">
+          <span>Revenue</span>
+          <strong id="totalRevenue">RM 0</strong>
+        </div>
+        <div class="metric-card">
+          <span>Orders</span>
+          <strong id="orderCount">0</strong>
+        </div>
+        <div class="metric-card">
+          <span>Average order</span>
+          <strong id="averageOrder">RM 0</strong>
+        </div>
+      </section>
+
+      <section class="chart-panel">
+        <div class="chart-title">
+          <div>
+            <h2 id="chartTitle">Revenue line graph</h2>
+            <p id="chartDescription">Accepted and sent orders are counted as revenue.</p>
+          </div>
+        </div>
+        <div id="chartBody"></div>
+      </section>
+
+      <section class="insights" id="insights"></section>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const requestedView = params.get("view") || window.location.hash.replace("#", "") || sessionStorage.getItem("breoAnalyticsView") || "revenue";
+      let activeView = ["revenue", "products", "branches"].includes(requestedView) ? requestedView : "revenue";
+      sessionStorage.setItem("breoAnalyticsView", activeView);
+      const orders = JSON.parse(localStorage.getItem("breoLocalOrders") || "[]");
+      const revenueOrders = orders.filter((order) => ["Accepted", "Sent to Branch", "Completed"].includes(order.status) || order.adminDecision === "Accepted");
+
+      function money(value) {
+        return new Intl.NumberFormat("en-MY", {
+          style: "currency",
+          currency: "MYR",
+          maximumFractionDigits: 0,
+        }).format(value || 0);
+      }
+
+      function orderTotal(order) {
+        return Number(order.total || order.grandTotal || order.orderTotal || order.amount || 0);
+      }
+
+      function orderDate(order) {
+        return new Date(order.reviewedAtLocal || order.createdAtLocal || order.createdAt || Date.now());
+      }
+
+      function groupedProducts() {
+        const totals = new Map();
+        revenueOrders.forEach((order) => {
+          (order.products || order.items || []).forEach((product) => {
+            const label = product.name || product.productName || product.productCode || product.id || "Unknown product";
+            const current = totals.get(label) || { label, quantity: 0, revenue: 0 };
+            current.quantity += Number(product.quantity || product.qty || 1);
+            current.revenue += Number(product.subtotal || product.total || product.price || 0);
+            totals.set(label, current);
+          });
+        });
+        return [...totals.values()].sort((a, b) => b.quantity - a.quantity || b.revenue - a.revenue);
+      }
+
+      function groupedBranches() {
+        const totals = new Map();
+        revenueOrders.forEach((order) => {
+          const label = order.branch || "Branch pending";
+          const current = totals.get(label) || { label, orders: 0, revenue: 0 };
+          current.orders += 1;
+          current.revenue += orderTotal(order);
+          totals.set(label, current);
+        });
+        return [...totals.values()].sort((a, b) => b.revenue - a.revenue || b.orders - a.orders);
+      }
+
+      function cumulativeRevenue() {
+        let runningTotal = 0;
+        const byDate = new Map();
+        revenueOrders.forEach((order) => {
+          const key = orderDate(order).toISOString().slice(0, 10);
+          const current = byDate.get(key) || { revenue: 0, orders: 0 };
+          current.revenue += orderTotal(order);
+          current.orders += 1;
+          byDate.set(key, current);
+        });
+        const points = [...byDate.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([date, value]) => {
+          runningTotal += value.revenue;
+          return {
+            date,
+            label: new Date(`${date}T00:00:00`).toLocaleDateString("en-MY", { month: "short", day: "numeric" }),
+            dailyRevenue: value.revenue,
+            orders: value.orders,
+            revenue: runningTotal,
+          };
+        });
+        if (points.length) {
+          return [
+            { date: "", label: "Start", dailyRevenue: 0, orders: 0, revenue: 0 },
+            ...points,
+          ];
+        }
+        return [
+          { date: "", label: "Start", dailyRevenue: 0, orders: 0, revenue: 0 },
+          { date: "", label: "Now", dailyRevenue: 0, orders: 0, revenue: 0 },
+        ];
+      }
+
+      function lineChart(points) {
+        const max = Math.max(...points.map((point) => point.revenue), 1);
+        const width = 1040;
+        const height = 380;
+        const pad = { top: 34, right: 34, bottom: 58, left: 92 };
+        const chartWidth = width - pad.left - pad.right;
+        const chartHeight = height - pad.top - pad.bottom;
+        const step = points.length > 1 ? chartWidth / (points.length - 1) : chartWidth;
+        const coordinates = points.map((point, index) => {
+          const x = pad.left + index * step;
+          const y = pad.top + chartHeight - (point.revenue / max) * chartHeight;
+          return { ...point, x, y };
+        });
+        const path = coordinates.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" L ");
+        const baseY = pad.top + chartHeight;
+        const area = `${pad.left},${baseY} ${path} ${pad.left + chartWidth},${baseY}`;
+        const yTicks = [1, 0.75, 0.5, 0.25, 0].map((ratio) => {
+          const y = pad.top + chartHeight * (1 - ratio);
+          const value = max * ratio;
+          return `
+            <line class="grid-line" x1="${pad.left}" y1="${y}" x2="${pad.left + chartWidth}" y2="${y}"></line>
+            <text x="${pad.left - 12}" y="${y + 4}" text-anchor="end">${money(value)}</text>
+          `;
+        }).join("");
+        const xLabels = coordinates.map((point, index) => {
+          if (points.length > 6 && index % Math.ceil(points.length / 6) !== 0 && index !== points.length - 1) return "";
+          return `<text x="${point.x}" y="${height - 18}" text-anchor="middle">${point.label}</text>`;
+        }).join("");
+        const pointDots = coordinates.map((point, index) => {
+          const labelY = point.y < 56 ? point.y + 26 : point.y - 14;
+          return `
+            <circle class="point" cx="${point.x}" cy="${point.y}" r="7"></circle>
+            <text class="point-label" x="${point.x}" y="${labelY}" text-anchor="middle">${money(point.revenue)}</text>
+          `;
+        }).join("");
+        const detailCards = points
+          .filter((point) => point.label !== "Start" || point.revenue > 0)
+          .map((point) => `
+            <div class="detail-card">
+              <span>${point.label}</span>
+              <strong>${money(point.revenue)}</strong>
+              <p>${money(point.dailyRevenue)} added from ${point.orders} order${point.orders === 1 ? "" : "s"}.</p>
+            </div>
+          `)
+          .join("");
+        return `
+          <div class="line-chart">
+            <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Revenue upward line graph">
+              ${yTicks}
+              <line class="axis-line" x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${baseY}"></line>
+              <line class="axis-line" x1="${pad.left}" y1="${baseY}" x2="${pad.left + chartWidth}" y2="${baseY}"></line>
+              <polygon class="revenue-area" points="${area}"></polygon>
+              <path class="revenue-line" pathLength="1" d="M ${path}"></path>
+              ${pointDots}
+              ${xLabels}
+            </svg>
+            <div class="chart-details">
+              ${detailCards || `<div class="empty">No accepted revenue yet.</div>`}
+            </div>
+          </div>
+        `;
+      }
+
+      function distributionChart(rows, valueKey, formatter, emptyText, centerLabel) {
+        if (!rows.length) return `<div class="empty">${emptyText}</div>`;
+        const colors = ["#1f7a4d", "#d99b34", "#5b8fb9", "#b98358", "#7866a8", "#4f6f64"];
+        const circumference = 2 * Math.PI * 82;
+        const total = rows.reduce((sum, row) => sum + Number(row[valueKey] || 0), 0) || 1;
+        let offset = 0;
+        const segments = rows.map((row, index) => {
+          const value = Number(row[valueKey] || 0);
+          const length = (value / total) * circumference;
+          const segment = `<circle class="donut-segment" cx="120" cy="120" r="82" stroke="${colors[index % colors.length]}" stroke-dasharray="${length} ${circumference - length}" stroke-dashoffset="${-offset}"></circle>`;
+          offset += length;
+          return segment;
+        }).join("");
+        return `
+          <div class="distribution-panel">
+            <svg class="donut-large" viewBox="0 0 240 240" role="img" aria-label="${centerLabel} contribution chart">
+              <circle class="donut-bg" cx="120" cy="120" r="82"></circle>
+              ${segments}
+              <circle class="donut-center" cx="120" cy="120" r="56"></circle>
+              <text class="donut-total" x="120" y="116" text-anchor="middle">${rows.length}</text>
+              <text class="donut-caption" x="120" y="137" text-anchor="middle">${centerLabel}</text>
+            </svg>
+            <div class="distribution-list">
+            ${rows.map((row) => {
+              const value = Number(row[valueKey] || 0);
+              const percent = Math.round((value / total) * 100);
+              const color = colors[rows.indexOf(row) % colors.length];
+              return `
+                <div class="distribution-row">
+                  <span class="distribution-dot" style="--slice-color: ${color}"></span>
+                  <div>
+                    <span class="distribution-name" title="${row.label}">${row.label}</span>
+                    <span class="distribution-meta">${formatter(row)}</span>
+                  </div>
+                  <span class="distribution-value">${percent}%</span>
+                </div>
+              `;
+            }).join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      function setSummary() {
+        const total = revenueOrders.reduce((sum, order) => sum + orderTotal(order), 0);
+        document.querySelector("#totalRevenue").textContent = money(total);
+        document.querySelector("#orderCount").textContent = String(revenueOrders.length);
+        document.querySelector("#averageOrder").textContent = money(revenueOrders.length ? total / revenueOrders.length : 0);
+      }
+
+      function insightCards() {
+        const topProduct = groupedProducts()[0];
+        const topBranch = groupedBranches()[0];
+        const latestOrder = [...revenueOrders].sort((a, b) => orderDate(b) - orderDate(a))[0];
+        document.querySelector("#insights").innerHTML = `
+          <article class="insight-card">
+            <h3>Best product</h3>
+            <p>${topProduct ? `${topProduct.label} with ${topProduct.quantity} sold.` : "No product sales yet."}</p>
+          </article>
+          <article class="insight-card">
+            <h3>Best branch</h3>
+            <p>${topBranch ? `${topBranch.label} with ${money(topBranch.revenue)} revenue.` : "No branch sales yet."}</p>
+          </article>
+          <article class="insight-card">
+            <h3>Latest revenue order</h3>
+            <p>${latestOrder ? `${latestOrder.orderId || latestOrder.id} at ${money(orderTotal(latestOrder))}.` : "No accepted order yet."}</p>
+          </article>
+        `;
+      }
+
+      function renderView() {
+        sessionStorage.setItem("breoAnalyticsView", activeView);
+        document.querySelectorAll("[data-view-link]").forEach((link) => {
+          link.classList.toggle("active", link.dataset.viewLink === activeView);
+        });
+
+        if (activeView === "products") {
+          document.querySelector("#pageTitle").textContent = "Top-selling products";
+          document.querySelector("#pageIntro").textContent = "See which products are selling best by quantity, with revenue beside each product.";
+          document.querySelector("#chartTitle").textContent = "Product sales contribution";
+          document.querySelector("#chartDescription").textContent = "Product share is based on units sold from accepted and sent orders.";
+          document.querySelector("#chartBody").innerHTML = distributionChart(groupedProducts(), "quantity", (row) => `${row.quantity} sold | ${money(row.revenue)}`, "No product sales yet.", "Products");
+          return;
+        }
+
+        if (activeView === "branches") {
+          document.querySelector("#pageTitle").textContent = "Branch performance";
+          document.querySelector("#pageIntro").textContent = "Compare fulfilment branches by revenue and accepted order count.";
+          document.querySelector("#chartTitle").textContent = "Branch revenue contribution";
+          document.querySelector("#chartDescription").textContent = "Branch share is based on accepted revenue and order count.";
+          document.querySelector("#chartBody").innerHTML = distributionChart(groupedBranches(), "revenue", (row) => `${money(row.revenue)} | ${row.orders} order${row.orders === 1 ? "" : "s"}`, "No branch performance yet.", "Branches");
+          return;
+        }
+
+        document.querySelector("#pageTitle").textContent = "Revenue analytics";
+        document.querySelector("#pageIntro").textContent = "Track accepted order revenue over time with a cumulative upward line graph.";
+        document.querySelector("#chartTitle").textContent = "Revenue line graph";
+        document.querySelector("#chartDescription").textContent = "The line rises as accepted and sent orders add to total revenue.";
+        document.querySelector("#chartBody").innerHTML = lineChart(cumulativeRevenue());
+      }
+
+      setSummary();
+      insightCards();
+      renderView();
+
+      document.querySelectorAll("[data-view-link]").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          activeView = link.dataset.viewLink;
+          const nextUrl = `analytics.html?view=${encodeURIComponent(activeView)}#${encodeURIComponent(activeView)}`;
+          window.history.pushState({}, "", nextUrl);
+          renderView();
+        });
+      });
+
+      window.addEventListener("popstate", () => {
+        const nextParams = new URLSearchParams(window.location.search);
+        const nextView = nextParams.get("view") || window.location.hash.replace("#", "") || "revenue";
+        activeView = ["revenue", "products", "branches"].includes(nextView) ? nextView : "revenue";
+        renderView();
+      });
+    </script>
+  </body>
+</html>
