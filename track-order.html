@@ -222,11 +222,23 @@
       .meta div,
       .products,
       .route-map,
-      .associate-card {
+      .associate-card,
+      .decline-reason-card {
         border: 1px solid var(--line);
         border-radius: 8px;
         padding: 14px;
         background: #fbfcfa;
+      }
+
+      .decline-reason-card {
+        border-color: #f2b8a8;
+        background: #fff7f3;
+      }
+
+      .decline-reason-card strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--coral);
       }
 
       .meta strong,
@@ -267,7 +279,7 @@
 
       .route-visual {
         position: relative;
-        min-height: 220px;
+        min-height: 280px;
         overflow: hidden;
         border-radius: 8px;
         border: 1px solid var(--line);
@@ -277,20 +289,95 @@
       }
 
       .route-visual::before {
+        display: none;
+      }
+
+      .route-path {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .route-path path {
+        fill: none;
+        stroke: rgba(31, 122, 77, 0.58);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 9 9;
+      }
+
+      .breo-car {
+        position: absolute;
+        left: 30%;
+        top: calc(58% - 38px);
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        width: 76px;
+        height: 40px;
+        border: 3px solid white;
+        border-radius: 20px 24px 14px 14px;
+        background: linear-gradient(135deg, #1f7a4d, #64b87d);
+        color: white;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        box-shadow: 0 14px 26px rgba(23, 32, 29, 0.22);
+        transform: translateX(-50%);
+      }
+
+      .route-progress-0 .breo-car,
+      .route-progress-1 .breo-car {
+        left: 30%;
+        top: calc(54% - 38px);
+      }
+
+      .route-progress-2 .breo-car {
+        left: 48%;
+        top: calc(34% - 38px);
+      }
+
+      .route-progress-3 .breo-car {
+        left: 64%;
+        top: calc(70% - 38px);
+      }
+
+      .route-progress-4 .breo-car {
+        left: 77%;
+        top: calc(58% - 38px);
+      }
+
+      .breo-car::before {
         content: "";
         position: absolute;
-        left: 22%;
-        right: 22%;
-        top: 52%;
-        border-top: 3px dashed rgba(31, 122, 77, 0.58);
-        transform: rotate(-8deg);
+        top: 6px;
+        left: 14px;
+        width: 34px;
+        height: 13px;
+        border-radius: 9px 10px 4px 4px;
+        background: rgba(255, 255, 255, 0.82);
+      }
+
+      .breo-car::after {
+        content: "";
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: -9px;
+        height: 14px;
+        background:
+          radial-gradient(circle at 0 50%, #17201d 0 7px, transparent 8px),
+          radial-gradient(circle at 100% 50%, #17201d 0 7px, transparent 8px);
       }
 
       .map-pin {
         position: absolute;
         display: grid;
         gap: 5px;
-        width: min(230px, 42%);
+        width: min(310px, 46%);
+        z-index: 3;
       }
 
       .map-pin::before {
@@ -319,13 +406,17 @@
       }
 
       .map-pin.branch {
-        left: 8%;
-        top: 22%;
+        left: 23%;
+        top: 58%;
+        transform: translate(-13px, -13px);
       }
 
       .map-pin.customer {
-        right: 8%;
-        bottom: 16%;
+        right: 23%;
+        top: 58%;
+        justify-items: end;
+        text-align: right;
+        transform: translate(13px, -13px);
       }
 
       .empty {
@@ -424,6 +515,7 @@
         "The order stopped after admin review. Check the admin note for the reason.": "订单已在管理员审核后停止。请查看管理员备注了解原因。",
         "Current step": "当前步骤",
         "This order was declined by admin.": "此订单已被管理员拒绝。",
+        "Decline reason": "拒绝原因",
         "Your Breo order has been delivered.": "您的 Breo 订单已送达。",
         "Your Breo order has been delivered. Thank you for shopping with Breo.": "您的 Breo 订单已送达。感谢您在 Breo 购物。",
         "Your order has been accepted.": "您的订单已被接受。",
@@ -528,11 +620,27 @@
       }
 
       function statusText(order) {
-        if (order.status === "Declined") return localizeMessage(order.adminNote || order.customerMessage || "This order was declined by admin.");
+        if (order.status === "Declined") return localizeMessage(order.customerMessage || "This order was declined by admin.");
         if (order.branchStatus === "Completed") return localizeMessage(order.customerMessage || "Your Breo order has been delivered.");
         if (order.status === "Accepted") return localizeMessage(order.customerMessage || (language === "zh" ? `您的订单已被接受。预计送达日期：${eta(order)}。` : `Your order has been accepted. Expected delivery arrival: ${eta(order)}.`));
         if (order.status === "Sent to Branch") return localizeMessage(order.customerMessage || (language === "zh" ? `您的订单已发送到 ${order.branch}。` : `Your order was sent to ${order.branch}.`));
         return t("Your order is pending admin review.");
+      }
+
+      function declineReason(order) {
+        if (order.status !== "Declined" && order.adminDecision !== "Declined") return "";
+        return order.adminNote || (order.customerMessage || "").replace(/^Your Breo order was declined\. Reason:\s*/i, "") || t("This order was declined by admin.");
+      }
+
+      function declineReasonHtml(order) {
+        const reason = declineReason(order);
+        if (!reason) return "";
+        return `
+          <div class="decline-reason-card">
+            <strong>${t("Decline reason")}</strong>
+            <span>${localizeMessage(reason)}</span>
+          </div>
+        `;
       }
 
       function timelineIndex(order) {
@@ -597,7 +705,11 @@
         const branchAddress = branchLocations[order.branch] || order.branch || t("Selected branch");
         return `
           <div class="route-map">
-            <div class="route-visual">
+            <div class="route-visual route-progress-${Math.max(0, timelineIndex(order))}">
+              <svg class="route-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M23 58 C34 58 34 33 47 34 C60 35 55 70 68 70 C74 70 74 58 77 58"></path>
+              </svg>
+              <div class="breo-car" aria-hidden="true">breo</div>
               <div class="map-pin branch"><strong>${order.branch}</strong><span>${branchAddress}</span></div>
               <div class="map-pin customer"><strong>${t("Your address")}</strong><span>${order.deliveryAddress}</span></div>
             </div>
@@ -634,6 +746,7 @@
             <h2>${order.orderId || order.id}</h2>
             <p>${statusText(order)}</p>
             ${timelineHtml(order)}
+            ${declineReasonHtml(order)}
             <div class="meta">
               <div><strong>${t("Customer")}</strong>${order.customerName}<br />${order.customerEmail}<br />${order.customerPhone || ""}</div>
               <div><strong>${t("Branch")}</strong>${order.branch}<br />${localizedStatus(order.branchStatus || "Waiting for admin")}</div>

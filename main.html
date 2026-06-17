@@ -1267,7 +1267,7 @@
 
       .route-visual {
         position: relative;
-        min-height: 170px;
+        min-height: 300px;
         overflow: hidden;
         border-radius: 8px;
         border: 1px solid var(--line);
@@ -1277,21 +1277,97 @@
       }
 
       .route-visual::before {
+        display: none;
+      }
+
+      .route-path {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .route-path path {
+        fill: none;
+        stroke: rgba(31, 122, 77, 0.58);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 9 9;
+      }
+
+      .breo-car {
+        position: absolute;
+        left: 30%;
+        top: calc(58% - 38px);
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        width: 76px;
+        height: 40px;
+        border: 3px solid white;
+        border-radius: 20px 24px 14px 14px;
+        background: linear-gradient(135deg, #1f7a4d, #64b87d);
+        color: white;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        box-shadow: 0 14px 26px rgba(23, 32, 29, 0.22);
+        transform: translateX(-50%);
+      }
+
+      .route-progress-0 .breo-car,
+      .route-progress-1 .breo-car {
+        left: 30%;
+        top: calc(54% - 38px);
+      }
+
+      .route-progress-2 .breo-car {
+        left: 48%;
+        top: calc(34% - 38px);
+      }
+
+      .route-progress-3 .breo-car {
+        left: 64%;
+        top: calc(70% - 38px);
+      }
+
+      .route-progress-4 .breo-car {
+        left: 77%;
+        top: calc(58% - 38px);
+      }
+
+      .breo-car::before {
         content: "";
         position: absolute;
-        left: 21%;
-        right: 21%;
-        top: 52%;
-        border-top: 3px dashed rgba(31, 122, 77, 0.58);
-        transform: rotate(-8deg);
+        top: 6px;
+        left: 14px;
+        width: 34px;
+        height: 13px;
+        border-radius: 9px 10px 4px 4px;
+        background: rgba(255, 255, 255, 0.82);
+      }
+
+      .breo-car::after {
+        content: "";
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: -9px;
+        height: 14px;
+        background:
+          radial-gradient(circle at 0 50%, #17201d 0 7px, transparent 8px),
+          radial-gradient(circle at 100% 50%, #17201d 0 7px, transparent 8px);
       }
 
       .map-pin {
         position: absolute;
         display: grid;
-        gap: 4px;
-        width: min(190px, 42%);
+        gap: 5px;
+        width: min(310px, 46%);
         color: var(--ink);
+        z-index: 3;
       }
 
       .map-pin::before {
@@ -1315,18 +1391,31 @@
 
       .map-pin span {
         color: var(--muted);
-        font-size: 0.78rem;
+        font-size: 0.82rem;
         line-height: 1.35;
+        overflow-wrap: anywhere;
       }
 
       .map-pin.branch {
-        left: 8%;
-        top: 22%;
+        left: 23%;
+        top: 58%;
+        transform: translate(-13px, -13px);
+      }
+
+      .map-pin.branch span {
+        transform: translateX(-28px);
       }
 
       .map-pin.customer {
-        right: 8%;
-        bottom: 16%;
+        right: 23%;
+        top: 58%;
+        justify-items: end;
+        text-align: right;
+        transform: translate(13px, -13px);
+      }
+
+      .map-pin.customer span {
+        transform: translateX(28px);
       }
 
       .route-meta {
@@ -2131,6 +2220,14 @@
           width: calc(100vw - 24px);
         }
 
+        .route-visual {
+          min-height: 360px;
+        }
+
+        .map-pin {
+          width: min(230px, 48%);
+        }
+
 
         .trust-strip,
         .voucher-grid,
@@ -2362,6 +2459,7 @@
               <label>Email address <input id="loginEmail" type="email" placeholder="member@email.com" autocomplete="email" required /></label>
               <label>Password <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required /></label>
               <label>Phone number <input id="loginPhone" type="tel" placeholder="+60... optional" autocomplete="tel" /></label>
+              <label>Member associate code <input id="loginAssociateCode" type="text" placeholder="Optional, example 1111 for Louis" inputmode="numeric" /></label>
               <button class="button primary full" type="submit">Verify email & login</button>
               <div class="verification-note hidden" id="postRegisterNotice">
                 <strong>Please check your email inbox.</strong>
@@ -2387,6 +2485,7 @@
                   <option value="Prefer not to say">Prefer not to say</option>
                 </select>
               </label>
+              <label>Member associate code <input id="registerAssociateCode" type="text" placeholder="Optional, example 1111 for Louis" inputmode="numeric" /></label>
               <button class="button primary full" type="submit">Create member & send verification email</button>
             </form>
 
@@ -2862,12 +2961,6 @@
         quizAnswers: {},
       };
 
-      if (state.member?.salesAssociateCode) {
-        state.associateCode = state.member.salesAssociateCode;
-        state.assignedSalesMember = state.member.assignedSalesMember || salesAssociateCodes[state.member.salesAssociateCode] || "";
-        state.assignedSalesMemberDisplay = state.member.assignedSalesMemberDisplay || salesAssociateDisplayNames[state.member.salesAssociateCode] || state.assignedSalesMember;
-      }
-
       if (state.member && !state.member.verified) {
         state.member = null;
         localStorage.removeItem("breoMember");
@@ -3040,6 +3133,8 @@
         "Email address": "电邮地址",
         "Password": "密码",
         "Phone number": "电话号码",
+        "Member associate code": "会员销售员代码",
+        "Optional, example 1111 for Louis": "可选，例如 1111 是 Louis",
         "Verify email & login": "验证电邮并登录",
         "Please check your email inbox.": "请检查您的邮箱。",
         "Your Breo member account was created. Click the Firebase verification link in your inbox, then return here and login with the same email address and password.": "您的 Breo 会员账户已创建。请点击邮箱中的 Firebase 验证链接，然后回到这里使用同一电邮和密码登录。",
@@ -3460,11 +3555,14 @@
           ...member,
           name: memberDisplayName(member),
         };
-        applyMemberAssociateAssignment();
+        if (state.member.salesAssociateCode) {
+          applyMemberAssociateAssignment();
+        }
         localStorage.setItem("breoMember", JSON.stringify(state.member));
         updateMemberState();
         startCustomerOrderWatch();
         addMessage(message || `Welcome back, ${state.member.name}. Your email has been verified as a Breo member.`);
+        announceMemberAssociateAssignment();
         window.setTimeout(showMemberPromoPopup, 350);
       }
 
@@ -3741,7 +3839,6 @@
 
       function updateMemberState() {
         if (state.member) {
-          applyMemberAssociateAssignment();
           memberStatus.textContent = localizedMemberLabel(state.member.name);
           memberMenuName.textContent = state.member.name;
           const associateDetail = state.assignedSalesMemberDisplay ? ` | ${state.language === "zh" ? "销售员" : "Associate"}: ${state.assignedSalesMemberDisplay}` : "";
@@ -3796,8 +3893,8 @@
 
       function localCustomerOrder() {
         const lastOrderId = localStorage.getItem("breoLastOrderId");
-        const memberEmail = state.member ? normalizeEmail(state.member.email) : "";
-        return localOrders().find((order) => order.orderId === lastOrderId) || localOrders().find((order) => normalizeEmail(order.customerEmail || "") === memberEmail);
+        if (!lastOrderId) return null;
+        return localOrders().find((order) => order.orderId === lastOrderId || order.id === lastOrderId) || null;
       }
 
       function isReviewedOrder(order) {
@@ -3827,6 +3924,18 @@
         if (status.includes("completed")) return "completed";
         if (status.includes("accepted")) return "accepted";
         return "pending";
+      }
+
+      function routeProgressIndex(order) {
+        const status = `${order.status || ""}`.toLowerCase();
+        const branchStatus = `${order.branchStatus || ""}`.toLowerCase();
+        const payment = `${order.paymentStatus || ""} ${order.paymentMethod || ""}`.toLowerCase();
+        if (branchStatus.includes("completed") || status.includes("completed") || status.includes("delivered")) return 4;
+        if (branchStatus.includes("shipped") || status.includes("shipped")) return 3;
+        if (branchStatus.includes("packing") || status.includes("sent to branch")) return 2;
+        if (branchStatus.includes("new order") || status.includes("accepted")) return 1;
+        if (payment.includes("paid") || payment.includes("completed") || payment.includes("cash on delivery") || payment.includes("collect on delivery")) return 0;
+        return 0;
       }
 
       function customerOrderTitle(order) {
@@ -3888,7 +3997,11 @@
 
         return `
           <div class="route-map">
-            <div class="route-visual" aria-label="Delivery route map from branch to customer address">
+            <div class="route-visual route-progress-${routeProgressIndex(order)}" aria-label="Delivery route map from branch to customer address">
+              <svg class="route-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M23 58 C34 58 34 33 47 34 C60 35 55 70 68 70 C74 70 74 58 77 58"></path>
+              </svg>
+              <div class="breo-car" aria-hidden="true">breo</div>
               <div class="map-pin branch">
                 <strong>${order.branch || "Branch"}</strong>
                 <span>${branchAddress}</span>
@@ -3966,6 +4079,11 @@
           return;
         }
 
+        if (!localStorage.getItem("breoLastOrderId")) {
+          renderCustomerOrderStatus(null);
+          return;
+        }
+
         renderCustomerOrderStatus(bestCustomerOrder());
         localStatusTimer = window.setInterval(() => renderCustomerOrderStatus(bestCustomerOrder()), 3000);
 
@@ -3974,11 +4092,15 @@
           if (!firestoreDb || !firestoreFns?.onSnapshot) return;
 
           customerOrderUnsubscribe = firestoreFns.onSnapshot(firestoreFns.collection(firestoreDb, "orders"), (snapshot) => {
-            const memberEmail = normalizeEmail(state.member.email);
             const lastOrderId = localStorage.getItem("breoLastOrderId");
+            if (!lastOrderId) {
+              latestCloudCustomerOrder = null;
+              renderCustomerOrderStatus(null);
+              return;
+            }
             const orders = snapshot.docs
               .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
-              .filter((order) => normalizeEmail(order.customerEmail || "") === memberEmail || order.orderId === lastOrderId)
+              .filter((order) => order.orderId === lastOrderId || order.id === lastOrderId)
               .sort((a, b) => {
                 const aTime = a.reviewedAtLocal || a.sentToBranchAtLocal || a.createdAtLocal || a.orderId || "";
                 const bTime = b.reviewedAtLocal || b.sentToBranchAtLocal || b.createdAtLocal || b.orderId || "";
@@ -4202,12 +4324,33 @@
         return salesAssociateDisplayNames[code.trim().toUpperCase()] || associateFromCode(code);
       }
 
+      function normalizeAssociateCode(code) {
+        return code.trim().toUpperCase();
+      }
+
+      function applyAssociateCodeToMember(member, rawCode, source = "member associate code") {
+        const code = normalizeAssociateCode(rawCode);
+        if (!code) return true;
+        const assignedMember = associateFromCode(code);
+        if (!assignedMember) {
+          addMessage("That sales associate code is not recognized yet. Use 0000 for Kowaii, 1111 for Louis, or leave it blank if there is no code.");
+          return false;
+        }
+
+        member.salesAssociateCode = code;
+        member.assignedSalesMember = assignedMember;
+        member.assignedSalesMemberDisplay = associateDisplayNameFromCode(code);
+        member.assignmentSource = source;
+        return true;
+      }
+
       function applyMemberAssociateAssignment() {
         const code = state.member?.salesAssociateCode?.trim().toUpperCase() || "";
         if (!code || !associateFromCode(code)) return;
         state.associateCode = code;
         state.assignedSalesMember = associateFromCode(code);
         state.assignedSalesMemberDisplay = associateDisplayNameFromCode(code);
+        state.skippedCode = false;
         state.member.assignedSalesMember = state.assignedSalesMember;
         state.member.assignedSalesMemberDisplay = state.assignedSalesMemberDisplay;
         state.member.assignmentSource = state.member.assignmentSource || "member associate code";
@@ -4308,8 +4451,8 @@
       function processOrderFlow() {
         const items = cartItems();
         const branch = selectedBranch();
-        const memberCode = state.member?.salesAssociateCode || "";
-        const code = (hasCode.checked ? associateCode.value.trim() : memberCode).trim();
+        const typedCode = hasCode.checked ? normalizeAssociateCode(associateCode.value) : "";
+        const code = typedCode;
 
         if (!state.member) {
           addMessage("Please login as a member first. I need the member name and phone before preparing the Breo order.");
@@ -4321,7 +4464,7 @@
           return;
         }
 
-        if ((hasCode.checked || memberCode) && !code) {
+        if (hasCode.checked && !code) {
           addMessage("The associate code option is switched on, but no code is entered yet. Add the code or use Skip code.");
           return;
         }
@@ -4344,12 +4487,12 @@
 
         const orderId = `BREO-${Date.now().toString().slice(-6)}`;
         const itemLines = items.map((item) => `${item.quantity} x ${item.name} (${formatMoney(item.subtotal)})`).join("<br />");
-        const codeLine = code ? `Sales associate code recorded: <strong>${code}</strong>. Assigned sales member: <strong>${state.assignedSalesMemberDisplay || state.assignedSalesMember}</strong>. Product order and sales support will be arranged under this associate.` : "No sales associate code. Order can proceed without commission tagging.";
+        const codeLine = code ? `Sales associate code recorded: <strong>${code}</strong>. Assigned sales member: <strong>${state.assignedSalesMemberDisplay || state.assignedSalesMember}</strong>. The order is assigned to ${state.assignedSalesMemberDisplay || state.assignedSalesMember} as you entered ${code}.` : "No sales associate code. Order can proceed without commission tagging.";
         const branchNote = branch === "Bukit Jalil" ? "Bukit Jalil branch should prepare KL south fulfilment or pickup coordination." : "1U branch should prepare PJ, Damansara, or north Klang Valley fulfilment.";
 
         addMessage(`Member ${state.member.name} asked me to process an order from ${branch}.`, "user");
         if (code) {
-          addMessage(`You chose the sales associate member <strong>${associateDisplayNameFromCode(code)}</strong> with code <strong>${code}</strong>. I will attach this member to the order.`);
+          addMessage(`The order is assigned to <strong>${associateDisplayNameFromCode(code)}</strong> as you entered <strong>${code}</strong>. I will attach this member to the order for admin review.`);
         }
         addMessage(
           `<strong>Order ticket ${orderId} prepared.</strong><br /><br />${itemLines}<br /><br />Estimated total: <strong>${formatMoney(cartTotal())}</strong><br />${codeLine}<br />Ship from: <strong>${branch}</strong><br />${branchNote}<br /><br />Next step: customer connects payment, then branch staff confirms stock and ships.`
@@ -4470,8 +4613,11 @@
         }
 
         addMessage(`Customer confirmed the order and completed the ${payment} payment step.`, "user");
+        const assignedLine = state.associateCode && state.assignedSalesMemberDisplay
+          ? `<br />Assigned sales member: <strong>${state.assignedSalesMemberDisplay}</strong> because you entered code <strong>${state.associateCode}</strong>.`
+          : "";
         addMessage(
-          `<strong>Payment confirmed. Order sent for admin review.</strong><br /><br />Order ID: <strong>${savedOrderId || "Local only"}</strong><br />Payment ID: <strong>${paymentId}</strong><br />Method: <strong>${payment}</strong><br />Reference: <strong>${reference}</strong><br />Receipt email: <strong>${email || "Not provided"}</strong><br />Total paid: <strong>${formatMoney(cartTotal())}</strong><br />Delivery address: <strong>${address}</strong><br />Delivery note: ${shippingNote}<br /><br />Admin action: review this order, accept or decline it, then send accepted orders to <strong>${branch}</strong> for shipping.`
+          `<strong>Payment confirmed. Order sent for admin review.</strong><br /><br />Order ID: <strong>${savedOrderId || "Local only"}</strong><br />Payment ID: <strong>${paymentId}</strong><br />Method: <strong>${payment}</strong><br />Reference: <strong>${reference}</strong><br />Receipt email: <strong>${email || "Not provided"}</strong><br />Total paid: <strong>${formatMoney(cartTotal())}</strong><br />Delivery address: <strong>${address}</strong><br />Delivery note: ${shippingNote}${assignedLine}<br /><br />Admin action: review this order, accept or decline it, then send accepted orders to <strong>${branch}</strong> for shipping.`
         );
         flowStatus.textContent = "Pending admin review";
       }
@@ -4481,6 +4627,7 @@
         const email = document.querySelector("#loginEmail").value;
         const password = document.querySelector("#loginPassword").value;
         const phone = document.querySelector("#loginPhone").value.trim();
+        const loginCode = document.querySelector("#loginAssociateCode").value.trim();
         const auth = await requireFirebase();
 
         if (!auth) {
@@ -4493,13 +4640,15 @@
           const member = findMemberByEmail(email) || firebaseMemberFromUser(credential.user, { phone });
 
           if (phone) member.phone = phone;
-          member.verified = credential.user.emailVerified;
-          if (state.member?.salesAssociateCode && !member.salesAssociateCode) {
-            member.salesAssociateCode = state.member.salesAssociateCode;
-            member.assignedSalesMember = state.member.assignedSalesMember;
-            member.assignedSalesMemberDisplay = state.member.assignedSalesMemberDisplay;
-            member.assignmentSource = state.member.assignmentSource;
+          if (loginCode) {
+            if (!applyAssociateCodeToMember(member, loginCode, "member login associate code")) return;
+          } else {
+            member.salesAssociateCode = "";
+            member.assignedSalesMember = "";
+            member.assignedSalesMemberDisplay = "";
+            member.assignmentSource = "";
           }
+          member.verified = credential.user.emailVerified;
 
           if (!findMemberByEmail(email)) {
             state.members.push(member);
@@ -4544,6 +4693,8 @@
             verified: false,
             joinedAt: new Date().toISOString(),
           };
+          const registerCode = document.querySelector("#registerAssociateCode").value.trim();
+          if (registerCode && !applyAssociateCodeToMember(member, registerCode, "member registration associate code")) return;
           const credential = await firebaseFns.createUserWithEmailAndPassword(auth, email, password);
           await firebaseFns.updateProfile(credential.user, { displayName: memberDisplayName(member) });
           await firebaseFns.sendEmailVerification(credential.user);
@@ -4711,6 +4862,8 @@
         if (!hasCode.checked) {
           associateCode.value = "";
           state.associateCode = "";
+          state.assignedSalesMember = "";
+          state.assignedSalesMemberDisplay = "";
         }
       });
 
@@ -4718,6 +4871,9 @@
         hasCode.checked = false;
         associateCode.value = "";
         associateCode.disabled = true;
+        state.associateCode = "";
+        state.assignedSalesMember = "";
+        state.assignedSalesMemberDisplay = "";
         state.skippedCode = true;
         addMessage("No sales associate code selected. I will continue the order without code tagging.");
       });
@@ -4857,7 +5013,6 @@
       }
       updatePaymentLock();
       startCustomerOrderWatch();
-      announceMemberAssociateAssignment();
       if (state.member?.verified) {
         window.setTimeout(showMemberPromoPopup, 450);
       }

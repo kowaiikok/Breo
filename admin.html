@@ -518,6 +518,31 @@
         display: block;
       }
 
+      .member-recommendations {
+        display: grid;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .recommendation-row {
+        display: grid;
+        grid-template-columns: minmax(72px, auto) minmax(0, 1fr);
+        gap: 8px;
+        align-items: start;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px;
+        background: #fbfcfa;
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .recommendation-row strong {
+        color: var(--ink);
+      }
+
       .actions {
         display: flex;
         flex-wrap: wrap;
@@ -575,6 +600,81 @@
         background: white;
       }
 
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        display: none;
+        place-items: center;
+        padding: 20px;
+        background: rgba(23, 32, 29, 0.48);
+      }
+
+      .modal.open {
+        display: grid;
+      }
+
+      .modal-panel {
+        display: grid;
+        gap: 16px;
+        width: min(100%, 560px);
+        max-height: calc(100vh - 40px);
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 20px;
+        background: var(--panel);
+        box-shadow: 0 24px 80px rgba(21, 35, 30, 0.22);
+      }
+
+      .modal-panel h2,
+      .modal-panel p {
+        margin: 0;
+      }
+
+      .decline-options {
+        display: grid;
+        gap: 8px;
+      }
+
+      .decline-option {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px;
+        background: #fbfcfa;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .decline-option span {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 0.84rem;
+        font-weight: 600;
+      }
+
+      .modal-actions {
+        position: sticky;
+        bottom: -20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+        margin: 0 -20px -20px;
+        padding: 12px 20px 20px;
+        border-top: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .hidden {
+        display: none;
+      }
+
       @media (max-width: 980px) {
         main,
         .meta,
@@ -612,6 +712,10 @@
         <a href="accepted.html">Accepted page</a>
         <a href="declined.html">Declined page</a>
         <a href="branch.html">Branch dashboard</a>
+        <select id="adminLanguageSelect" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="zh">中文</option>
+        </select>
       </nav>
     </header>
 
@@ -683,6 +787,24 @@
       </aside>
     </main>
 
+    <div class="modal" id="declineModal" role="dialog" aria-modal="true" aria-labelledby="declineTitle">
+      <div class="modal-panel">
+        <div>
+          <h2 id="declineTitle">Why decline this order?</h2>
+          <p id="declineOrderText">Choose the clearest reason. This will be saved for admin and shown to the customer.</p>
+        </div>
+        <div class="decline-options" id="declineOptions"></div>
+        <label id="declineCustomNoteWrap" class="hidden">
+          Extra note
+          <textarea id="declineCustomNote" placeholder="Add details for the customer or support team..."></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="cancelDecline">Cancel</button>
+          <button class="danger" type="button" id="confirmDecline">Submit decline</button>
+        </div>
+      </div>
+    </div>
+
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
       import {
@@ -719,12 +841,58 @@
       const revenueSparkline = document.querySelector("#revenueSparkline");
       const pageTitle = document.querySelector("h1");
       const pageIntro = pageTitle.nextElementSibling;
+      const declineModal = document.querySelector("#declineModal");
+      const declineOrderText = document.querySelector("#declineOrderText");
+      const declineOptions = document.querySelector("#declineOptions");
+      const declineCustomNoteWrap = document.querySelector("#declineCustomNoteWrap");
+      const declineCustomNote = document.querySelector("#declineCustomNote");
+      const cancelDecline = document.querySelector("#cancelDecline");
+      const confirmDecline = document.querySelector("#confirmDecline");
+      const adminLanguageSelect = document.querySelector("#adminLanguageSelect");
       let allOrders = [];
+      let language = localStorage.getItem("breoLanguage") || "en";
       const pageName = window.location.pathname.split("/").pop().replace(".html", "");
       const pageView = pageName === "accepted" ? "Accepted" : pageName === "declined" ? "Declined" : "All";
       const urlFilter = new URLSearchParams(window.location.search).get("filter");
       let activeFilter = urlFilter || pageView;
-      const fulfilmentMembers = ["Louis", "Kowaii", "SY", "Rong Yi", "Win"];
+      const memberTimetable = [
+        {
+          name: "Louis",
+          branches: ["1 Utama"],
+          days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          shift: "10:00 AM - 6:00 PM",
+          maxActiveOrders: 4,
+        },
+        {
+          name: "Kowaii",
+          branches: ["Bukit Jalil", "1 Utama"],
+          days: ["Monday", "Wednesday", "Friday", "Saturday"],
+          shift: "11:00 AM - 7:00 PM",
+          maxActiveOrders: 5,
+        },
+        {
+          name: "SY",
+          branches: ["Bukit Jalil"],
+          days: ["Tuesday", "Thursday", "Saturday", "Sunday"],
+          shift: "12:00 PM - 8:00 PM",
+          maxActiveOrders: 4,
+        },
+        {
+          name: "Rong Yi",
+          branches: ["1 Utama"],
+          days: ["Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          shift: "10:00 AM - 6:00 PM",
+          maxActiveOrders: 3,
+        },
+        {
+          name: "Win",
+          branches: ["Bukit Jalil", "1 Utama"],
+          days: ["Monday", "Tuesday", "Friday", "Saturday", "Sunday"],
+          shift: "1:00 PM - 9:00 PM",
+          maxActiveOrders: 4,
+        },
+      ];
+      const fulfilmentMembers = memberTimetable.map((member) => member.name);
       const salesAssociateCodes = {
         "0000": "Kowaii",
         "1111": "Louis",
@@ -732,6 +900,143 @@
         "3333": "Rong Yi",
         "4444": "SY",
       };
+      const declineReasons = [
+        {
+          label: "Payment not verified",
+          message: "Payment could not be verified. Please check the transaction reference or submit a valid receipt.",
+        },
+        {
+          label: "Customer details incomplete",
+          message: "Customer contact or delivery details are incomplete. Please update the missing information and place the order again.",
+        },
+        {
+          label: "Delivery address unclear",
+          message: "Delivery address is not complete enough for fulfilment. Please provide a full address and place the order again.",
+        },
+        {
+          label: "Product unavailable",
+          message: "One or more selected products are currently unavailable. Please contact support or choose another product.",
+        },
+        {
+          label: "Duplicate or suspicious order",
+          message: "This order looks duplicated or requires further verification. Please contact support before placing another order.",
+        },
+        {
+          label: "Custom reason",
+          message: "",
+        },
+      ];
+
+      const zhTranslations = {
+        "Customer site": "顾客页面",
+        "All orders": "全部订单",
+        "Accepted page": "已接受订单",
+        "Declined page": "已拒绝订单",
+        "Branch dashboard": "分店后台",
+        "Admin Order Review": "管理员订单审核",
+        "Accepted Orders": "已接受订单",
+        "Declined Orders": "已拒绝订单",
+        "Accept, decline, or send paid orders to the selected branch. The AI helper summarizes what should happen next.": "审核已付款订单、接受、拒绝或发送到指定分店。AI 助手会总结下一步。",
+        "Orders on this page have passed admin review. Send them to the selected branch when the stock and delivery details are ready.": "此页面的订单已通过管理员审核。库存和配送资料确认后可发送到分店。",
+        "Orders on this page were declined by admin. Each declined order should include an immediate note for the customer or support team.": "此页面的订单已被管理员拒绝。每个拒绝订单都应包含给顾客或客服的原因。",
+        "Revenue": "营业额",
+        "Top-selling products": "热卖产品",
+        "Branch performance": "分店表现",
+        "Open graph": "打开图表",
+        "No accepted revenue yet.": "暂无已接受订单营业额。",
+        "Ranked by quantity sold from accepted orders.": "根据已接受订单的销售数量排名。",
+        "Revenue and order count by fulfilment branch.": "按处理分店显示营业额和订单数。",
+        "Orders": "订单",
+        "Average": "平均",
+        "Admin AI Helper": "管理员 AI 助手",
+        "Watching orders for review.": "正在查看待审核订单。",
+        "When a new order arrives, review the payment, customer details, delivery address, and product codes. Accept it before sending it to the branch.": "新订单到达后，请检查付款、顾客资料、配送地址和产品代码。确认无误后再发送到分店。",
+        "All": "全部",
+        "Pending": "待审核",
+        "Accepted": "已接受",
+        "Declined": "已拒绝",
+        "Sent to branch": "已发送分店",
+        "Pending Admin Review": "等待管理员审核",
+        "Sent to Branch": "已发送分店",
+        "Customer": "顾客",
+        "Payment": "付款",
+        "Delivery": "配送",
+        "Branch": "分店",
+        "Product codes and quantities": "产品代码和数量",
+        "Admin note": "管理员备注",
+        "Customer message": "顾客消息",
+        "No note": "无备注",
+        "Waiting for admin": "等待管理员",
+        "Accept order": "接受订单",
+        "Decline order": "拒绝订单",
+        "Ask AI helper": "询问 AI 助手",
+        "Contact sales associate": "联系销售员",
+        "Pending choosing associate": "等待选择成员",
+        "Assigned by retail associate code": "由销售员代码分配",
+        "Assigned associate": "已分配成员",
+        "Select fulfilment member": "选择处理成员",
+        "Reason for decline": "拒绝原因",
+        "Why decline this order?": "为什么拒绝此订单？",
+        "Choose the clearest reason. This will be saved for admin and shown to the customer.": "请选择最清楚的原因。此原因会保存给管理员并显示给顾客。",
+        "Extra note": "额外备注",
+        "Cancel": "取消",
+        "Submit decline": "提交拒绝",
+        "Payment not verified": "付款无法验证",
+        "Customer details incomplete": "顾客资料不完整",
+        "Delivery address unclear": "配送地址不清楚",
+        "Product unavailable": "产品缺货",
+        "Duplicate or suspicious order": "重复或可疑订单",
+        "Custom reason": "自定义原因",
+      };
+
+      function t(text) {
+        return language === "zh" ? zhTranslations[text] || text : text;
+      }
+
+      function applyAdminLanguage() {
+        document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
+        adminLanguageSelect.value = language;
+        document.querySelector('a[href="main.html"]').textContent = t("Customer site");
+        document.querySelector('a[href="admin.html"]').textContent = t("All orders");
+        document.querySelector('a[href="accepted.html"]').textContent = t("Accepted page");
+        document.querySelector('a[href="declined.html"]').textContent = t("Declined page");
+        document.querySelector('a[href="branch.html"]').textContent = t("Branch dashboard");
+        document.querySelector('[data-filter="All"]').textContent = t("All");
+        document.querySelector('[data-filter="Pending Admin Review"]').textContent = t("Pending");
+        document.querySelector('[data-filter="Accepted"]').textContent = t("Accepted");
+        document.querySelector('[data-filter="Declined"]').textContent = t("Declined");
+        document.querySelector('[data-filter="Sent to Branch"]').textContent = t("Sent to branch");
+        document.querySelector('[data-analytics-link="revenue"] h2').textContent = t("Revenue");
+        document.querySelector('[data-analytics-link="products"] h2').textContent = t("Top-selling products");
+        document.querySelector('[data-analytics-link="branches"] h2').textContent = t("Branch performance");
+        document.querySelectorAll(".analytics-card-head span").forEach((item) => {
+          item.textContent = t("Open graph");
+        });
+        document.querySelector("#analyticsRevenueText").textContent = t("No accepted revenue yet.");
+        document.querySelector('[data-analytics-link="products"] .metric-subtext').textContent = t("Ranked by quantity sold from accepted orders.");
+        document.querySelector('[data-analytics-link="branches"] .metric-subtext').textContent = t("Revenue and order count by fulfilment branch.");
+        document.querySelectorAll(".mini-stat span")[0].textContent = t("Orders");
+        document.querySelectorAll(".mini-stat span")[1].textContent = t("Average");
+        document.querySelector("#helperTitle").textContent = t("Admin AI Helper");
+        document.querySelector(".helper-head p").textContent = t("Watching orders for review.");
+        const initialHelper = helperLog.querySelector(".message");
+        if (initialHelper && initialHelper.textContent.includes("When a new order arrives")) {
+          initialHelper.textContent = t("When a new order arrives, review the payment, customer details, delivery address, and product codes. Accept it before sending it to the branch.");
+        }
+        document.querySelector("#declineTitle").textContent = t("Why decline this order?");
+        document.querySelector("#cancelDecline").textContent = t("Cancel");
+        document.querySelector("#confirmDecline").textContent = t("Submit decline");
+        if (pageView === "Accepted") {
+          pageTitle.textContent = t("Accepted Orders");
+          pageIntro.textContent = t("Orders on this page have passed admin review. Send them to the selected branch when the stock and delivery details are ready.");
+        } else if (pageView === "Declined") {
+          pageTitle.textContent = t("Declined Orders");
+          pageIntro.textContent = t("Orders on this page were declined by admin. Each declined order should include an immediate note for the customer or support team.");
+        } else {
+          pageTitle.textContent = t("Admin Order Review");
+          pageIntro.textContent = t("Accept, decline, or send paid orders to the selected branch. The AI helper summarizes what should happen next.");
+        }
+      }
 
       if (pageView === "Accepted") {
         pageTitle.textContent = "Accepted Orders";
@@ -971,8 +1276,8 @@
 
         analyticsRevenue.textContent = money(totalRevenue);
         analyticsRevenueText.textContent = orders.length
-          ? `${orders.length} accepted or sent order${orders.length === 1 ? "" : "s"} counted in revenue.`
-          : "No accepted revenue yet.";
+          ? (language === "zh" ? `${orders.length} 个已接受或已发送订单计入营业额。` : `${orders.length} accepted or sent order${orders.length === 1 ? "" : "s"} counted in revenue.`)
+          : t("No accepted revenue yet.");
         analyticsOrderCount.textContent = String(orders.length);
         analyticsAverageOrder.textContent = money(averageOrder);
         revenueSparkline.innerHTML = lineChartMarkup(revenueTrend(orders));
@@ -1004,12 +1309,19 @@
       }
 
       function customerDetails(order) {
-        return [
-          `Customer name: ${order.customerName || "Missing"}`,
-          `Email: ${order.customerEmail || "Missing"}`,
-          `Phone: ${order.customerPhone || "Missing"}`,
-          `Delivery address: ${order.deliveryAddress || "Missing"}`,
-        ];
+        return language === "zh"
+          ? [
+              `顾客姓名：${order.customerName || "缺少"}`,
+              `电邮：${order.customerEmail || "缺少"}`,
+              `电话：${order.customerPhone || "缺少"}`,
+              `配送地址：${order.deliveryAddress || "缺少"}`,
+            ]
+          : [
+              `Customer name: ${order.customerName || "Missing"}`,
+              `Email: ${order.customerEmail || "Missing"}`,
+              `Phone: ${order.customerPhone || "Missing"}`,
+              `Delivery address: ${order.deliveryAddress || "Missing"}`,
+            ];
       }
 
       function addHelperMessage(message) {
@@ -1025,23 +1337,33 @@
         return date.toLocaleDateString("en-MY", { weekday: "long", day: "numeric", month: "long" });
       }
 
+      function orderStage(order) {
+        if (order.status === "Declined" || order.adminDecision === "Declined") return "Declined";
+        if (order.status === "Accepted" || order.status === "Sent to Branch" || order.adminDecision === "Accepted") return "Accepted";
+        return "Pending Admin Review";
+      }
+
       function visibleOrders() {
         if (pageView === "Accepted") {
-          return allOrders.filter((order) => order.status === "Accepted" || order.adminDecision === "Accepted" || order.status === "Sent to Branch");
+          return allOrders.filter((order) => orderStage(order) === "Accepted");
         }
 
         if (pageView === "Declined") {
-          return allOrders.filter((order) => order.status === "Declined" || order.adminDecision === "Declined");
+          return allOrders.filter((order) => orderStage(order) === "Declined");
         }
 
         if (activeFilter === "All") return allOrders;
-        return allOrders.filter((order) => order.status === activeFilter || order.adminDecision === activeFilter);
+        return allOrders.filter((order) => orderStage(order) === activeFilter);
       }
 
       function statusClass(status) {
         if (status === "Pending Admin Review") return "pending";
         if (status === "Declined") return "declined";
         return "";
+      }
+
+      function localizedStatus(status) {
+        return t(status || "Pending Admin Review");
       }
 
       function buildAiReview(order) {
@@ -1051,35 +1373,35 @@
         const productCodes = products.map((product) => product.productCode).filter(Boolean);
 
         if (products.length) {
-          positives.push(`${products.length} product line${products.length === 1 ? "" : "s"} detected: ${productCodes.join(", ")}.`);
+          positives.push(language === "zh" ? `检测到 ${products.length} 个产品项目：${productCodes.join(", ")}。` : `${products.length} product line${products.length === 1 ? "" : "s"} detected: ${productCodes.join(", ")}.`);
         } else {
-          issues.push("No products were found in this order.");
+          issues.push(language === "zh" ? "此订单没有产品。" : "No products were found in this order.");
         }
 
         positives.push(...customerDetails(order));
 
         if (isPaymentReady(order)) {
-          positives.push(`Payment is marked as ${order.paymentStatus}.`);
+          positives.push(language === "zh" ? `付款状态为 ${order.paymentStatus}。` : `Payment is marked as ${order.paymentStatus}.`);
         } else {
-          issues.push(`Payment is not ready yet. Current payment status: ${order.paymentStatus || "Missing"}.`);
+          issues.push(language === "zh" ? `付款尚未准备好。目前付款状态：${order.paymentStatus || "缺少"}。` : `Payment is not ready yet. Current payment status: ${order.paymentStatus || "Missing"}.`);
         }
 
         if (order.customerName && order.customerEmail && order.customerPhone) {
-          positives.push("Customer name, email, and phone are present.");
+          positives.push(language === "zh" ? "顾客姓名、电邮和电话齐全。" : "Customer name, email, and phone are present.");
         } else {
-          issues.push("Customer contact details are incomplete.");
+          issues.push(language === "zh" ? "顾客联系方式不完整。" : "Customer contact details are incomplete.");
         }
 
         if (order.deliveryAddress && order.deliveryAddress.length >= 10) {
-          positives.push("Delivery address is long enough for branch fulfilment.");
+          positives.push(language === "zh" ? "配送地址足够完整，可交给分店处理。" : "Delivery address is long enough for branch fulfilment.");
         } else {
-          issues.push("Delivery address needs more detail before shipping.");
+          issues.push(language === "zh" ? "配送地址需要更多资料才能发货。" : "Delivery address needs more detail before shipping.");
         }
 
         if (order.branch) {
-          positives.push(`Selected fulfilment branch: ${order.branch}.`);
+          positives.push(language === "zh" ? `已选择处理分店：${order.branch}。` : `Selected fulfilment branch: ${order.branch}.`);
         } else {
-          issues.push("No branch is selected.");
+          issues.push(language === "zh" ? "尚未选择分店。" : "No branch is selected.");
         }
 
         return {
@@ -1088,8 +1410,8 @@
           positives,
           productCodes: productCodes.join(", ") || "No product codes",
           recommendation: issues.length
-            ? "Decline or hold this order until the missing details are fixed."
-            : "Accept this order, then send it to the selected branch for packing.",
+            ? (language === "zh" ? "请先拒绝或暂缓此订单，直到缺少资料已补齐。" : "Decline or hold this order until the missing details are fixed.")
+            : (language === "zh" ? "接受此订单，然后发送到所选分店准备包装。" : "Accept this order, then send it to the selected branch for packing."),
         };
       }
 
@@ -1099,8 +1421,8 @@
 
         return `
           <div class="review-box ${review.canAccept ? "" : "alert"}">
-            <strong>AI helper review</strong>
-            <span>Recommendation: ${review.recommendation}</span>
+            <strong>${language === "zh" ? "AI 助手审核" : "AI helper review"}</strong>
+            <span>${language === "zh" ? "建议" : "Recommendation"}: ${review.recommendation}</span>
             <ul>${items}</ul>
           </div>
         `;
@@ -1108,6 +1430,78 @@
 
       function memberFromCode(order) {
         return salesAssociateCodes[String(order.salesAssociateCode || "").trim().toUpperCase()] || order.assignedFulfilmentMember || order.assignedSalesMember || order.assignedSalesMemberDisplay || "";
+      }
+
+      function hasCustomerAssociateAssignment(order) {
+        return Boolean(String(order.salesAssociateCode || "").trim() && memberFromCode(order));
+      }
+
+      function activeOrderCount(memberName) {
+        return allOrders.filter((order) => {
+          const assignedMember = memberFromCode(order);
+          const activeStatus = order.status === "Accepted" || order.status === "Sent to Branch" || order.branchStatus === "New Order" || order.branchStatus === "Packing";
+          const completed = order.branchStatus === "Completed" || order.status === "Declined";
+          return assignedMember === memberName && activeStatus && !completed;
+        }).length;
+      }
+
+      function todayName() {
+        return new Date().toLocaleDateString("en-MY", { weekday: "long" });
+      }
+
+      function memberRecommendation(order) {
+        const today = todayName();
+        const preferredRanking = {
+          Louis: 1,
+          Kowaii: 2,
+          SY: 3,
+          "Rong Yi": 4,
+          Win: 5,
+        };
+        return memberTimetable
+          .map((member) => {
+            const activeOrders = activeOrderCount(member.name);
+            const isBranchMatch = member.branches.includes(order.branch);
+            const isOnShift = member.days.includes(today);
+            const remainingCapacity = member.maxActiveOrders - activeOrders;
+            const score = (isBranchMatch ? 4 : 0) + (isOnShift ? 3 : 0) + Math.max(0, remainingCapacity);
+            const reasons = [
+              isOnShift ? `on shift today (${member.shift})` : `next roster: ${member.days.join(", ")}`,
+              isBranchMatch ? `covers ${order.branch}` : `usually covers ${member.branches.join(" / ")}`,
+              `${activeOrders}/${member.maxActiveOrders} active orders`,
+            ];
+
+            return { ...member, activeOrders, isBranchMatch, isOnShift, remainingCapacity, score, reasons };
+          })
+          .sort((a, b) => preferredRanking[a.name] - preferredRanking[b.name] || b.score - a.score || a.activeOrders - b.activeOrders || a.name.localeCompare(b.name));
+      }
+
+      function recommendedMemberFor(order) {
+        return memberRecommendation(order)[0]?.name || "";
+      }
+
+      function recommendationSummary(order) {
+        const topMembers = memberRecommendation(order).slice(0, 3);
+        if (!topMembers.length) return "No member timetable is configured yet.";
+        return topMembers.map((member, index) => `${index + 1}. ${member.name}: ${member.reasons.join("; ")}`).join("<br />");
+      }
+
+      function recommendationMarkup(order) {
+        return `
+          <ul class="member-recommendations">
+            ${memberRecommendation(order)
+              .slice(0, 3)
+              .map(
+                (member, index) => `
+                  <li class="recommendation-row">
+              <strong>${index === 0 ? "Best" : `Option ${index + 1}`}: ${member.name}</strong>
+                    <span>${member.reasons.join("; ")}</span>
+                  </li>
+                `
+              )
+              .join("")}
+          </ul>
+        `;
       }
 
       function assignmentSummary(order) {
@@ -1118,7 +1512,7 @@
         if (member) {
           return `Assigned to ${member}. ${member} should send this order by this week, before ${sendByThisWeekText()}.`;
         }
-        return "Pending choosing associate. Select Louis, Kowaii, SY, Rong Yi, or Win before sending this order.";
+        return `Pending choosing associate. AI recommends ${recommendedMemberFor(order)} based on today&apos;s timetable, branch coverage, and current fulfilment load.`;
       }
 
       function assignmentMarkup(order) {
@@ -1128,20 +1522,22 @@
         if (codeMember) {
           return `
             <div class="assignment-box">
-              <strong>${order.salesAssociateCode ? "Assigned by retail associate code" : "Assigned associate"}</strong>
+              <strong>${hasCustomerAssociateAssignment(order) ? t("Assigned by retail associate code") : t("Assigned associate")}</strong>
               <span>${assignmentSummary(order)}</span>
             </div>
           `;
         }
 
+        const recommendations = memberRecommendation(order);
         const options = [`<option value="">Select fulfilment member</option>`]
-          .concat(fulfilmentMembers.map((member) => `<option value="${member}" ${member === order.assignedFulfilmentMember ? "selected" : ""}>${member}</option>`))
+          .concat(recommendations.map((member, index) => `<option value="${member.name}" ${member.name === order.assignedFulfilmentMember ? "selected" : ""}>${index === 0 ? "Recommended: " : ""}${member.name} (${member.activeOrders}/${member.maxActiveOrders} active)</option>`))
           .join("");
 
         return `
           <div class="assignment-box">
-            <strong>Pending choosing associate</strong>
+            <strong>${t("Pending choosing associate")}</strong>
             <span>${assignmentSummary(order)}</span>
+            ${recommendationMarkup(order)}
             <select data-associate-select="${order.id}">
               ${options}
             </select>
@@ -1153,7 +1549,7 @@
         if (order.status !== "Declined" && order.adminDecision !== "Declined") return "";
         return `
           <div class="customer-note">
-            <strong>Reason for decline</strong><br />
+            <strong>${t("Reason for decline")}</strong><br />
             ${order.adminNote || "No decline reason saved."}
           </div>
         `;
@@ -1162,20 +1558,20 @@
       function actionButtons(order) {
         if (pageView === "Accepted") {
           return `
-            <button class="primary" type="button" data-action="contact" data-id="${order.id}">Contact sales associate</button>
-            <button type="button" data-action="ai" data-id="${order.id}">Ask AI helper</button>
+            <button class="primary" type="button" data-action="contact" data-id="${order.id}">${t("Contact sales associate")}</button>
+            <button type="button" data-action="ai" data-id="${order.id}">${t("Ask AI helper")}</button>
           `;
         }
 
         if (pageView === "Declined") {
-          return `<button type="button" data-action="ai" data-id="${order.id}">Ask AI helper</button>`;
+          return `<button type="button" data-action="ai" data-id="${order.id}">${t("Ask AI helper")}</button>`;
         }
 
         return `
-          <button class="primary" type="button" data-action="accept" data-id="${order.id}">Accept order</button>
-          <button class="danger" type="button" data-action="decline" data-id="${order.id}">Decline order</button>
-          <button type="button" data-action="send" data-id="${order.id}">Send to ${order.branch}</button>
-          <button type="button" data-action="ai" data-id="${order.id}">Ask AI helper</button>
+          <button class="primary" type="button" data-action="accept" data-id="${order.id}">${t("Accept order")}</button>
+          <button class="danger" type="button" data-action="decline" data-id="${order.id}">${t("Decline order")}</button>
+          <button type="button" data-action="send" data-id="${order.id}">${t("Sent to branch")} ${order.branch}</button>
+          <button type="button" data-action="ai" data-id="${order.id}">${t("Ask AI helper")}</button>
         `;
       }
 
@@ -1184,9 +1580,9 @@
         const orders = visibleOrders();
 
         if (!orders.length) {
-          ordersEl.innerHTML = `<div class="empty">No orders in this view.</div>`;
+          ordersEl.innerHTML = `<div class="empty">${language === "zh" ? "此视图暂无订单。" : "No orders in this view."}</div>`;
           if (pageView === "Accepted") {
-            helperLog.innerHTML = `<div class="message">No accepted orders yet. Accept an order from All orders, then it will appear here for associate assignment.</div>`;
+            helperLog.innerHTML = `<div class="message">${language === "zh" ? "暂无已接受订单。请先在全部订单接受订单，之后会在这里进行成员分配。" : "No accepted orders yet. Accept an order from All orders, then it will appear here for associate assignment."}</div>`;
           }
           return;
         }
@@ -1195,9 +1591,11 @@
           const latestOrder = orders[0];
           helperLog.innerHTML = `
             <div class="message">
-              <strong>Accepted order ready: ${latestOrder.orderId || latestOrder.id}</strong><br />
+              <strong>${language === "zh" ? "已接受订单已准备：" : "Accepted order ready:"} ${latestOrder.orderId || latestOrder.id}</strong><br />
               ${assignmentSummary(latestOrder)}<br /><br />
-              ${memberFromCode(latestOrder) ? "Use Contact sales associate to coordinate fulfilment this week." : "Choose an associate in the order card, then contact them for fulfilment."}
+              ${memberFromCode(latestOrder)
+                ? (language === "zh" ? "使用联系销售员按钮，协调本周处理。" : "Use Contact sales associate to coordinate fulfilment this week.")
+                : (language === "zh" ? "请在订单卡片选择成员，然后联系他们处理。" : "Choose an associate in the order card, then contact them for fulfilment.")}
             </div>
           `;
         }
@@ -1221,7 +1619,7 @@
               <article class="order-card">
                 <div class="order-top">
                   <div>
-                    <span class="tag ${statusClass(order.status)}">${order.status || "Pending Admin Review"}</span>
+                    <span class="tag ${statusClass(order.status)}">${localizedStatus(order.status || "Pending Admin Review")}</span>
                     <h2>${order.orderId || order.id}</h2>
                     <p>${order.branch} | ${order.paymentStatus || "Payment pending"}</p>
                   </div>
@@ -1229,14 +1627,14 @@
                 </div>
 
                 <div class="meta">
-                  <div><strong>Customer</strong>${order.customerName}<br />${order.customerEmail}<br />${order.customerPhone || ""}</div>
-                  <div><strong>Payment</strong>${order.paymentMethod}<br />${order.paymentReference || ""}<br />${order.paymentId || ""}</div>
-                  <div><strong>Delivery</strong>${order.deliveryAddress}<br />${order.deliveryNote || "No note"}</div>
-                  <div><strong>Branch</strong>${order.branch}<br />${order.branchStatus || "Waiting for admin"}<br />${assignmentMarkup(order) ? assignmentSummary(order) : ""}</div>
+                  <div><strong>${t("Customer")}</strong>${order.customerName}<br />${order.customerEmail}<br />${order.customerPhone || ""}</div>
+                  <div><strong>${t("Payment")}</strong>${order.paymentMethod}<br />${order.paymentReference || ""}<br />${order.paymentId || ""}</div>
+                  <div><strong>${t("Delivery")}</strong>${order.deliveryAddress}<br />${order.deliveryNote || t("No note")}</div>
+                  <div><strong>${t("Branch")}</strong>${order.branch}<br />${localizedStatus(order.branchStatus || "Waiting for admin")}<br />${assignmentMarkup(order) ? assignmentSummary(order) : ""}</div>
                 </div>
 
                 <div class="products">
-                  <strong>Product codes and quantities</strong>
+                  <strong>${t("Product codes and quantities")}</strong>
                   ${products}
                 </div>
 
@@ -1244,12 +1642,12 @@
 
                 <div class="decision-box">
                   <label>
-                    Admin note
+                    ${t("Admin note")}
                     <textarea data-note="${order.id}" placeholder="Reason for decline, packing note, stock instruction...">${order.adminNote || ""}</textarea>
                   </label>
                   ${
                     order.customerMessage
-                      ? `<div class="customer-note"><strong>Customer message</strong><br />${order.customerMessage}</div>`
+                      ? `<div class="customer-note"><strong>${t("Customer message")}</strong><br />${order.customerMessage}</div>`
                       : ""
                   }
                   ${declineReasonMarkup(order)}
@@ -1266,6 +1664,10 @@
 
         ordersEl.querySelectorAll("[data-action]").forEach((button) => {
           button.addEventListener("click", () => handleAction(button.dataset.action, button.dataset.id));
+        });
+
+        ordersEl.querySelectorAll("[data-associate-select]").forEach((select) => {
+          select.addEventListener("change", () => saveMemberAssignment(select.dataset.associateSelect, select.value));
         });
       }
 
@@ -1285,6 +1687,91 @@
         return order.firestoreDocId || order.id || order.orderId;
       }
 
+      function declineOptionMarkup(reason, index) {
+        return `
+          <label class="decline-option">
+            <input type="radio" name="declineReason" value="${index}" data-custom-reason="${reason.message ? "false" : "true"}" ${index === 0 ? "checked" : ""} />
+            <strong>${t(reason.label)}<span>${reason.message || "Write the reason in the extra note box."}</span></strong>
+          </label>
+        `;
+      }
+
+      function syncDeclineCustomNote() {
+        const selected = declineOptions.querySelector("input[name='declineReason']:checked");
+        const isCustom = selected?.dataset.customReason === "true";
+        declineCustomNoteWrap.classList.toggle("hidden", !isCustom);
+        if (!isCustom) declineCustomNote.value = "";
+      }
+
+      function askDeclineReason(order, fallbackNote = "") {
+        declineOrderText.textContent = `${t("Choose the clearest reason. This will be saved for admin and shown to the customer.")} ${order.orderId || order.id}`;
+        declineOptions.innerHTML = declineReasons.map(declineOptionMarkup).join("");
+        declineCustomNote.value = "";
+        syncDeclineCustomNote();
+        declineModal.classList.add("open");
+
+        return new Promise((resolve) => {
+          const close = (value) => {
+            declineModal.classList.remove("open");
+            cancelDecline.removeEventListener("click", cancel);
+            confirmDecline.removeEventListener("click", confirm);
+            declineModal.removeEventListener("click", backdrop);
+            declineOptions.removeEventListener("change", changeReason);
+            resolve(value);
+          };
+          const cancel = () => close("");
+          const changeReason = () => syncDeclineCustomNote();
+          const confirm = () => {
+            const selectedIndex = Number(declineOptions.querySelector("input[name='declineReason']:checked")?.value || 0);
+            const selectedReason = declineReasons[selectedIndex];
+            const customNote = declineCustomNote.value.trim();
+            const reason = selectedReason.message || customNote;
+
+            if (!reason) {
+              addHelperMessage(`<strong>${order.orderId}</strong> needs a decline reason. Choose an option or write a custom note.`);
+              declineCustomNoteWrap.classList.remove("hidden");
+              declineCustomNote.focus();
+              return;
+            }
+
+            close(reason);
+          };
+          const backdrop = (event) => {
+            if (event.target === declineModal) cancel();
+          };
+
+          cancelDecline.addEventListener("click", cancel);
+          confirmDecline.addEventListener("click", confirm);
+          declineModal.addEventListener("click", backdrop);
+          declineOptions.addEventListener("change", changeReason);
+        });
+      }
+
+      async function saveMemberAssignment(id, member) {
+        const order = getOrder(id);
+        if (!order || !member) return;
+        const orderRef = order.source === "local" ? null : doc(db, "orders", firestoreDocumentId(order));
+        const updates = {
+          assignedFulfilmentMember: member,
+          assignmentSource: "admin selected from AI timetable",
+          adminNote: noteFor(id),
+        };
+
+        Object.assign(order, updates);
+        updateLocalMirror(order);
+
+        if (orderRef) {
+          try {
+            await updateDoc(orderRef, updates);
+          } catch (error) {
+            addHelperMessage(`I saved the member locally, but Firebase did not update yet: ${error.message}`);
+          }
+        }
+
+        renderOrders();
+        addHelperMessage(`<strong>${member} assigned to ${order.orderId}.</strong><br />AI timetable context:<br />${recommendationSummary(order)}`);
+      }
+
       async function handleAction(action, id) {
         const order = getOrder(id);
         const adminNote = noteFor(id);
@@ -1293,10 +1780,14 @@
         if (action === "accept") {
           const review = buildAiReview(order);
           const reviewItems = [...review.positives, ...review.issues].map((item) => `- ${item}`).join("<br />");
-          addHelperMessage(`<strong>AI review before accepting ${order.orderId}</strong><br />${reviewItems}<br /><br /><strong>Recommendation:</strong> ${review.recommendation}`);
+          addHelperMessage(language === "zh"
+            ? `<strong>接受 ${order.orderId} 前的 AI 审核</strong><br />${reviewItems}<br /><br /><strong>建议：</strong>${review.recommendation}`
+            : `<strong>AI review before accepting ${order.orderId}</strong><br />${reviewItems}<br /><br /><strong>Recommendation:</strong> ${review.recommendation}`);
 
           if (!review.canAccept) {
-            addHelperMessage(`<strong>${order.orderId}</strong> was not accepted because the AI helper found missing or risky details. Add a note and decline, or ask the customer to correct the order.`);
+            addHelperMessage(language === "zh"
+              ? `<strong>${order.orderId}</strong> 未被接受，因为 AI 助手发现资料缺少或有风险。请添加备注并拒绝，或请顾客更正订单。`
+              : `<strong>${order.orderId}</strong> was not accepted because the AI helper found missing or risky details. Add a note and decline, or ask the customer to correct the order.`);
             return;
           }
 
@@ -1308,7 +1799,7 @@
             estimatedShipDate: deliveryEta(order),
             estimatedDeliveryDate: deliveryEta(order),
             assignedFulfilmentMember: memberFromCode(order),
-            assignmentSource: order.salesAssociateCode ? "sales associate code" : (memberFromCode(order) ? "member associate code" : ""),
+            assignmentSource: hasCustomerAssociateAssignment(order) ? "customer associate code" : (memberFromCode(order) ? "member associate code" : ""),
             aiReview: {
               recommendation: review.recommendation,
               positives: review.positives,
@@ -1331,15 +1822,15 @@
           }
           const autoMember = memberFromCode(order);
           const acceptedHelperMessage = autoMember
-            ? `<strong>You have accepted ${order.orderId}.</strong><br />${order.salesAssociateCode ? `The customer used sales associate code <strong>${order.salesAssociateCode}</strong>, so this order is automatically assigned to <strong>${autoMember}</strong>.` : `This order is already assigned to <strong>${autoMember}</strong>.`} You can send this order now.`
-            : `<strong>You have accepted ${order.orderId}.</strong><br />Please select one member from Louis, Kowaii, SY, Rong Yi, or Win to be able to send this order.`;
+            ? `<strong>You have accepted ${order.orderId}.</strong><br />${hasCustomerAssociateAssignment(order) ? `The customer used associate code <strong>${order.salesAssociateCode}</strong>, so this order is locked to <strong>${autoMember}</strong>.` : `This order is already assigned to <strong>${autoMember}</strong>.`} You can send this order now.`
+            : `<strong>You have accepted ${order.orderId}.</strong><br />No retail associate code was used. AI recommends these members based on timetable and fulfilment load:<br />${recommendationSummary(order)}<br /><br />Choose one member in the assignment box before sending this order.`;
           sessionStorage.setItem("breoAcceptedOrderMessage", acceptedHelperMessage);
           sessionStorage.setItem("breoAcceptedOrderPayload", JSON.stringify(order));
           window.location.href = "accepted.html";
         }
 
         if (action === "decline") {
-          const declineNote = adminNote || window.prompt(`Write the immediate decline message for ${order.orderId}. This will be saved on the order.`);
+          const declineNote = await askDeclineReason(order, adminNote);
           if (!declineNote || !declineNote.trim()) {
             addHelperMessage(`<strong>${order.orderId}</strong> was not declined because a decline message is required.`);
             return;
@@ -1384,7 +1875,7 @@
 
           const assignedFulfilmentMember = memberFromCode(order) || assignedMemberFor(id) || "";
           if (!assignedFulfilmentMember) {
-            addHelperMessage(`<strong>${order.orderId}</strong> is accepted, but it cannot be sent yet. Please select Louis, Kowaii, SY, Rong Yi, or Win first.`);
+            addHelperMessage(`<strong>${order.orderId}</strong> is accepted, but it cannot be sent yet. AI recommends these members:<br />${recommendationSummary(order)}<br /><br />Select one member first.`);
             return;
           }
 
@@ -1410,7 +1901,12 @@
         if (action === "ai") {
           const review = buildAiReview(order);
           const reviewItems = [...review.positives, ...review.issues].map((item) => `- ${item}`).join("<br />");
-          addHelperMessage(`<strong>AI review for ${order.orderId}</strong><br />Customer: ${order.customerName}<br />Products: ${review.productCodes}<br /><br />${reviewItems}<br /><br /><strong>Suggested action:</strong> ${review.recommendation}`);
+          const memberAdvice = memberFromCode(order)
+            ? (language === "zh" ? `已分配成员：<strong>${memberFromCode(order)}</strong>。` : `Assigned member: <strong>${memberFromCode(order)}</strong>.`)
+            : (language === "zh" ? `没有销售员代码。推荐成员：<br />${recommendationSummary(order)}` : `No associate code found. Recommended members:<br />${recommendationSummary(order)}`);
+          addHelperMessage(language === "zh"
+            ? `<strong>${order.orderId} 的 AI 审核</strong><br />顾客：${order.customerName}<br />产品：${review.productCodes}<br /><br />${reviewItems}<br /><br /><strong>建议操作：</strong>${review.recommendation}<br /><br /><strong>处理成员：</strong><br />${memberAdvice}`
+            : `<strong>AI review for ${order.orderId}</strong><br />Customer: ${order.customerName}<br />Products: ${review.productCodes}<br /><br />${reviewItems}<br /><br /><strong>Suggested action:</strong> ${review.recommendation}<br /><br /><strong>Fulfilment member:</strong><br />${memberAdvice}`);
         }
 
         if (action === "contact") {
@@ -1432,7 +1928,7 @@
             renderOrders();
             addHelperMessage(`<strong>Contact sales associate</strong><br />${member} is assigned to ${order.orderId}. Ask ${member} to send this order by this week, before ${sendByThisWeekText()}.`);
           } else {
-            addHelperMessage(`<strong>Contact sales associate</strong><br />This order is pending associate selection. Choose Louis, Kowaii, SY, Rong Yi, or Win in the assignment box first.`);
+            addHelperMessage(`<strong>Contact sales associate</strong><br />This order is pending member selection. AI recommends:<br />${recommendationSummary(order)}<br /><br />Choose one in the assignment box first.`);
           }
         }
       }
@@ -1459,11 +1955,18 @@
           renderOrders();
         });
       });
+      adminLanguageSelect.addEventListener("change", () => {
+        language = adminLanguageSelect.value;
+        localStorage.setItem("breoLanguage", language);
+        applyAdminLanguage();
+        renderOrders();
+      });
       document.querySelectorAll("[data-analytics-link]").forEach((link) => {
         link.addEventListener("click", () => {
           sessionStorage.setItem("breoAnalyticsView", link.dataset.analyticsLink);
         });
       });
+      applyAdminLanguage();
       syncFilterButtons();
 
       const ordersQuery = query(collection(db, "orders"), orderBy("createdAt", "desc"));
